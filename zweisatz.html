@@ -176,16 +176,16 @@ const ebogen = (x0, a, ya, yb, k, fs, side) => {
     tt(x0 + side * (a + 8), y, '· ' + k, 'op', fs, side < 0 ? 'end' : 'start');
 };
 const KOPF = [['Anzahl der', 'Kugeln'], ['Preis', 'in €']];
-const PAARE = [['1', '1,20'], ['2', '2,40'], ['3', '3,60']];
+const PAARE = [['1', '1,20'], ['2', '2,40'], ['3', '3,60'], ['6', '7,20']];
 // g: Maße (L linker Rand, cw Spaltenbreite, T oben, hh Kopfhöhe, rh Zeilenhöhe, fk/fw/fb Schrift Kopf/Werte/Bögen, ain/aout Ausbuchtung innerer/äußerer Bogen)
 // v(k): welcher Teil sichtbar ist
 function tabelle(g, v) {
-  const M = g.L + g.cw, R = g.L + 2 * g.cw, H = g.T + g.hh, B = H + 3 * g.rh;
+  const M = g.L + g.cw, R = g.L + 2 * g.cw, H = g.T + g.hh, B = H + 4 * g.rh;
   const ry = i => H + (i + 0.5) * g.rh, cx = [g.L + g.cw / 2, M + g.cw / 2];
   let s = `<rect class="head" x="${g.L}" y="${g.T}" width="${2 * g.cw}" height="${g.hh}"/>`;
   s += `<rect class="ln" x="${g.L}" y="${g.T}" width="${2 * g.cw}" height="${B - g.T}"/>`;
   s += `<line class="ln" x1="${M}" y1="${g.T}" x2="${M}" y2="${B}"/><line class="ln" x1="${g.L}" y1="${H}" x2="${R}" y2="${H}"/>`;
-  for (let i = 1; i < 3; i++) s += `<line class="thin" x1="${g.L}" y1="${H + i * g.rh}" x2="${R}" y2="${H + i * g.rh}"/>`;
+  for (let i = 1; i < 4; i++) s += `<line class="thin" x1="${g.L}" y1="${H + i * g.rh}" x2="${R}" y2="${H + i * g.rh}"/>`;
   // Kopf: beide Spalten zweizeilig, gleiche Schrift
   if (v('kopf')) KOPF.forEach((ls, j) => ls.forEach((l, i) => { s += tt(cx[j], g.T + g.hh / 2 + (i - 0.5) * g.fk * 1.2, l, j ? 'fb' : 'fr', g.fk); }));
   // Wertepaare: gleiche Schrift in beiden Spalten, gesuchter Wert erst als Fragezeichen
@@ -194,19 +194,21 @@ function tabelle(g, v) {
     const ok = !rechts || v(rechts);
     return tt(cx[0], ry(i), PAARE[i][0], 'fr', g.fw) + tt(cx[1], ry(i), ok ? PAARE[i][1] : '?', ok ? 'fb' : 'fq', g.fw);
   };
-  s += zeile(0, 'z1') + zeile(1, 'z2l', 'z2r') + zeile(2, 'z3l', 'z3r');
-  // Bögen: innen von 1 nach 2, außen von 1 nach 3
+  s += zeile(0, 'z1') + zeile(1, 'z2l', 'z2r') + zeile(2, 'z3l', 'z3r') + zeile(3, 'z4l', 'z4r');
+  // Bögen: innen von 1 nach 2, außen von 1 nach 3, unten von 3 nach 6
   const xl = g.L - 15, xr = R + 15;
   if (v('b3l')) s += ebogen(xl, g.aout, ry(0) - 4, ry(2), 3, g.fb, -1);
   if (v('b2l')) s += ebogen(xl, g.ain, ry(0) + 4, ry(1), 2, g.fb, -1);
   if (v('b3r')) s += ebogen(xr, g.aout, ry(0) - 4, ry(2), 3, g.fb, 1);
   if (v('b2r')) s += ebogen(xr, g.ain, ry(0) + 4, ry(1), 2, g.fb, 1);
+  if (v('b4l')) s += ebogen(xl, g.ain, ry(2) + 4, ry(3), 2, g.fb, -1);
+  if (v('b4r')) s += ebogen(xr, g.ain, ry(2) + 4, ry(3), 2, g.fb, 1);
   return s;
 }
 const ALLES = () => true;
 
 // ---------- Folie 3: links drei Eis, rechts die Tabelle (Breitbild) ----------
-const W3 = 1112, H3 = 380;
+const W3 = 1112, H3 = 445;
 const G3 = { L: 606, cw: 150, T: 20, hh: 80, rh: 80, fk: 26, fw: 40, fb: 30, ain: 32, aout: 108 };
 function lucaFig() {
   // drei Eis mit Namen, Unterkante auf Höhe der Tabellenunterkante
@@ -222,10 +224,13 @@ function lucaHit(p) {
     if (p.y < H) return 'kopf';
     if (p.y < H + G3.rh) return 'z1';
     if (p.y < H + 2 * G3.rh) return p.x < M ? 'z2l' : 'z2r';
-    return p.x < M ? 'z3l' : 'z3r';
+    if (p.y < H + 3 * G3.rh) return p.x < M ? 'z3l' : 'z3r';
+    return p.x < M ? 'z4l' : 'z4r';
   }
-  if (p.x > 410 && p.x < L && p.y > H) return p.y < 200 ? 'b2l' : 'b3l';
-  if (p.x > R && p.y > H) return p.y < 200 ? 'b2r' : 'b3r';
+  // Bögen nach Höhe: oben ·2 von 1 nach 2, Mitte ·3 von 1 nach 3, unten ·2 von 3 nach 6
+  const bo = p.y < 200 ? '2' : p.y < 290 ? '3' : '4';
+  if (p.x > 410 && p.x < L && p.y > H) return 'b' + bo + 'l';
+  if (p.x > R && p.y > H) return 'b' + bo + 'r';
   return null;
 }
 const MERK1a = 'Zeichne eine Tabelle und beschrifte sie.';
@@ -235,24 +240,24 @@ const MERK2b = 'Rechne auf der anderen Seite genauso.';
 // Merksätze in einem abgesetzten Kasten unter dem Bild
 function lucaEq() {
   const z = [];
-  const werte = ['z1', 'z2l', 'z3l'].some(vis);
+  const werte = ['z1', 'z2l', 'z3l', 'z4l'].some(vis);
   if (vis('kopf') || werte) z.push(`<div><b>1.</b><span>${MERK1a}${werte ? '<br>' + MERK1b : ''}</span></div>`);
-  if (['b2l', 'b3l', 'b2r', 'b3r'].some(vis)) z.push(`<div><b>2.</b><span>${MERK2a}${['b2r', 'b3r'].some(vis) ? '<br>' + MERK2b : ''}</span></div>`);
+  if (['b2l', 'b3l', 'b4l', 'b2r', 'b3r', 'b4r'].some(vis)) z.push(`<div><b>2.</b><span>${MERK2a}${['b2r', 'b3r', 'b4r'].some(vis) ? '<br>' + MERK2b : ''}</span></div>`);
   return z.length ? `<div class="merk">${z.join('')}</div>` : '';
 }
 
 // ---------- Folie 4: fertige Tabelle mit Merksätzen, rechts Platz für die Übungsaufgaben ----------
-const W4 = 1150, H4 = 520;
-const G4 = { L: 190, cw: 130, T: 10, hh: 70, rh: 65, fk: 22, fw: 34, fb: 26, ain: 28, aout: 94 };
+const W4 = 1310, H4 = 470;
+const G4 = { L: 203, cw: 160, T: 30, hh: 85, rh: 85, fk: 28, fw: 44, fb: 32, ain: 34, aout: 115 };
+// Links die Tabelle groß, rechts oben die Merksätze, rechts unten die Aufgaben
 function uebenFig() {
   let s = tabelle(G4, ALLES);
-  // Merksätze, abgesetzt unter der Tabelle, mit hängendem Einzug
-  s += `<rect class="merkbox" x="40" y="300" width="560" height="208" rx="14"/>`;
-  const zl = (y, t, nr) => (nr ? tt(64, y, nr, 'tm', 22, 'start') : '') + tt(94, y, t, 'tm', 22, 'start');
-  s += zl(335, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(367, 'Trage die drei Werte ein, die du kennst.');
-  s += zl(413, 'Mit welcher Rechnung kommst du vom', '2.') + zl(445, 'oberen zum unteren Wert?') + zl(477, 'Rechne auf der anderen Seite genauso.');
+  s += `<rect class="merkbox" x="750" y="30" width="540" height="222" rx="14"/>`;
+  const zl = (y, t, nr) => (nr ? tt(774, y, nr, 'tm', 23, 'start') : '') + tt(804, y, t, 'tm', 23, 'start');
+  s += zl(70, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(104, 'Trage die drei Werte ein, die du kennst.');
+  s += zl(152, 'Mit welcher Rechnung kommst du vom', '2.') + zl(186, 'oberen zum unteren Wert?') + zl(220, 'Rechne auf der anderen Seite genauso.');
   // Platzhalter für die Aufgaben aus dem Buch
-  s += `<rect class="platz" x="660" y="10" width="470" height="498" rx="14"/>` + text(895, 260, 'Aufgaben aus dem Buch', 'ts');
+  s += `<rect class="platz" x="750" y="275" width="540" height="180" rx="14"/>` + text(1020, 365, 'Aufgaben aus dem Buch', 'ts');
   return s;
 }
 
@@ -263,7 +268,7 @@ const STEPS = [
   { t: 'Überlege zuerst', rv: 1, vb: [W12, H12], parts: ['zuo', 'k', 'p', 'prop'], hit: propHit, eqHit: 'prop', fig: () => eisFig({ frage: 1, preis: 1 }),
     eq: propEq },
   { t: 'Werte mit dem Zweisatz berechnen', rv: 1, vb: [W3, H3],
-    parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r', 'z3l', 'b3l', 'b3r', 'z3r'], hit: lucaHit, fig: lucaFig,
+    parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r', 'z3l', 'b3l', 'b3r', 'z3r', 'z4l', 'b4l', 'b4r', 'z4r'], hit: lucaHit, fig: lucaFig,
     eq: lucaEq },
   { t: 'Zweisatz', vb: [W4, H4], fig: uebenFig }
 ];
