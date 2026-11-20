@@ -177,7 +177,7 @@ function merkEq() {
 }
 
 const STEPS = [
-  { t: 'Eis kaufen', rv: 1, parts: ['zuo', 'k', 'p', 'preis'], hit: eisHit, fig: eisFig,
+  { t: 'Max und Finn wollen Eis kaufen', rv: 1, parts: ['zuo', 'k', 'p', 'preis'], hit: eisHit, fig: eisFig,
     txt: () => `Max kauft ${KB('1 Kugel')} Eis für ${KG('1,20 €')}. Finn möchte ${KB('2 Kugeln')}. Wie viel bezahlt Finn?`,
     eq: eisEq },
   { t: 'Werte mit dem Zweisatz berechnen', rv: 1, parts: ['kopf', 'werte', 'links', 'rechts', 'erg', 'antwort'], hit: merkHit, fig: merkFig,
