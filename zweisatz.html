@@ -127,9 +127,8 @@ const ftext = (x, y, parts, c = 'tx') => `<text class="${c}" x="${x}" y="${y}" t
 
 // ---------- Folie 1 und 2: Max und Finn (Breitbild) ----------
 const W12 = 1100, H12 = 520;
-// Pfeil nach rechts mit Rechenzeichen und Worten darüber
-const pfeilW = (y, worte) => `<line class="bo" x1="400" y1="${y}" x2="680" y2="${y}"/><polygon class="ah" points="700,${y} 678,${y - 12} 678,${y + 12}"/>` +
-  ftext(550, y - 26, [['· 2', 'fo'], ['   '], ...worte], 'tw');
+// Pfeil nach rechts mit Rechenzeichen darüber
+const pfeilW = y => `<line class="bo" x1="400" y1="${y}" x2="680" y2="${y}"/><polygon class="ah" points="700,${y} 678,${y - 12} 678,${y + 12}"/>` + text(550, y - 26, '· 2', 'to2');
 // o.frage: oben die Frage nach den Größen und die Pfeile, o.preis: Finns Preis zeigen
 function eisFig(o = {}) {
   // Der Pfeil der Zuordnungsvorschrift ist gezeichnet statt als Schriftzeichen, damit er genau auf Höhe der Wörter sitzt.
@@ -140,8 +139,8 @@ function eisFig(o = {}) {
   s += text(300, 362, 'Max', 'ts') + text(800, 362, 'Finn', 'ts');
   s += text(300, 400, '1 Kugel', 'tb') + text(800, 400, '2 Kugeln', 'tb');
   s += text(300, 465, '1,20 €', 'tg') + (o.preis ? text(800, 465, '2,40 €', 'tg') : text(800, 465, '?', 'tq2'));
-  if (o.frage && vis('k')) s += pfeilW(400, [['doppelt so viele '], ['Kugeln', 'fr']]);
-  if (o.frage && vis('p')) s += pfeilW(465, [['doppelt so viel '], ['Geld', 'fb']]);
+  if (o.frage && vis('k')) s += pfeilW(400);
+  if (o.frage && vis('p')) s += pfeilW(465);
   return s;
 }
 // Folie 1: Nur Finns Preis wird aufgedeckt.
@@ -153,7 +152,12 @@ function propHit(p) {
   if (p.x > 380 && p.x < 720 && p.y >= 432 && p.y < 505) return 'p';
   return null;
 }
-const propEq = () => vis('prop') ? '<div class="m2">Ja, die Zuordnung ist proportional.</div>' : '<div class="m2 dim">Ist die Zuordnung proportional?</div>';
+// Unten: erst der Satz zu den Pfeilen, darunter die Frage. Die Antwort kommt erst mit einem Tipp auf die Frage.
+function propEq() {
+  const k = vis('k'), q = vis('p');
+  const satz = k && q ? `Doppelt so viele ${KB('Kugeln')}, doppelt so viel ${KG('Geld')}.` : k ? `Doppelt so viele ${KB('Kugeln')} …` : q ? `… doppelt so viel ${KG('Geld')}.` : '&nbsp;';
+  return `<div class="m2">${satz}</div>` + (vis('prop') ? '<div class="m2 tap">Ja, die Zuordnung ist proportional.</div>' : '<div class="m2 dim tap">Ist die Zuordnung proportional?</div>');
+}
 
 // ---------- Gemeinsame Tabelle für Folie 3 und 4 ----------
 // Text mit eigener Schriftgröße
@@ -343,9 +347,9 @@ fig.addEventListener('pointerdown', e => {
   if (k) { flip(k); render(); }
 });
 // Manche Antworten stehen unten in der Rechnungszeile, dort tippt man direkt auf die Frage.
-$('eq').addEventListener('pointerdown', () => {
+$('eq').addEventListener('pointerdown', e => {
   const st = STEPS[step];
-  if (st.eqHit) { flip(st.eqHit); render(); }
+  if (st.eqHit && e.target.closest('.tap')) { flip(st.eqHit); render(); }
 });
 if (STEPS[0].enter) STEPS[0].enter();
 render();
