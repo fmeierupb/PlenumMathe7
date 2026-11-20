@@ -302,12 +302,15 @@ const grow = () => BOX.forEach(id => { const e = $(id), h = e.offsetHeight; if (
 function render() {
   const st = STEPS[step];
   if (shownStep !== step) reserve(st);
-  const [vw, vh] = st.vb || [800, 520];
-  $('fig').setAttribute('viewBox', `0 0 ${vw} ${vh}`);
-  $('fig').innerHTML = st.fig();
-  // Gruppen mit data-cx werden nach ihrer tatsächlichen Breite mittig auf diese Stelle gesetzt.
-  $('fig').querySelectorAll('[data-cx]').forEach(g => { const b = g.getBBox(); g.setAttribute('transform', `translate(${+g.dataset.cx - (b.x + b.width / 2)},0)`); });
+  // Erst Text und Rechnung setzen, damit die Größe des Bildes feststeht, bevor es gezeichnet wird.
   put(st); grow();
+  // Das Bild wird jedes Mal als neues Element eingesetzt. So bleiben auf dem iPad keine Reste des alten Stands stehen.
+  const [vw, vh] = st.vb || [800, 520], alt = $('fig'), neu = alt.cloneNode(false);
+  neu.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+  neu.innerHTML = st.fig();
+  alt.replaceWith(neu);
+  // Gruppen mit data-cx werden nach ihrer tatsächlichen Breite mittig auf diese Stelle gesetzt.
+  neu.querySelectorAll('[data-cx]').forEach(g => { const b = g.getBBox(); g.setAttribute('transform', `translate(${+g.dataset.cx - (b.x + b.width / 2)},0)`); });
   if (shownStep !== step) {
     shownStep = step;
     $('extras').innerHTML = (st.btns || []).map((b, i) => `<button data-b="${i}">${b.l}</button>`).join('');
@@ -340,13 +343,14 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); back(); }
 });
 // Antippen im Bild deckt den Teil an dieser Stelle auf, nochmal Antippen verdeckt ihn wieder.
-const fig = $('fig');
 function svgPt(e) {
   const [vw, vh] = STEPS[step].vb || [800, 520];
-  const r = fig.getBoundingClientRect(), sc = Math.min(r.width / vw, r.height / vh);
+  const r = $('fig').getBoundingClientRect(), sc = Math.min(r.width / vw, r.height / vh);
   return { x: (e.clientX - r.left - (r.width - vw * sc) / 2) / sc, y: (e.clientY - r.top - (r.height - vh * sc) / 2) / sc };
 }
-fig.addEventListener('pointerdown', e => {
+// Das Bild wird bei jedem Zeichnen ersetzt, deshalb hört die Seite selbst auf Tipps ins Bild.
+document.addEventListener('pointerdown', e => {
+  if (!e.target.closest || !e.target.closest('#fig')) return;
   const st = STEPS[step], k = st.hit && st.hit(svgPt(e));
   if (k) { flip(k); render(); }
 });
