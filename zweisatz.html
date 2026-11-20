@@ -24,7 +24,7 @@ h1{margin:0;font-size:clamp(26px,4.2vw,52px);line-height:1.15;min-height:1.2em}
 #eq .dim{opacity:.4;font-size:.8em}
 #eq .m{font-weight:600;font-size:.72em;text-align:left;max-width:30em;margin:0 auto}
 #eq .m2{font-size:.8em}
-#eq .merk{display:inline-block;text-align:left;font-weight:600;font-size:.8em;line-height:1.35;max-width:40em;border:3px solid var(--c3);border-radius:14px;padding:.7em 1.2em;background:rgba(18,161,80,.08)}
+#eq .merk{display:inline-block;text-align:left;font-weight:600;font-size:.6em;line-height:1.45;max-width:40em;border:3px solid var(--c3);border-radius:14px;padding:.7em 1.2em;background:rgba(18,161,80,.08)}
 #eq .merk>div{display:grid;grid-template-columns:1.6em 1fr}
 #eq .merk>div+div{margin-top:.6em}
 .k.c1{color:var(--c1)}.k.c2{color:var(--c2)}.k.c3{color:var(--c3)}.k.cr{color:var(--cr)}
@@ -208,17 +208,19 @@ function tabelle(g, v) {
 const ALLES = () => true;
 
 // ---------- Folie 3: links drei Eis, rechts die Tabelle (Breitbild) ----------
-const W3 = 1112, H3 = 445;
+const W3 = 1320, H3 = 445;
 const G3 = { L: 606, cw: 150, T: 20, hh: 80, rh: 80, fk: 26, fw: 40, fb: 30, ain: 32, aout: 108 };
 function lucaFig() {
   // drei Eis mit Namen, Unterkante auf Höhe der Tabellenunterkante
-  let s = `<image href="${IMG1}" x="30" y="117" width="101" height="223"/>`;
+  // Eis mittig in der linken Bildhälfte, Tabelle samt Bögen mittig in der rechten
+  let s = `<g data-fx="0.25"><image href="${IMG1}" x="30" y="117" width="101" height="223"/>`;
   s += `<image href="${IMG2}" x="160" y="82" width="100" height="258"/>`;
   s += `<image href="${IMG3}" x="290" y="40" width="100" height="300"/>`;
-  s += text(80, 365, 'Max', 'ts') + text(210, 365, 'Finn', 'ts') + text(340, 365, 'Luca', 'ts');
-  return s + tabelle(G3, vis);
+  s += text(80, 365, 'Max', 'ts') + text(210, 365, 'Finn', 'ts') + text(340, 365, 'Luca', 'ts') + '</g>';
+  return s + `<g data-fx="0.75" data-m="${G3.L + G3.cw}" data-k="tab">${tabelle(G3, vis)}</g>`;
 }
 function lucaHit(p) {
+  p = { x: p.x - (FX.tab || 0), y: p.y };
   const L = G3.L, M = L + G3.cw, R = M + G3.cw, H = G3.T + G3.hh;
   if (p.x >= L && p.x <= R) {
     if (p.y < H) return 'kopf';
@@ -229,7 +231,7 @@ function lucaHit(p) {
   }
   // Bögen nach Höhe: oben ·2 von 1 nach 2, Mitte ·3 von 1 nach 3, unten ·2 von 3 nach 6
   const bo = p.y < 200 ? '2' : p.y < 290 ? '3' : '4';
-  if (p.x > 410 && p.x < L && p.y > H) return 'b' + bo + 'l';
+  if (p.x > L - 200 && p.x < L && p.y > H) return 'b' + bo + 'l';
   if (p.x > R && p.y > H) return 'b' + bo + 'r';
   return null;
 }
@@ -304,6 +306,7 @@ function reserve(st) {
 }
 // Was trotzdem größer wird, behält seinen Platz bis zur nächsten Folie.
 const grow = () => BOX.forEach(id => { const e = $(id), h = e.offsetHeight; if (h > parseFloat(e.style.minHeight || 0)) e.style.minHeight = h + 'px'; });
+let FX = {};
 function render() {
   const st = STEPS[step];
   if (shownStep !== step) reserve(st);
@@ -316,6 +319,15 @@ function render() {
   alt.replaceWith(neu);
   // Gruppen mit data-cx werden nach ihrer tatsächlichen Breite mittig auf diese Stelle gesetzt.
   neu.querySelectorAll('[data-cx]').forEach(g => { const b = g.getBBox(); g.setAttribute('transform', `translate(${+g.dataset.cx - (b.x + b.width / 2)},0)`); });
+  // Gruppen mit data-fx: Mitte auf diesen Anteil der tatsächlich sichtbaren Breite (0.25 = Mitte der linken Bildhälfte).
+  // data-m gibt die Mitte fest vor, damit nichts verrutscht, wenn Teile erst später erscheinen.
+  FX = {};
+  const r = neu.getBoundingClientRect(), sc = Math.min(r.width / vw, r.height / vh), sw = r.width / sc;
+  neu.querySelectorAll('[data-fx]').forEach(g => {
+    const m = g.dataset.m ? +g.dataset.m : (b => b.x + b.width / 2)(g.getBBox());
+    const d = (vw - sw) / 2 + +g.dataset.fx * sw - m;
+    FX[g.dataset.k || ''] = d; g.setAttribute('transform', `translate(${d},0)`);
+  });
   if (shownStep !== step) {
     shownStep = step;
     $('extras').innerHTML = (st.btns || []).map((b, i) => `<button data-b="${i}">${b.l}</button>`).join('');
