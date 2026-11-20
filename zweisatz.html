@@ -85,7 +85,6 @@ svg .thb2{fill:var(--cr);font:600 22px system-ui,sans-serif}
 svg .thg2{fill:var(--c1);font:600 22px system-ui,sans-serif}
 svg .to3{fill:var(--c2);font:700 36px system-ui,sans-serif}
 svg .merkbox{fill:rgba(18,161,80,.08);stroke:var(--c3);stroke-width:3}
-svg .aufg{fill:none;stroke:var(--mut);stroke-width:3}
 svg .fr{fill:var(--cr)}
 svg .fb{fill:var(--c1)}
 svg .c1{fill:var(--c1);opacity:.62}
@@ -248,19 +247,18 @@ function lenaEq() {
   return z.length ? `<div class="merk">${z.join('')}</div>` : '';
 }
 
-// ---------- Folie 4: fertige Tabelle mit Merksätzen, rechts Platz für die Übungsaufgaben ----------
+// ---------- Folie 4: fertige Tabelle mit Merksätzen ----------
 const W4 = 1480, H4 = 470;
 const G4 = { L: 203, cw: 160, T: 30, hh: 85, rh: 85, fk: 28, fw: 44, fb: 32, ain: 34, aout: 115 };
 // Links die Tabelle groß, rechts oben die Merksätze (mindestens so groß wie die Tabellenüberschrift), rechts unten die Aufgaben
 function uebenFig() {
   let s = tabelle(G4, ALLES);
-  s += `<rect class="merkbox" x="760" y="30" width="700" height="262" rx="14"/>`;
-  const zl = (y, t, nr) => (nr ? tt(786, y, nr, 'tm', 28, 'start') : '') + tt(822, y, t, 'tm', 28, 'start');
-  s += zl(74, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(114, 'Trage die drei Werte ein, die du kennst.');
-  s += zl(170, 'Mit welcher Rechnung kommst du vom', '2.') + zl(210, 'oberen zum unteren Wert?') + zl(250, 'Rechne auf der anderen Seite genauso.');
-  // Übungsaufgaben aus dem Buch (nur Zweisatz)
-  s += `<rect class="aufg" x="760" y="315" width="700" height="140" rx="14"/>`;
-  s += tt(786, 368, 'Buch S. 39', 'tm', 28, 'start') + tt(786, 412, 'Nr. 1 a bis d und Nr. 2 a bis c', 'tm', 28, 'start');
+  // Merksätze rechts neben der Tabelle, auf deren Höhe mittig
+  const y0 = Math.round(G4.T + (G4.hh + 4 * G4.rh) / 2 - 131);
+  s += `<rect class="merkbox" x="760" y="${y0}" width="700" height="262" rx="14"/>`;
+  const zl = (y, t, nr) => (nr ? tt(786, y0 + y, nr, 'tm', 28, 'start') : '') + tt(822, y0 + y, t, 'tm', 28, 'start');
+  s += zl(44, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(84, 'Trage die drei Werte ein, die du kennst.');
+  s += zl(140, 'Mit welcher Rechnung kommst du vom', '2.') + zl(180, 'oberen zum unteren Wert?') + zl(220, 'Rechne auf der anderen Seite genauso.');
   return s;
 }
 
