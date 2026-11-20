@@ -155,8 +155,8 @@ const MERK = ['Überlege zuerst: Ist die Zuordnung proportional?',
 
 const STEPS = [
   { t: 'Eis kaufen', fig: () => eisFig(), txt: '1 Kugel Eis kostet 2 €. Was kosten 3 Kugeln?' },
-  { t: 'Was gehört zusammen?', rv: 1, fig: () => eisFig(),
-    txt: () => shown ? 'Zu jeder Anzahl von Kugeln gehört ein Preis.' : '',
+  { t: 'Zuordnungsvorschrift', rv: 1, fig: () => eisFig(),
+    txt: 'Wie lautet die Zuordnungsvorschrift?',
     eq: () => shown ? 'Anzahl der Kugeln → Preis' : '' },
   { t: 'Ist die Zuordnung proportional?', rv: 3, fig: () => eisFig({ k: shown && sub >= 1, p: shown && sub >= 2 }),
     txt: () => !shown ? '' : sub === 1 ? 'Dreimal so viele Kugeln …' : sub === 2 ? 'Dreimal so viele Kugeln, dreimal so viel Geld.' : 'Je mehr Kugeln, desto mehr Geld.',
