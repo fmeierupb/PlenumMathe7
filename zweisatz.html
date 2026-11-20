@@ -69,6 +69,13 @@ svg .pf{stroke:var(--fg);stroke-width:3}
 svg .pfh{fill:var(--fg)}
 svg .tbs{fill:var(--cr);font:700 26px system-ui,sans-serif}
 svg .tgs{fill:var(--c1);font:700 26px system-ui,sans-serif}
+svg .tnb2{fill:var(--cr);font:600 44px system-ui,sans-serif}
+svg .tng2{fill:var(--c1);font:600 44px system-ui,sans-serif}
+svg .tr2{fill:var(--c1);font:700 44px system-ui,sans-serif}
+svg .tq4{fill:var(--mut);font:600 44px system-ui,sans-serif}
+svg .thb2{fill:var(--cr);font:600 22px system-ui,sans-serif}
+svg .thg2{fill:var(--c1);font:600 22px system-ui,sans-serif}
+svg .to3{fill:var(--c2);font:700 36px system-ui,sans-serif}
 svg .merkbox{fill:rgba(18,161,80,.08);stroke:var(--c3);stroke-width:3}
 svg .platz{fill:none;stroke:var(--mut);stroke-width:3;stroke-dasharray:14 10}
 svg .fr{fill:var(--cr)}
@@ -146,9 +153,9 @@ function propEq() {
 }
 
 // ---------- Folie 3: Merkkasten, links drei Eis, rechts die Tabelle (Breitbild) ----------
-const W3 = 1100, H3 = 480;
-// Tabelle: Spalten 560 bis 860, Kopf 20 bis 120, drei Zeilen je 95 hoch
-const TL = 560, TM = 710, TR = 860, TT = 20, TH = 120, RY = [167.5, 262.5, 357.5];
+const W3 = 1100, H3 = 460;
+// Tabelle: Spalten 630 bis 890, Kopf 60 bis 140, drei Zeilen je 80 hoch
+const TL = 630, TM = 760, TR = 890, TT = 60, TH = 140, TB = 380, RY = [180, 260, 340];
 const bogen = (x0, dx, ya, yb) => {
   const sg = dx < 0 ? 1 : -1;
   return `<path class="bo" d="M${x0},${ya + 6} C${x0 + dx},${ya + 14} ${x0 + dx},${yb - 6} ${x0 - sg * 6},${yb}"/>` +
@@ -156,47 +163,46 @@ const bogen = (x0, dx, ya, yb) => {
 };
 // Bogen mit Rechenzeichen am äußersten Punkt, auf einem Feld in Hintergrundfarbe
 const bogenL = (x0, dx, ya, yb, k, c = 'to') => {
-  const x = x0 + 0.75 * dx, y = (ya + yb) / 2;
-  return bogen(x0, dx, ya, yb) + `<rect class="labbg" x="${x - 32}" y="${y - 24}" width="64" height="48" rx="10"/>` + text(x, y, '· ' + k, c);
+  const x = x0 + 0.75 * dx, y = (ya + yb) / 2, w = c === 'to3' ? 56 : 64, h = c === 'to3' ? 42 : 48;
+  return bogen(x0, dx, ya, yb) + `<rect class="labbg" x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="10"/>` + text(x, y, '· ' + k, c);
 };
 function lucaFig() {
   // drei Eis links
-  let s = `<image href="${IMG1}" x="24" y="97" width="101" height="223"/>`;
-  s += `<image href="${IMG2}" x="160" y="62" width="100" height="258"/>`;
-  s += `<image href="${IMG3}" x="295" y="20" width="100" height="300"/>`;
+  let s = `<image href="${IMG1}" x="84" y="95" width="111" height="245"/>`;
+  s += `<image href="${IMG2}" x="225" y="56" width="110" height="284"/>`;
+  s += `<image href="${IMG3}" x="365" y="10" width="110" height="330"/>`;
   [['Max', '1 Kugel', '1,20 €'], ['Finn', '2 Kugeln', '2,40 €'], ['Luca', '3 Kugeln', vis('z3r') ? '3,60 €' : '?']].forEach(([n, k, e], i) => {
-    const x = 75 + 135 * i;
-    s += text(x, 345, n, 'ts') + text(x, 382, k, 'tbs') + text(x, 425, e, e === '?' ? 'tq2' : 'tgs');
+    const x = 140 + 140 * i;
+    s += text(x, 365, n, 'ts') + text(x, 400, k, 'tbs') + text(x, 440, e, e === '?' ? 'tq2' : 'tgs');
   });
   // Tabelle rechts
   s += `<rect class="head" x="${TL}" y="${TT}" width="${TR - TL}" height="${TH - TT}"/>`;
-  s += `<rect class="ln" x="${TL}" y="${TT}" width="${TR - TL}" height="${405 - TT}"/>`;
-  s += `<line class="ln" x1="${TM}" y1="${TT}" x2="${TM}" y2="405"/><line class="ln" x1="${TL}" y1="${TH}" x2="${TR}" y2="${TH}"/>`;
-  s += `<line class="thin" x1="${TL}" y1="215" x2="${TR}" y2="215"/><line class="thin" x1="${TL}" y1="310" x2="${TR}" y2="310"/>`;
-  if (vis('kopf')) s += text(635, 53, 'Anzahl der', 'thb') + text(635, 87, 'Kugeln', 'thb') + text(785, 70, 'Preis in €', 'thg');
-  if (vis('z1')) s += text(635, RY[0], '1', 'tnb') + text(785, RY[0], '1,20', 'tng');
-  if (vis('z2l')) s += text(635, RY[1], '2', 'tnb') + text(785, RY[1], vis('z2r') ? '2,40' : '?', vis('z2r') ? 'tr' : 'tq');
-  if (vis('z3l')) s += text(635, RY[2], '3', 'tnb') + text(785, RY[2], vis('z3r') ? '3,60' : '?', vis('z3r') ? 'tr' : 'tq');
-  // Bögen: innen von 1 nach 2, außen von 1 nach 3
-  // Der äußere Bogen wird zuerst gezeichnet, damit das Feld des inneren Rechenzeichens darüber liegt.
-  if (vis('b3l')) s += bogenL(545, -110, RY[0], RY[2], 3);
-  if (vis('b2l')) s += bogenL(545, -50, RY[0], RY[1], 2);
-  if (vis('b3r')) s += bogenL(875, 110, RY[0], RY[2], 3);
-  if (vis('b2r')) s += bogenL(875, 50, RY[0], RY[1], 2);
-  if (vis('antwort')) s += ftext(710, 455, [['Luca zahlt für '], ['3 Kugeln', 'fr'], [' '], ['3,60 €', 'fb'], ['.']]);
+  s += `<rect class="ln" x="${TL}" y="${TT}" width="${TR - TL}" height="${TB - TT}"/>`;
+  s += `<line class="ln" x1="${TM}" y1="${TT}" x2="${TM}" y2="${TB}"/><line class="ln" x1="${TL}" y1="${TH}" x2="${TR}" y2="${TH}"/>`;
+  s += `<line class="thin" x1="${TL}" y1="220" x2="${TR}" y2="220"/><line class="thin" x1="${TL}" y1="300" x2="${TR}" y2="300"/>`;
+  if (vis('kopf')) s += text(695, 86, 'Anzahl der', 'thb2') + text(695, 114, 'Kugeln', 'thb2') + text(825, 100, 'Preis in €', 'thg2');
+  if (vis('z1')) s += text(695, RY[0], '1', 'tnb2') + text(825, RY[0], '1,20', 'tng2');
+  if (vis('z2l')) s += text(695, RY[1], '2', 'tnb2') + text(825, RY[1], vis('z2r') ? '2,40' : '?', vis('z2r') ? 'tr2' : 'tq4');
+  if (vis('z3l')) s += text(695, RY[2], '3', 'tnb2') + text(825, RY[2], vis('z3r') ? '3,60' : '?', vis('z3r') ? 'tr2' : 'tq4');
+  // Bögen: innen von 1 nach 2, außen von 1 nach 3. Der äußere zuerst, damit das innere Rechenzeichen obenauf liegt.
+  if (vis('b3l')) s += bogenL(615, -110, RY[0], RY[2], 3, 'to3');
+  if (vis('b2l')) s += bogenL(615, -50, RY[0], RY[1], 2, 'to3');
+  if (vis('b3r')) s += bogenL(905, 110, RY[0], RY[2], 3, 'to3');
+  if (vis('b2r')) s += bogenL(905, 50, RY[0], RY[1], 2, 'to3');
+  if (vis('antwort')) s += ftext(760, 425, [['Luca zahlt für '], ['3 Kugeln', 'fr'], [' '], ['3,60 €', 'fb'], ['.']]);
   return s;
 }
 function lucaHit(p) {
-  if (p.x > 280 && p.x < 400 && p.y > 405 && p.y < 445) return 'z3r';
-  if (p.y > 420 && p.x > 450) return 'antwort';
+  if (p.x > 360 && p.x < 480 && p.y > 422 && p.y < 458) return 'z3r';
+  if (p.y > 395 && p.x > 520) return 'antwort';
   if (p.x >= TL && p.x <= TR) {
     if (p.y < TH) return 'kopf';
-    if (p.y < 215) return 'z1';
-    if (p.y < 310) return p.x < TM ? 'z2l' : 'z2r';
-    if (p.y < 420) return p.x < TM ? 'z3l' : 'z3r';
+    if (p.y < 220) return 'z1';
+    if (p.y < 300) return p.x < TM ? 'z2l' : 'z2r';
+    if (p.y <= 395) return p.x < TM ? 'z3l' : 'z3r';
   }
-  if (p.x > 400 && p.x < TL && p.y > TH) return p.y < 240 ? 'b2l' : 'b3l';
-  if (p.x > TR && p.y > TH) return p.y < 240 ? 'b2r' : 'b3r';
+  if (p.x > 490 && p.x < TL && p.y > TH) return p.y < 250 ? 'b2l' : 'b3l';
+  if (p.x > TR && p.y > TH) return p.y < 250 ? 'b2r' : 'b3r';
   return null;
 }
 // Merksätze in einem abgesetzten Kasten unter dem Bild
