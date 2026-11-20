@@ -133,7 +133,7 @@ const pfeilW = (y, worte) => `<line class="bo" x1="400" y1="${y}" x2="680" y2="$
 // o.frage: oben die Frage nach den Größen und die Pfeile, o.preis: Finns Preis zeigen
 function eisFig(o = {}) {
   // Der Pfeil der Zuordnungsvorschrift ist gezeichnet statt als Schriftzeichen, damit er genau auf Höhe der Wörter sitzt.
-  let s = !o.frage ? '' : vis('zuo') ? text(540, 30, 'Anzahl der Kugeln', 'tb', 'end') + `<line class="pf" x1="552" y1="30" x2="582" y2="30"/><polygon class="pfh" points="594,30 580,22 580,38"/>` + text(606, 30, 'Preis', 'tg', 'start')
+  let s = !o.frage ? '' : vis('zuo') ? '<g data-cx="550">' + text(540, 30, 'Anzahl der Kugeln', 'tb', 'end') + `<line class="pf" x1="552" y1="30" x2="582" y2="30"/><polygon class="pfh" points="594,30 580,22 580,38"/>` + text(606, 30, 'Preis', 'tg', 'start') + '</g>'
     : text(550, 30, 'Welche Größen sind einander zugeordnet?', 'tq3');
   s += `<image href="${IMG1}" x="247" y="107" width="106" height="233"/>`;
   s += `<image href="${IMG2}" x="748" y="70" width="104" height="270"/>`;
@@ -297,6 +297,8 @@ function render() {
   const [vw, vh] = st.vb || [800, 520];
   $('fig').setAttribute('viewBox', `0 0 ${vw} ${vh}`);
   $('fig').innerHTML = st.fig();
+  // Gruppen mit data-cx werden nach ihrer tatsächlichen Breite mittig auf diese Stelle gesetzt.
+  $('fig').querySelectorAll('[data-cx]').forEach(g => { const b = g.getBBox(); g.setAttribute('transform', `translate(${+g.dataset.cx - (b.x + b.width / 2)},0)`); });
   put(st); grow();
   if (shownStep !== step) {
     shownStep = step;
