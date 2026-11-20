@@ -24,7 +24,9 @@ h1{margin:0;font-size:clamp(26px,4.2vw,52px);line-height:1.15;min-height:1.2em}
 #eq .dim{opacity:.4;font-size:.8em}
 #eq .m{font-weight:600;font-size:.72em;text-align:left;max-width:30em;margin:0 auto}
 #eq .m2{font-size:.8em}
-#eq .merk{display:inline-block;text-align:left;font-weight:600;font-size:.62em;line-height:1.4;max-width:46em;border:3px solid var(--c3);border-radius:14px;padding:.45em .9em;background:rgba(18,161,80,.08)}
+#eq .merk{display:inline-block;text-align:left;font-weight:600;font-size:.6em;line-height:1.45;max-width:40em;border:3px solid var(--c3);border-radius:14px;padding:.7em 1.2em;background:rgba(18,161,80,.08)}
+#eq .merk>div{display:grid;grid-template-columns:1.6em 1fr}
+#eq .merk>div+div{margin-top:.6em}
 .k.c1{color:var(--c1)}.k.c2{color:var(--c2)}.k.c3{color:var(--c3)}.k.cr{color:var(--cr)}
 footer{display:flex;gap:10px;align-items:center;margin-top:10px}
 #extras{display:flex;gap:10px;margin:0 auto}
@@ -67,6 +69,12 @@ svg .tm{fill:var(--fg);font:600 22px system-ui,sans-serif;white-space:pre}
 svg .labbg{fill:var(--bg)}
 svg .pf{stroke:var(--fg);stroke-width:3}
 svg .pfh{fill:var(--fg)}
+svg .fr,svg .fb,svg .fq,svg .op{font-family:system-ui,sans-serif;font-weight:600}
+svg .fq{fill:var(--mut)}
+svg .op{fill:var(--c2);font-weight:700}
+svg .ta{fill:var(--fg);font:600 28px system-ui,sans-serif}
+svg .tw{fill:var(--fg);font:600 26px system-ui,sans-serif}
+svg .fo{fill:var(--c2);font-weight:700}
 svg .tbs{fill:var(--cr);font:700 26px system-ui,sans-serif}
 svg .tgs{fill:var(--c1);font:700 26px system-ui,sans-serif}
 svg .tnb2{fill:var(--cr);font:600 44px system-ui,sans-serif}
@@ -116,129 +124,136 @@ const KB = x => `<span class="k cr">${x}</span>`;
 const KG = x => `<span class="k c1">${x}</span>`;
 // Text im Bild aus farbigen Stücken: [[Text, Klasse], ...]
 const ftext = (x, y, parts, c = 'tx') => `<text class="${c}" x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central">${parts.map(([t, k]) => k ? `<tspan class="${k}">${t}</tspan>` : t).join('')}</text>`;
-// Pfeil nach rechts mit Rechenzeichen darüber
-const pfeil = (y, k) => `<line class="bo" x1="335" y1="${y}" x2="455" y2="${y}"/><polygon class="ah" points="472,${y} 452,${y - 11} 452,${y + 11}"/>` + text(400, y - 24, '· ' + k, 'to2');
 
-// ---------- Folie 1 und 2: Max und Finn ----------
-// o.frage: oben die Frage nach den Größen, o.preis: Finns Preis zeigen
+// ---------- Folie 1 und 2: Max und Finn (Breitbild) ----------
+const W12 = 1100, H12 = 520;
+// Pfeil nach rechts mit Rechenzeichen und Worten darüber
+const pfeilW = (y, worte) => `<line class="bo" x1="400" y1="${y}" x2="680" y2="${y}"/><polygon class="ah" points="700,${y} 678,${y - 12} 678,${y + 12}"/>` +
+  ftext(550, y - 26, [['· 2', 'fo'], ['   '], ...worte], 'tw');
+// o.frage: oben die Frage nach den Größen und die Pfeile, o.preis: Finns Preis zeigen
 function eisFig(o = {}) {
-  // Der Pfeil ist gezeichnet statt als Schriftzeichen, damit er genau auf Höhe der Wörter sitzt.
-  let s = !o.frage ? '' : vis('zuo') ? text(440, 30, 'Anzahl der Kugeln', 'tb', 'end') + `<line class="pf" x1="452" y1="30" x2="482" y2="30"/><polygon class="pfh" points="494,30 480,22 480,38"/>` + text(506, 30, 'Preis', 'tg', 'start')
-    : text(400, 30, 'Welche Größen sind einander zugeordnet?', 'tq3');
-  s += `<image href="${IMG1}" x="173" y="99" width="114" height="251"/>`;
-  s += `<image href="${IMG2}" x="514" y="60" width="112" height="290"/>`;
-  s += text(230, 372, 'Max', 'ts') + text(570, 372, 'Finn', 'ts');
-  s += text(230, 415, '1 Kugel', 'tb') + text(570, 415, '2 Kugeln', 'tb');
-  s += text(230, 470, '1,20 €', 'tg') + (o.preis ? text(570, 470, '2,40 €', 'tg') : text(570, 470, '?', 'tq2'));
-  if (o.frage && vis('k')) s += pfeil(415, 2);
-  if (o.frage && vis('p')) s += pfeil(470, 2);
+  // Der Pfeil der Zuordnungsvorschrift ist gezeichnet statt als Schriftzeichen, damit er genau auf Höhe der Wörter sitzt.
+  let s = !o.frage ? '' : vis('zuo') ? text(540, 30, 'Anzahl der Kugeln', 'tb', 'end') + `<line class="pf" x1="552" y1="30" x2="582" y2="30"/><polygon class="pfh" points="594,30 580,22 580,38"/>` + text(606, 30, 'Preis', 'tg', 'start')
+    : text(550, 30, 'Welche Größen sind einander zugeordnet?', 'tq3');
+  s += `<image href="${IMG1}" x="247" y="107" width="106" height="233"/>`;
+  s += `<image href="${IMG2}" x="748" y="70" width="104" height="270"/>`;
+  s += text(300, 362, 'Max', 'ts') + text(800, 362, 'Finn', 'ts');
+  s += text(300, 400, '1 Kugel', 'tb') + text(800, 400, '2 Kugeln', 'tb');
+  s += text(300, 465, '1,20 €', 'tg') + (o.preis ? text(800, 465, '2,40 €', 'tg') : text(800, 465, '?', 'tq2'));
+  if (o.frage && vis('k')) s += pfeilW(400, [['doppelt so viele '], ['Kugeln', 'fr']]);
+  if (o.frage && vis('p')) s += pfeilW(465, [['doppelt so viel '], ['Geld', 'fb']]);
   return s;
 }
 // Folie 1: Nur Finns Preis wird aufgedeckt.
-const preisHit = p => p.x >= 480 && p.x < 680 && p.y > 442 && p.y < 510 ? 'preis' : null;
-// Folie 2: Frage oben, Pfeil bei den Kugeln, Pfeil bei den Preisen.
+const preisHit = p => p.x >= 700 && p.x < 900 && p.y > 440 && p.y < 495 ? 'preis' : null;
+// Folie 2: Frage oben, Pfeil bei den Kugeln, Pfeil bei den Preisen. Die Antwort kommt mit einem Tipp unten auf die Frage.
 function propHit(p) {
-  if (p.y < 70) return 'zuo';
-  if (p.x > 300 && p.x < 500 && p.y > 380 && p.y < 442) return 'k';
-  if (p.x > 300 && p.x < 500 && p.y >= 442 && p.y < 510) return 'p';
+  if (p.y < 60) return 'zuo';
+  if (p.x > 380 && p.x < 720 && p.y > 360 && p.y < 432) return 'k';
+  if (p.x > 380 && p.x < 720 && p.y >= 432 && p.y < 505) return 'p';
   return null;
 }
-function propEq() {
-  const k = vis('k'), q = vis('p'), z = [];
-  if (k && q) z.push(`Doppelt so viele ${KB('Kugeln')}, doppelt so viel ${KG('Geld')}.`, 'Die Zuordnung ist proportional.');
-  else if (k) z.push(`Doppelt so viele ${KB('Kugeln')} …`);
-  else if (q) z.push(`… doppelt so viel ${KG('Geld')}.`);
-  else z.push('<span class="dim">Ist die Zuordnung proportional?</span>');
-  return z.map(l => `<div class="m2">${l}</div>`).join('');
-}
+const propEq = () => vis('prop') ? '<div class="m2">Ja, die Zuordnung ist proportional.</div>' : '<div class="m2 dim">Ist die Zuordnung proportional?</div>';
 
-// ---------- Folie 3: Merkkasten, links drei Eis, rechts die Tabelle (Breitbild) ----------
-const W3 = 1100, H3 = 460;
-// Tabelle: Spalten 630 bis 890, Kopf 60 bis 140, drei Zeilen je 80 hoch
-const TL = 630, TM = 760, TR = 890, TT = 60, TH = 140, TB = 380, RY = [180, 260, 340];
+// ---------- Gemeinsame Tabelle für Folie 3 und 4 ----------
+// Text mit eigener Schriftgröße
+const tt = (x, y, str, cls, fs, anchor = 'middle') => `<text class="${cls}" style="font-size:${fs}px" x="${x}" y="${y}" text-anchor="${anchor}" dominant-baseline="central">${str}</text>`;
 const bogen = (x0, dx, ya, yb) => {
   const sg = dx < 0 ? 1 : -1;
   return `<path class="bo" d="M${x0},${ya + 6} C${x0 + dx},${ya + 14} ${x0 + dx},${yb - 6} ${x0 - sg * 6},${yb}"/>` +
     `<polygon class="ah" points="${x0 + sg * 8},${yb} ${x0 - sg * 14},${yb - 12} ${x0 - sg * 14},${yb + 12}"/>`;
 };
 // Bogen mit Rechenzeichen am äußersten Punkt, auf einem Feld in Hintergrundfarbe
-const bogenL = (x0, dx, ya, yb, k, c = 'to') => {
-  const x = x0 + 0.75 * dx, y = (ya + yb) / 2, w = c === 'to3' ? 56 : 64, h = c === 'to3' ? 42 : 48;
-  return bogen(x0, dx, ya, yb) + `<rect class="labbg" x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="10"/>` + text(x, y, '· ' + k, c);
+const bogenL = (x0, dx, ya, yb, k, fs) => {
+  const x = x0 + 0.75 * dx, y = (ya + yb) / 2, w = fs * 1.7, h = fs * 1.3;
+  return bogen(x0, dx, ya, yb) + `<rect class="labbg" x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="8"/>` + tt(x, y, '· ' + k, 'op', fs);
 };
+const KOPF = [['Anzahl der', 'Kugeln'], ['Preis', 'in €']];
+const PAARE = [['1', '1,20'], ['2', '2,40'], ['3', '3,60']];
+// g: Maße (L linker Rand, cw Spaltenbreite, T oben, hh Kopfhöhe, rh Zeilenhöhe, fk/fw/fb Schrift Kopf/Werte/Bögen, m Platz für die Bögen)
+// v(k): welcher Teil sichtbar ist
+function tabelle(g, v) {
+  const M = g.L + g.cw, R = g.L + 2 * g.cw, H = g.T + g.hh, B = H + 3 * g.rh;
+  const ry = i => H + (i + 0.5) * g.rh, cx = [g.L + g.cw / 2, M + g.cw / 2];
+  let s = `<rect class="head" x="${g.L}" y="${g.T}" width="${2 * g.cw}" height="${g.hh}"/>`;
+  s += `<rect class="ln" x="${g.L}" y="${g.T}" width="${2 * g.cw}" height="${B - g.T}"/>`;
+  s += `<line class="ln" x1="${M}" y1="${g.T}" x2="${M}" y2="${B}"/><line class="ln" x1="${g.L}" y1="${H}" x2="${R}" y2="${H}"/>`;
+  for (let i = 1; i < 3; i++) s += `<line class="thin" x1="${g.L}" y1="${H + i * g.rh}" x2="${R}" y2="${H + i * g.rh}"/>`;
+  // Kopf: beide Spalten zweizeilig, gleiche Schrift
+  if (v('kopf')) KOPF.forEach((ls, j) => ls.forEach((l, i) => { s += tt(cx[j], g.T + g.hh / 2 + (i - 0.5) * g.fk * 1.2, l, j ? 'fb' : 'fr', g.fk); }));
+  // Wertepaare: gleiche Schrift in beiden Spalten, gesuchter Wert erst als Fragezeichen
+  const zeile = (i, links, rechts) => {
+    if (!v(links)) return '';
+    const ok = !rechts || v(rechts);
+    return tt(cx[0], ry(i), PAARE[i][0], 'fr', g.fw) + tt(cx[1], ry(i), ok ? PAARE[i][1] : '?', ok ? 'fb' : 'fq', g.fw);
+  };
+  s += zeile(0, 'z1') + zeile(1, 'z2l', 'z2r') + zeile(2, 'z3l', 'z3r');
+  // Bögen: außen von 1 nach 3 zuerst, damit das innere Rechenzeichen obenauf liegt
+  const xl = g.L - 15, xr = R + 15;
+  if (v('b3l')) s += bogenL(xl, -0.73 * g.m, ry(0), ry(2), 3, g.fb);
+  if (v('b2l')) s += bogenL(xl, -0.33 * g.m, ry(0), ry(1), 2, g.fb);
+  if (v('b3r')) s += bogenL(xr, 0.73 * g.m, ry(0), ry(2), 3, g.fb);
+  if (v('b2r')) s += bogenL(xr, 0.33 * g.m, ry(0), ry(1), 2, g.fb);
+  return s;
+}
+const ALLES = () => true;
+
+// ---------- Folie 3: links drei Eis, rechts die Tabelle (Breitbild) ----------
+const W3 = 1100, H3 = 400;
+const G3 = { L: 630, cw: 150, T: 20, hh: 80, rh: 80, fk: 26, fw: 40, fb: 32, m: 150 };
 function lucaFig() {
-  // drei Eis links
-  let s = `<image href="${IMG1}" x="84" y="95" width="111" height="245"/>`;
-  s += `<image href="${IMG2}" x="225" y="56" width="110" height="284"/>`;
-  s += `<image href="${IMG3}" x="365" y="10" width="110" height="330"/>`;
-  [['Max', '1 Kugel', '1,20 €'], ['Finn', '2 Kugeln', '2,40 €'], ['Luca', '3 Kugeln', vis('z3r') ? '3,60 €' : '?']].forEach(([n, k, e], i) => {
-    const x = 140 + 140 * i;
-    s += text(x, 365, n, 'ts') + text(x, 400, k, 'tbs') + text(x, 440, e, e === '?' ? 'tq2' : 'tgs');
-  });
-  // Tabelle rechts
-  s += `<rect class="head" x="${TL}" y="${TT}" width="${TR - TL}" height="${TH - TT}"/>`;
-  s += `<rect class="ln" x="${TL}" y="${TT}" width="${TR - TL}" height="${TB - TT}"/>`;
-  s += `<line class="ln" x1="${TM}" y1="${TT}" x2="${TM}" y2="${TB}"/><line class="ln" x1="${TL}" y1="${TH}" x2="${TR}" y2="${TH}"/>`;
-  s += `<line class="thin" x1="${TL}" y1="220" x2="${TR}" y2="220"/><line class="thin" x1="${TL}" y1="300" x2="${TR}" y2="300"/>`;
-  if (vis('kopf')) s += text(695, 86, 'Anzahl der', 'thb2') + text(695, 114, 'Kugeln', 'thb2') + text(825, 100, 'Preis in €', 'thg2');
-  if (vis('z1')) s += text(695, RY[0], '1', 'tnb2') + text(825, RY[0], '1,20', 'tng2');
-  if (vis('z2l')) s += text(695, RY[1], '2', 'tnb2') + text(825, RY[1], vis('z2r') ? '2,40' : '?', vis('z2r') ? 'tr2' : 'tq4');
-  if (vis('z3l')) s += text(695, RY[2], '3', 'tnb2') + text(825, RY[2], vis('z3r') ? '3,60' : '?', vis('z3r') ? 'tr2' : 'tq4');
-  // Bögen: innen von 1 nach 2, außen von 1 nach 3. Der äußere zuerst, damit das innere Rechenzeichen obenauf liegt.
-  if (vis('b3l')) s += bogenL(615, -110, RY[0], RY[2], 3, 'to3');
-  if (vis('b2l')) s += bogenL(615, -50, RY[0], RY[1], 2, 'to3');
-  if (vis('b3r')) s += bogenL(905, 110, RY[0], RY[2], 3, 'to3');
-  if (vis('b2r')) s += bogenL(905, 50, RY[0], RY[1], 2, 'to3');
-  if (vis('antwort')) s += ftext(760, 425, [['Luca zahlt für '], ['3 Kugeln', 'fr'], [' '], ['3,60 €', 'fb'], ['.']]);
+  // drei Eis ohne Beschriftung, Unterkante auf Höhe der Tabellenunterkante
+  let s = `<image href="${IMG1}" x="50" y="117" width="101" height="223"/>`;
+  s += `<image href="${IMG2}" x="180" y="82" width="100" height="258"/>`;
+  s += `<image href="${IMG3}" x="310" y="40" width="100" height="300"/>`;
+  s += tabelle(G3, vis);
+  if (vis('antwort')) s += ftext(780, 375, [['Luca zahlt für '], ['3 Kugeln', 'fr'], [' '], ['3,60 €', 'fb'], ['.']], 'ta');
   return s;
 }
 function lucaHit(p) {
-  if (p.x > 360 && p.x < 480 && p.y > 422 && p.y < 458) return 'z3r';
-  if (p.y > 395 && p.x > 520) return 'antwort';
-  if (p.x >= TL && p.x <= TR) {
-    if (p.y < TH) return 'kopf';
-    if (p.y < 220) return 'z1';
-    if (p.y < 300) return p.x < TM ? 'z2l' : 'z2r';
-    if (p.y <= 395) return p.x < TM ? 'z3l' : 'z3r';
+  const L = G3.L, M = L + G3.cw, R = M + G3.cw, H = G3.T + G3.hh;
+  if (p.y > 345 && p.x > 450) return 'antwort';
+  if (p.x >= L && p.x <= R) {
+    if (p.y < H) return 'kopf';
+    if (p.y < H + G3.rh) return 'z1';
+    if (p.y < H + 2 * G3.rh) return p.x < M ? 'z2l' : 'z2r';
+    return p.x < M ? 'z3l' : 'z3r';
   }
-  if (p.x > 490 && p.x < TL && p.y > TH) return p.y < 250 ? 'b2l' : 'b3l';
-  if (p.x > TR && p.y > TH) return p.y < 250 ? 'b2r' : 'b3r';
+  if (p.x > 460 && p.x < L && p.y > H) return p.y < 200 ? 'b2l' : 'b3l';
+  if (p.x > R && p.y > H) return p.y < 200 ? 'b2r' : 'b3r';
   return null;
 }
+const MERK1 = '<div><b>1.</b><span>Zeichne eine Tabelle und beschrifte sie.<br>Trage die drei Werte ein, die du kennst.</span></div>';
+const MERK2a = 'Mit welcher Rechnung kommst du vom oberen zum unteren Wert?';
+const MERK2b = 'Rechne auf der anderen Seite genauso.';
 // Merksätze in einem abgesetzten Kasten unter dem Bild
 function lucaEq() {
   const z = [];
-  if (['kopf', 'z1', 'z2l', 'z3l'].some(vis)) z.push('1. Zeichne eine Tabelle und beschrifte sie. Trage die drei Werte ein, die du kennst.');
-  if (['b2l', 'b3l', 'b2r', 'b3r'].some(vis)) z.push('2. Mit welcher Rechnung kommst du vom oberen zum unteren Wert?' + (['b2r', 'b3r'].some(vis) ? ' Rechne auf der anderen Seite genauso.' : ''));
-  return z.length ? `<div class="merk">${z.map(l => `<div>${l}</div>`).join('')}</div>` : '';
+  if (['kopf', 'z1', 'z2l', 'z3l'].some(vis)) z.push(MERK1);
+  if (['b2l', 'b3l', 'b2r', 'b3r'].some(vis)) z.push(`<div><b>2.</b><span>${MERK2a}${['b2r', 'b3r'].some(vis) ? '<br>' + MERK2b : ''}</span></div>`);
+  return z.length ? `<div class="merk">${z.join('')}</div>` : '';
 }
 
 // ---------- Folie 4: fertige Tabelle mit Merksätzen, rechts Platz für die Übungsaufgaben ----------
 const W4 = 1100, H4 = 520;
+const G4 = { L: 160, cw: 130, T: 10, hh: 70, rh: 65, fk: 22, fw: 34, fb: 28, m: 125 };
 function uebenFig() {
-  const L = 170, M = 320, R = 470, T = 10, H = 95, Y = [135, 215, 295];
-  let s = `<rect class="head" x="${L}" y="${T}" width="${R - L}" height="${H - T}"/>`;
-  s += `<rect class="ln" x="${L}" y="${T}" width="${R - L}" height="${335 - T}"/>`;
-  s += `<line class="ln" x1="${M}" y1="${T}" x2="${M}" y2="335"/><line class="ln" x1="${L}" y1="${H}" x2="${R}" y2="${H}"/>`;
-  s += `<line class="thin" x1="${L}" y1="175" x2="${R}" y2="175"/><line class="thin" x1="${L}" y1="255" x2="${R}" y2="255"/>`;
-  s += text(245, 36, 'Anzahl der', 'thb') + text(245, 70, 'Kugeln', 'thb') + text(395, 52, 'Preis in €', 'thg');
-  [['1', '1,20'], ['2', '2,40'], ['3', '3,60']].forEach(([a, b], i) => { s += text(245, Y[i], a, 'tnb') + text(395, Y[i], b, 'tng'); });
-  s += bogenL(155, -110, Y[0], Y[2], 3) + bogenL(155, -50, Y[0], Y[1], 2);
-  s += bogenL(485, 110, Y[0], Y[2], 3) + bogenL(485, 50, Y[0], Y[1], 2);
-  // Merksätze, abgesetzt unter der Tabelle
-  s += `<rect class="merkbox" x="15" y="352" width="590" height="160" rx="14"/>`;
-  ['1. Zeichne eine Tabelle und beschrifte sie.', '    Trage die drei Werte ein, die du kennst.', '2. Mit welcher Rechnung kommst du vom', '    oberen zum unteren Wert?', '    Rechne auf der anderen Seite genauso.']
-    .forEach((l, i) => { s += `<text class="tm" x="35" y="${380 + i * 28}" dominant-baseline="central" xml:space="preserve">${l}</text>`; });
+  let s = tabelle(G4, ALLES);
+  // Merksätze, abgesetzt unter der Tabelle, mit hängendem Einzug
+  s += `<rect class="merkbox" x="20" y="300" width="520" height="208" rx="14"/>`;
+  const zl = (y, t, nr) => (nr ? tt(42, y, nr, 'tm', 22, 'start') : '') + tt(72, y, t, 'tm', 22, 'start');
+  s += zl(335, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(367, 'Trage die drei Werte ein, die du kennst.');
+  s += zl(413, 'Mit welcher Rechnung kommst du vom', '2.') + zl(445, 'oberen zum unteren Wert?') + zl(477, 'Rechne auf der anderen Seite genauso.');
   // Platzhalter für die Aufgaben aus dem Buch
-  s += `<rect class="platz" x="640" y="10" width="445" height="502" rx="14"/>` + text(862, 260, 'Aufgaben aus dem Buch', 'ts');
+  s += `<rect class="platz" x="600" y="10" width="480" height="498" rx="14"/>` + text(840, 260, 'Aufgaben aus dem Buch', 'ts');
   return s;
 }
 
 const STEPS = [
-  { t: 'Max und Finn wollen Eis kaufen', rv: 1, parts: ['preis'], hit: preisHit, fig: () => eisFig({ preis: vis('preis') }),
+  { t: 'Max und Finn wollen Eis kaufen', rv: 1, vb: [W12, H12], parts: ['preis'], hit: preisHit, fig: () => eisFig({ preis: vis('preis') }),
     txt: () => `Max kauft ${KB('1 Kugel')} Eis für ${KG('1,20 €')}. Finn möchte ${KB('2 Kugeln')}. Wie viel bezahlt Finn?`,
     eq: () => vis('preis') ? `<div class="m2">${KG('1,20 €')} ${op(2)} = ${KG('2,40 €')}</div>` : '' },
-  { t: 'Überlege zuerst', rv: 1, parts: ['zuo', 'k', 'p'], hit: propHit, fig: () => eisFig({ frage: 1, preis: 1 }),
+  { t: 'Überlege zuerst', rv: 1, vb: [W12, H12], parts: ['zuo', 'k', 'p', 'prop'], hit: propHit, eqHit: 'prop', fig: () => eisFig({ frage: 1, preis: 1 }),
     eq: propEq },
   { t: 'Werte mit dem Zweisatz berechnen', rv: 1, vb: [W3, H3],
     parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r', 'z3l', 'b3l', 'b3r', 'z3r', 'antwort'], hit: lucaHit, fig: lucaFig,
@@ -326,6 +341,11 @@ function svgPt(e) {
 fig.addEventListener('pointerdown', e => {
   const st = STEPS[step], k = st.hit && st.hit(svgPt(e));
   if (k) { flip(k); render(); }
+});
+// Manche Antworten stehen unten in der Rechnungszeile, dort tippt man direkt auf die Frage.
+$('eq').addEventListener('pointerdown', () => {
+  const st = STEPS[step];
+  if (st.eqHit) { flip(st.eqHit); render(); }
 });
 if (STEPS[0].enter) STEPS[0].enter();
 render();
