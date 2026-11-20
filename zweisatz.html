@@ -24,7 +24,7 @@ h1{margin:0;font-size:clamp(26px,4.2vw,52px);line-height:1.15;min-height:1.2em}
 #eq .dim{opacity:.4;font-size:.8em}
 #eq .m{font-weight:600;font-size:.72em;text-align:left;max-width:30em;margin:0 auto}
 #eq .m2{font-size:.8em}
-#eq .merk{display:inline-block;text-align:left;font-weight:600;font-size:.6em;line-height:1.45;max-width:40em;border:3px solid var(--c3);border-radius:14px;padding:.7em 1.2em;background:rgba(18,161,80,.08)}
+#eq .merk{display:inline-block;text-align:left;font-weight:600;font-size:.8em;line-height:1.35;max-width:40em;border:3px solid var(--c3);border-radius:14px;padding:.7em 1.2em;background:rgba(18,161,80,.08)}
 #eq .merk>div{display:grid;grid-template-columns:1.6em 1fr}
 #eq .merk>div+div{margin-top:.6em}
 .k.c1{color:var(--c1)}.k.c2{color:var(--c2)}.k.c3{color:var(--c3)}.k.cr{color:var(--cr)}
@@ -247,17 +247,17 @@ function lucaEq() {
 }
 
 // ---------- Folie 4: fertige Tabelle mit Merksätzen, rechts Platz für die Übungsaufgaben ----------
-const W4 = 1310, H4 = 470;
+const W4 = 1480, H4 = 470;
 const G4 = { L: 203, cw: 160, T: 30, hh: 85, rh: 85, fk: 28, fw: 44, fb: 32, ain: 34, aout: 115 };
-// Links die Tabelle groß, rechts oben die Merksätze, rechts unten die Aufgaben
+// Links die Tabelle groß, rechts oben die Merksätze (mindestens so groß wie die Tabellenüberschrift), rechts unten die Aufgaben
 function uebenFig() {
   let s = tabelle(G4, ALLES);
-  s += `<rect class="merkbox" x="750" y="30" width="540" height="222" rx="14"/>`;
-  const zl = (y, t, nr) => (nr ? tt(774, y, nr, 'tm', 23, 'start') : '') + tt(804, y, t, 'tm', 23, 'start');
-  s += zl(70, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(104, 'Trage die drei Werte ein, die du kennst.');
-  s += zl(152, 'Mit welcher Rechnung kommst du vom', '2.') + zl(186, 'oberen zum unteren Wert?') + zl(220, 'Rechne auf der anderen Seite genauso.');
+  s += `<rect class="merkbox" x="760" y="30" width="700" height="262" rx="14"/>`;
+  const zl = (y, t, nr) => (nr ? tt(786, y, nr, 'tm', 28, 'start') : '') + tt(822, y, t, 'tm', 28, 'start');
+  s += zl(74, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(114, 'Trage die drei Werte ein, die du kennst.');
+  s += zl(170, 'Mit welcher Rechnung kommst du vom', '2.') + zl(210, 'oberen zum unteren Wert?') + zl(250, 'Rechne auf der anderen Seite genauso.');
   // Platzhalter für die Aufgaben aus dem Buch
-  s += `<rect class="platz" x="750" y="275" width="540" height="180" rx="14"/>` + text(1020, 365, 'Aufgaben aus dem Buch', 'ts');
+  s += `<rect class="platz" x="760" y="315" width="700" height="140" rx="14"/>` + text(1110, 385, 'Aufgaben aus dem Buch', 'ts');
   return s;
 }
 
