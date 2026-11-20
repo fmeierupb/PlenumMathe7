@@ -65,6 +65,8 @@ svg .tq2{fill:var(--mut);font:700 30px system-ui,sans-serif}
 svg .tq3{fill:var(--mut);font:600 28px system-ui,sans-serif}
 svg .tm{fill:var(--fg);font:600 22px system-ui,sans-serif;white-space:pre}
 svg .labbg{fill:var(--bg)}
+svg .pf{stroke:var(--fg);stroke-width:3}
+svg .pfh{fill:var(--fg)}
 svg .tbs{fill:var(--cr);font:700 26px system-ui,sans-serif}
 svg .tgs{fill:var(--c1);font:700 26px system-ui,sans-serif}
 svg .merkbox{fill:rgba(18,161,80,.08);stroke:var(--c3);stroke-width:3}
@@ -113,7 +115,8 @@ const pfeil = (y, k) => `<line class="bo" x1="335" y1="${y}" x2="455" y2="${y}"/
 // ---------- Folie 1 und 2: Max und Finn ----------
 // o.frage: oben die Frage nach den Größen, o.preis: Finns Preis zeigen
 function eisFig(o = {}) {
-  let s = !o.frage ? '' : vis('zuo') ? ftext(400, 30, [['Anzahl der Kugeln', 'fr'], [' → '], ['Preis', 'fb']])
+  // Der Pfeil ist gezeichnet statt als Schriftzeichen, damit er genau auf Höhe der Wörter sitzt.
+  let s = !o.frage ? '' : vis('zuo') ? text(440, 30, 'Anzahl der Kugeln', 'tb', 'end') + `<line class="pf" x1="452" y1="30" x2="482" y2="30"/><polygon class="pfh" points="494,30 480,22 480,38"/>` + text(506, 30, 'Preis', 'tg', 'start')
     : text(400, 30, 'Welche Größen sind einander zugeordnet?', 'tq3');
   s += `<image href="${IMG1}" x="173" y="99" width="114" height="251"/>`;
   s += `<image href="${IMG2}" x="514" y="60" width="112" height="290"/>`;
