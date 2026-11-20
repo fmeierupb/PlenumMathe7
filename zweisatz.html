@@ -102,33 +102,35 @@ const ftext = (x, y, parts, c = 'tx') => `<text class="${c}" x="${x}" y="${y}" t
 // Pfeil nach rechts mit Rechenzeichen darüber
 const pfeil = (y, k) => `<line class="bo" x1="335" y1="${y}" x2="455" y2="${y}"/><polygon class="ah" points="472,${y} 452,${y - 11} 452,${y + 11}"/>` + text(400, y - 24, '· ' + k, 'to2');
 
-// ---------- Folie 1: Max und Finn ----------
-function eisFig() {
-  let s = vis('zuo') ? ftext(400, 30, [['Anzahl der Kugeln', 'fr'], [' → '], ['Preis', 'fb']])
+// ---------- Folie 1 und 2: Max und Finn ----------
+// o.frage: oben die Frage nach den Größen, o.preis: Finns Preis zeigen
+function eisFig(o = {}) {
+  let s = !o.frage ? '' : vis('zuo') ? ftext(400, 30, [['Anzahl der Kugeln', 'fr'], [' → '], ['Preis', 'fb']])
     : text(400, 30, 'Welche Größen sind einander zugeordnet?', 'tq3');
   s += `<image href="${IMG1}" x="173" y="99" width="114" height="251"/>`;
   s += `<image href="${IMG2}" x="514" y="60" width="112" height="290"/>`;
   s += text(230, 372, 'Max', 'ts') + text(570, 372, 'Finn', 'ts');
   s += text(230, 415, '1 Kugel', 'tb') + text(570, 415, '2 Kugeln', 'tb');
-  s += text(230, 470, '1,20 €', 'tg') + (vis('preis') ? text(570, 470, '2,40 €', 'tg') : text(570, 470, '?', 'tq2'));
-  if (vis('k')) s += pfeil(415, 2);
-  if (vis('p')) s += pfeil(470, 2);
+  s += text(230, 470, '1,20 €', 'tg') + (o.preis ? text(570, 470, '2,40 €', 'tg') : text(570, 470, '?', 'tq2'));
+  if (o.frage && vis('k')) s += pfeil(415, 2);
+  if (o.frage && vis('p')) s += pfeil(470, 2);
   return s;
 }
-function eisHit(p) {
+// Folie 1: Nur Finns Preis wird aufgedeckt.
+const preisHit = p => p.x >= 480 && p.x < 680 && p.y > 442 && p.y < 510 ? 'preis' : null;
+// Folie 2: Frage oben, Pfeil bei den Kugeln, Pfeil bei den Preisen.
+function propHit(p) {
   if (p.y < 70) return 'zuo';
   if (p.x > 300 && p.x < 500 && p.y > 380 && p.y < 442) return 'k';
   if (p.x > 300 && p.x < 500 && p.y >= 442 && p.y < 510) return 'p';
-  if (p.x >= 500 && p.x < 680 && p.y > 442 && p.y < 510) return 'preis';
   return null;
 }
-function eisEq() {
+function propEq() {
   const k = vis('k'), q = vis('p'), z = [];
   if (k && q) z.push(`Doppelt so viele ${KB('Kugeln')}, doppelt so viel ${KG('Geld')}.`, 'Die Zuordnung ist proportional.');
   else if (k) z.push(`Doppelt so viele ${KB('Kugeln')} …`);
   else if (q) z.push(`… doppelt so viel ${KG('Geld')}.`);
   else z.push('<span class="dim">Ist die Zuordnung proportional?</span>');
-  if (vis('preis')) z.push(`${KG('1,20 €')} ${op(2)} = ${KG('2,40 €')}`);
   return z.map(l => `<div class="m2">${l}</div>`).join('');
 }
 
@@ -177,9 +179,11 @@ function merkEq() {
 }
 
 const STEPS = [
-  { t: 'Max und Finn wollen Eis kaufen', rv: 1, parts: ['zuo', 'k', 'p', 'preis'], hit: eisHit, fig: eisFig,
+  { t: 'Max und Finn wollen Eis kaufen', rv: 1, parts: ['preis'], hit: preisHit, fig: () => eisFig({ preis: vis('preis') }),
     txt: () => `Max kauft ${KB('1 Kugel')} Eis für ${KG('1,20 €')}. Finn möchte ${KB('2 Kugeln')}. Wie viel bezahlt Finn?`,
-    eq: eisEq },
+    eq: () => vis('preis') ? `<div class="m2">${KG('1,20 €')} ${op(2)} = ${KG('2,40 €')}</div>` : '' },
+  { t: 'Überlege zuerst', rv: 1, parts: ['zuo', 'k', 'p'], hit: propHit, fig: () => eisFig({ frage: 1, preis: 1 }),
+    eq: propEq },
   { t: 'Werte mit dem Zweisatz berechnen', rv: 1, parts: ['kopf', 'werte', 'links', 'rechts', 'erg', 'antwort'], hit: merkHit, fig: merkFig,
     txt: () => `Für ${KB('1 Kugel')} zahlt Max ${KG('1,20 €')}. Wie viel zahlt Finn für ${KB('2 Kugeln')}?`,
     eq: merkEq }
