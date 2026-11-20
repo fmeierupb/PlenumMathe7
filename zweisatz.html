@@ -167,14 +167,17 @@ const bogen = (x0, dx, ya, yb) => {
   return `<path class="bo" d="M${x0},${ya + 6} C${x0 + dx},${ya + 14} ${x0 + dx},${yb - 6} ${x0 - sg * 6},${yb}"/>` +
     `<polygon class="ah" points="${x0 + sg * 8},${yb} ${x0 - sg * 14},${yb - 12} ${x0 - sg * 14},${yb + 12}"/>`;
 };
-// Bogen mit Rechenzeichen neben seinem äußersten Punkt, so dass es keine Linie berührt
-const bogenL = (x0, dx, ya, yb, k, fs) => {
-  const x = x0 + 0.75 * dx + (dx < 0 ? -8 : 8), y = (ya + yb) / 2;
-  return bogen(x0, dx, ya, yb) + tt(x, y, '· ' + k, 'op', fs, dx < 0 ? 'end' : 'start');
+// Bogen als halbe Ellipse von Zeile zu Zeile, Pfeilspitze zur Tabelle hin.
+// Das Rechenzeichen steht außen neben dem Scheitel und berührt keine Linie.
+const ebogen = (x0, a, ya, yb, k, fs, side) => {
+  const b = (yb - ya) / 2, sw = side < 0 ? 0 : 1, y = (ya + yb) / 2;
+  return `<path class="bo" d="M${x0},${ya} A${a} ${b} 0 0 ${sw} ${x0},${yb}"/>` +
+    `<polygon class="ah" points="${x0 - side * 8},${yb} ${x0 + side * 14},${yb - 12} ${x0 + side * 14},${yb + 12}"/>` +
+    tt(x0 + side * (a + 8), y, '· ' + k, 'op', fs, side < 0 ? 'end' : 'start');
 };
 const KOPF = [['Anzahl der', 'Kugeln'], ['Preis', 'in €']];
 const PAARE = [['1', '1,20'], ['2', '2,40'], ['3', '3,60']];
-// g: Maße (L linker Rand, cw Spaltenbreite, T oben, hh Kopfhöhe, rh Zeilenhöhe, fk/fw/fb Schrift Kopf/Werte/Bögen, din/dout Ausbuchtung innerer/äußerer Bogen)
+// g: Maße (L linker Rand, cw Spaltenbreite, T oben, hh Kopfhöhe, rh Zeilenhöhe, fk/fw/fb Schrift Kopf/Werte/Bögen, ain/aout Ausbuchtung innerer/äußerer Bogen)
 // v(k): welcher Teil sichtbar ist
 function tabelle(g, v) {
   const M = g.L + g.cw, R = g.L + 2 * g.cw, H = g.T + g.hh, B = H + 3 * g.rh;
@@ -194,22 +197,23 @@ function tabelle(g, v) {
   s += zeile(0, 'z1') + zeile(1, 'z2l', 'z2r') + zeile(2, 'z3l', 'z3r');
   // Bögen: innen von 1 nach 2, außen von 1 nach 3
   const xl = g.L - 15, xr = R + 15;
-  if (v('b3l')) s += bogenL(xl, -g.dout, ry(0), ry(2), 3, g.fb);
-  if (v('b2l')) s += bogenL(xl, -g.din, ry(0), ry(1), 2, g.fb);
-  if (v('b3r')) s += bogenL(xr, g.dout, ry(0), ry(2), 3, g.fb);
-  if (v('b2r')) s += bogenL(xr, g.din, ry(0), ry(1), 2, g.fb);
+  if (v('b3l')) s += ebogen(xl, g.aout, ry(0) - 4, ry(2), 3, g.fb, -1);
+  if (v('b2l')) s += ebogen(xl, g.ain, ry(0) + 4, ry(1), 2, g.fb, -1);
+  if (v('b3r')) s += ebogen(xr, g.aout, ry(0) - 4, ry(2), 3, g.fb, 1);
+  if (v('b2r')) s += ebogen(xr, g.ain, ry(0) + 4, ry(1), 2, g.fb, 1);
   return s;
 }
 const ALLES = () => true;
 
 // ---------- Folie 3: links drei Eis, rechts die Tabelle (Breitbild) ----------
-const W3 = 1190, H3 = 360;
-const G3 = { L: 645, cw: 150, T: 20, hh: 80, rh: 80, fk: 26, fw: 40, fb: 32, din: 40, dout: 190 };
+const W3 = 1112, H3 = 380;
+const G3 = { L: 606, cw: 150, T: 20, hh: 80, rh: 80, fk: 26, fw: 40, fb: 30, ain: 32, aout: 108 };
 function lucaFig() {
-  // drei Eis ohne Beschriftung, Unterkante auf Höhe der Tabellenunterkante
+  // drei Eis mit Namen, Unterkante auf Höhe der Tabellenunterkante
   let s = `<image href="${IMG1}" x="30" y="117" width="101" height="223"/>`;
   s += `<image href="${IMG2}" x="160" y="82" width="100" height="258"/>`;
   s += `<image href="${IMG3}" x="290" y="40" width="100" height="300"/>`;
+  s += text(80, 365, 'Max', 'ts') + text(210, 365, 'Finn', 'ts') + text(340, 365, 'Luca', 'ts');
   return s + tabelle(G3, vis);
 }
 function lucaHit(p) {
@@ -220,7 +224,7 @@ function lucaHit(p) {
     if (p.y < H + 2 * G3.rh) return p.x < M ? 'z2l' : 'z2r';
     return p.x < M ? 'z3l' : 'z3r';
   }
-  if (p.x > 420 && p.x < L && p.y > H) return p.y < 200 ? 'b2l' : 'b3l';
+  if (p.x > 410 && p.x < L && p.y > H) return p.y < 200 ? 'b2l' : 'b3l';
   if (p.x > R && p.y > H) return p.y < 200 ? 'b2r' : 'b3r';
   return null;
 }
@@ -239,7 +243,7 @@ function lucaEq() {
 
 // ---------- Folie 4: fertige Tabelle mit Merksätzen, rechts Platz für die Übungsaufgaben ----------
 const W4 = 1150, H4 = 520;
-const G4 = { L: 190, cw: 130, T: 10, hh: 70, rh: 65, fk: 22, fw: 34, fb: 26, din: 30, dout: 150 };
+const G4 = { L: 190, cw: 130, T: 10, hh: 70, rh: 65, fk: 22, fw: 34, fb: 26, ain: 28, aout: 94 };
 function uebenFig() {
   let s = tabelle(G4, ALLES);
   // Merksätze, abgesetzt unter der Tabelle, mit hängendem Einzug
