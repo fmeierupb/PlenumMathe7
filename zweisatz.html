@@ -210,16 +210,16 @@ const ALLES = () => true;
 // ---------- Folie 3: links drei Eis, rechts die Tabelle (Breitbild) ----------
 const W3 = 1320, H3 = 445;
 const G3 = { L: 606, cw: 150, T: 20, hh: 80, rh: 80, fk: 26, fw: 40, fb: 30, ain: 32, aout: 108 };
-function lucaFig() {
+function lenaFig() {
   // drei Eis mit Namen, Unterkante auf Höhe der Tabellenunterkante
   // Eis mittig in der linken Bildhälfte, Tabelle samt Bögen mittig in der rechten
   let s = `<g data-fx="0.25"><image href="${IMG1}" x="30" y="117" width="101" height="223"/>`;
   s += `<image href="${IMG2}" x="160" y="82" width="100" height="258"/>`;
   s += `<image href="${IMG3}" x="290" y="40" width="100" height="300"/>`;
-  s += text(80, 365, 'Max', 'ts') + text(210, 365, 'Finn', 'ts') + text(340, 365, 'Luca', 'ts') + '</g>';
+  s += text(80, 365, 'Max', 'ts') + text(210, 365, 'Finn', 'ts') + text(340, 365, 'Lena', 'ts') + '</g>';
   return s + `<g data-fx="0.75" data-m="${G3.L + G3.cw}" data-k="tab">${tabelle(G3, vis)}</g>`;
 }
-function lucaHit(p) {
+function lenaHit(p) {
   p = { x: p.x - (FX.tab || 0), y: p.y };
   const L = G3.L, M = L + G3.cw, R = M + G3.cw, H = G3.T + G3.hh;
   if (p.x >= L && p.x <= R) {
@@ -240,7 +240,7 @@ const MERK1b = 'Trage die drei Werte ein, die du kennst.';
 const MERK2a = 'Mit welcher Rechnung kommst du vom oberen zum unteren Wert?';
 const MERK2b = 'Rechne auf der anderen Seite genauso.';
 // Merksätze in einem abgesetzten Kasten unter dem Bild
-function lucaEq() {
+function lenaEq() {
   const z = [];
   const werte = ['z1', 'z2l', 'z3l', 'z4l'].some(vis);
   if (vis('kopf') || werte) z.push(`<div><b>1.</b><span>${MERK1a}${werte ? '<br>' + MERK1b : ''}</span></div>`);
@@ -270,8 +270,8 @@ const STEPS = [
   { t: 'Überlege zuerst', rv: 1, vb: [W12, H12], parts: ['zuo', 'k', 'p', 'prop'], hit: propHit, eqHit: 'prop', fig: () => eisFig({ frage: 1, preis: 1 }),
     eq: propEq },
   { t: 'Werte mit dem Zweisatz berechnen', rv: 1, vb: [W3, H3],
-    parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r', 'z3l', 'b3l', 'b3r', 'z3r', 'z4l', 'b4l', 'b4r', 'z4r'], hit: lucaHit, fig: lucaFig,
-    eq: lucaEq },
+    parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r', 'z3l', 'b3l', 'b3r', 'z3r', 'z4l', 'b4l', 'b4r', 'z4r'], hit: lenaHit, fig: lenaFig,
+    eq: lenaEq },
   { t: 'Zweisatz', vb: [W4, H4], fig: uebenFig }
 ];
 
