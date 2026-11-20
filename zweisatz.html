@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mathe 7">
+<meta name="theme-color" content="#0f766e">
+<title>Zweisatz</title>
+<style>
+:root{--bg:#fbfaf6;--fg:#161a22;--mut:#9aa0ad;--line:#d9d7cf;--c1:#2563eb;--c2:#f08a00;--c3:#12a150;--btn:#fff;--head:#eef3ee}
+@media (prefers-color-scheme:dark){:root{--bg:#12151b;--fg:#f0f2f6;--mut:#7d8596;--line:#343b48;--c1:#5b9bff;--c2:#ffad33;--c3:#3ddc84;--btn:#1f242d;--head:#1c2a22}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{display:flex;flex-direction:column;height:100dvh;padding:12px 16px calc(12px + env(safe-area-inset-bottom));user-select:none;-webkit-user-select:none}
+h1{margin:0;font-size:clamp(26px,4.2vw,52px);line-height:1.15;min-height:1.2em}
+#fig{flex:1;min-height:0;width:100%;touch-action:none}
+#txt{font-size:clamp(18px,2.6vw,32px);min-height:1.4em;text-align:center}
+#eq{font-size:clamp(22px,3.6vw,44px);font-weight:700;min-height:1.4em;text-align:center;font-variant-numeric:tabular-nums;line-height:1.35}
+#eq .dim{opacity:.4;font-size:.8em}
+#eq .m{font-weight:600;font-size:.72em;text-align:left;max-width:30em;margin:0 auto}
+#eq .k.c2{color:var(--c2)}#eq .k.c3{color:var(--c3)}
+footer{display:flex;gap:10px;align-items:center;margin-top:10px}
+#extras{display:flex;gap:10px;margin:0 auto}
+button{font:inherit;font-size:clamp(16px,2vw,24px);color:inherit;background:var(--btn);border:1px solid var(--line);border-radius:12px;padding:12px 18px;cursor:pointer;touch-action:manipulation}
+button:disabled{opacity:.3}
+#menu{font:inherit;font-size:clamp(16px,2vw,24px);color:inherit;background:var(--btn);border:1px solid var(--line);border-radius:12px;padding:12px 18px;text-decoration:none}
+#fs svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
+#fs .fo,html.fs #fs .fi{display:none}
+html.fs #fs .fo{display:inline}
+#cnt{color:var(--mut);font-size:clamp(14px,1.6vw,20px);min-width:3.5em;text-align:center}
+#next{background:var(--c1);border-color:var(--c1);color:#fff;font-weight:700}
+footer{flex-wrap:wrap;row-gap:8px}
+#extras{flex-wrap:wrap;justify-content:center}
+#extras:empty{display:none}
+/* Handy hochkant: Zusatzknöpfe in eine eigene Zeile, Zurück nur als Pfeil. Was trotzdem nicht passt, bricht um, statt aus dem Bild zu rutschen. */
+@media (max-width:700px){#extras{order:9;flex-basis:100%;margin:0}#next{margin-left:auto}footer{gap:8px}button,#menu{padding:10px 12px}#cnt{min-width:0}}
+@media (max-width:420px){#prev .lbl{display:none}}
+svg .ln{stroke:var(--fg);stroke-width:4;fill:none}
+svg .thin{stroke:var(--fg);stroke-width:2.5;fill:none}
+svg .head{fill:var(--head)}
+svg .tx{fill:var(--fg);font:700 30px system-ui,sans-serif}
+svg .ts{fill:var(--mut);font:600 24px system-ui,sans-serif}
+svg .th{fill:var(--fg);font:600 26px system-ui,sans-serif}
+svg .tn{fill:var(--fg);font:600 54px system-ui,sans-serif}
+svg .tq{fill:var(--mut);font:600 54px system-ui,sans-serif}
+svg .tr{fill:var(--c3);font:700 54px system-ui,sans-serif}
+svg .bo{stroke:var(--c2);stroke-width:5;fill:none;stroke-linecap:round}
+svg .ah{fill:var(--c2)}
+svg .to{fill:var(--c2);font:700 42px system-ui,sans-serif}
+svg .cone{fill:#c98a3e;opacity:.55}
+svg .c1{fill:var(--c1);opacity:.62}
+svg .c2{fill:var(--c2);opacity:.62}
+svg .c3{fill:var(--c3);opacity:.62}
+svg .cr{fill:#d81e1e;opacity:.62}
+</style>
+</head>
+<body>
+<h1 id="title"></h1>
+<svg id="fig" viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg"></svg>
+<div id="txt"></div>
+<div id="eq"></div>
+<footer>
+  <a id="menu" href="./">Menü</a><button id="fs" aria-label="Vollbild" title="Vollbild (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="fi" d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/><path class="fo" d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg></button><button id="prev" aria-label="Zurück">‹<span class="lbl"> Zurück</span></button><span id="cnt"></span>
+  <div id="extras"></div>
+  <button id="next">Weiter ›</button>
+</footer>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[rnd(0, a.length - 1)];
+const text = (x, y, s, c = 'tx', a = 'middle') => `<text class="${c}" x="${x}" y="${y}" text-anchor="${a}" dominant-baseline="central">${s}</text>`;
+// Rechenzeichen in der Farbe der Bögen
+const op = k => `<span class="k c2">· ${k}</span>`;
+const lines = (arr, n = arr.length) => arr.slice(0, n).map((l, i) => `<div class="${i < n - 1 ? 'dim' : ''}">${l}</div>`).join('');
+// Geldbeträge in Cent rechnen, damit nichts krumm wird.
+const eur = c => c % 100 === 0 ? String(c / 100) : (c / 100).toFixed(2).replace('.', ',');
+
+// ---------- Eis ----------
+function cones(showPrice) {
+  const cone = (x, n, cls) => {
+    let s = `<polygon class="cone" points="${x - 52},330 ${x + 52},330 ${x},470"/>`;
+    for (let i = 0; i < n; i++) s += `<circle class="${cls[i]}" cx="${x}" cy="${302 - i * 50}" r="44"/>`;
+    return s;
+  };
+  let s = cone(250, 2, ['c2', 'cr']) + cone(550, 4, ['c2', 'c3', 'c1', 'cr']);
+  s += text(250, 500, '2 Kugeln', 'ts') + text(550, 500, '4 Kugeln', 'ts');
+  s += text(250, 185, '2,40 €') + text(550, 85, showPrice ? '4,80 €' : '?', showPrice ? 'tx' : 'ts');
+  return s;
+}
+
+// ---------- Tabelle mit Bögen ----------
+// o.l: Bogen links, o.r: Bogen rechts, o.e: Ergebnis zeigen
+function tab(d, o = {}) {
+  const L = 200, Mx = 400, R = 600, T = 60, H1 = 170, H2 = 290, B = 410;
+  let s = `<rect class="head" x="${L}" y="${T}" width="${R - L}" height="${H1 - T}"/>`;
+  s += `<rect class="ln" x="${L}" y="${T}" width="${R - L}" height="${B - T}"/>`;
+  s += `<line class="ln" x1="${Mx}" y1="${T}" x2="${Mx}" y2="${B}"/><line class="ln" x1="${L}" y1="${H1}" x2="${R}" y2="${H1}"/><line class="thin" x1="${L}" y1="${H2}" x2="${R}" y2="${H2}"/>`;
+  const head = (x, ls) => ls.map((l, i) => text(x, (T + H1) / 2 + (i - (ls.length - 1) / 2) * 34, l, 'th')).join('');
+  s += head(300, d.kL) + head(500, d.kR);
+  s += text(300, 230, d.a, 'tn') + text(500, 230, d.b, 'tn') + text(300, 350, d.c, 'tn');
+  s += text(500, 350, o.e ? d.d : '?', o.e ? 'tr' : 'tq');
+  const arc = (x0, dx) => {
+    const x1 = x0 + dx;
+    const sg = dx < 0 ? 1 : -1;
+    return `<path class="bo" d="M${x0},224 C${x1},232 ${x1},344 ${x0 - sg * 6},350"/>` +
+      `<polygon class="ah" points="${x0 + sg * 8},350 ${x0 - sg * 14},338 ${x0 - sg * 14},362"/>`;
+  };
+  if (o.l) s += arc(185, -70) + text(108, 290, '· ' + d.k, 'to', 'end');
+  if (o.r) s += arc(615, 70) + text(692, 290, '· ' + d.k, 'to', 'start');
+  return s;
+}
+
+const EIS = { kL: ['Anzahl der', 'Kugeln'], kR: ['Preis in €'], a: '2', b: '2,40', c: '4', d: '4,80', k: 2 };
+const BR = { kL: ['Anzahl der', 'Brötchen'], kR: ['Preis in €'], a: '5', b: '2', c: '15', d: '6', k: 3 };
+
+// ---------- Aufgaben ----------
+// p: Preis für ein Stück in Cent, bei der Wanderung km pro Stunde
+const KONTEXT = [
+  { kL: ['Anzahl der', 'Hefte'], kR: ['Preis in €'], p: [100, 150, 200], q: (a, b, c) => `${a} Hefte kosten ${b} €. Was kosten ${c} Hefte?`, ans: (c, d) => `${c} Hefte kosten ${d} €.`, geld: 1 },
+  { kL: ['Anzahl der', 'Kugeln'], kR: ['Preis in €'], p: [100, 120, 150], q: (a, b, c) => `${a} Kugeln Eis kosten ${b} €. Was kosten ${c} Kugeln?`, ans: (c, d) => `${c} Kugeln Eis kosten ${d} €.`, geld: 1 },
+  { kL: ['Anzahl der', 'Brötchen'], kR: ['Preis in €'], p: [40, 50], q: (a, b, c) => `${a} Brötchen kosten ${b} €. Was kosten ${c} Brötchen?`, ans: (c, d) => `${c} Brötchen kosten ${d} €.`, geld: 1 },
+  { kL: ['Gewicht', 'in kg'], kR: ['Preis in €'], p: [200, 300], q: (a, b, c) => `${a} kg Äpfel kosten ${b} €. Was kosten ${c} kg Äpfel?`, ans: (c, d) => `${c} kg Äpfel kosten ${d} €.`, geld: 1 },
+  { kL: ['Zeit', 'in h'], kR: ['Strecke', 'in km'], p: [4, 5], q: (a, b, c) => `Lea wandert in ${a} Stunden ${b} km. Wie weit kommt sie in ${c} Stunden?`, ans: (c, d) => `In ${c} Stunden wandert Lea ${d} km.`, geld: 0 }
+];
+let auf = null;
+function neueAufgabe() {
+  const alt = auf;
+  for (let n = 0; n < 50; n++) {
+    const K = pick(KONTEXT), a = rnd(2, 5), k = rnd(2, 5), p = pick(K.p);
+    if (alt && alt.K === K && alt.a === a && alt.k === k) continue;
+    const f = K.geld ? eur : String;
+    auf = { K, a, k, s: 0, d1: { kL: K.kL, kR: K.kR, a: String(a), b: f(a * p), c: String(a * k), d: f(a * p * k), k } };
+    return;
+  }
+}
+const aufFrage = () => { const d = auf.d1; return auf.K.q(d.a, d.b, d.c); };
+function aufEq() {
+  const d = auf.d1, u = auf.K.geld ? ' €' : ' km';
+  return lines([`${d.a} ${op(d.k)} = ${d.c}`, `${d.b}${u} ${op(d.k)} = ${d.d}${u}`, auf.K.ans(d.c, d.d)], auf.s);
+}
+
+const STEPS = [
+  { t: 'Was kosten 4 Kugeln Eis?', fig: () => cones(false), txt: '2 Kugeln Eis kosten 2,40 €.' },
+  { t: 'Überlege zuerst', rv: 1, fig: () => cones(false),
+    txt: () => shown ? 'Doppelt so viele Kugeln, doppelt so viel Geld.' : 'Ist die Zuordnung proportional?',
+    eq: () => shown ? 'Die Zuordnung ist proportional.' : '' },
+  { t: 'Schritt 1: Tabelle', fig: () => tab(EIS), txt: 'Zeichne eine Tabelle und beschrifte sie. Trage die drei Werte ein, die du kennst.' },
+  { t: 'Schritt 2: Von oben nach unten', rv: 3,
+    fig: () => tab(EIS, { l: shown && sub >= 1, r: shown && sub >= 2, e: shown && sub >= 2 }),
+    txt: () => shown && sub >= 2 ? 'Rechne auf der anderen Seite genauso.' : 'Mit welcher Rechnung kommst du von 2 nach 4?',
+    eq: () => shown ? lines([`2 ${op(2)} = 4`, `2,40 € ${op(2)} = 4,80 €`, '4 Kugeln Eis kosten 4,80 €.'], sub) : '' },
+  { t: 'Merke: Zweisatz', rv: 2, fig: () => tab(EIS, { l: 1, r: 1, e: 1 }),
+    eq: () => ['1. Zeichne eine Tabelle und beschrifte sie. Trage die drei Werte ein, die du kennst.',
+      '2. Mit welcher Rechnung kommst du vom oberen zum unteren Wert? Rechne auf der anderen Seite genauso.']
+      .slice(0, shown ? sub : 0).map(l => `<div class="m">${l}</div>`).join('') },
+  { t: 'Was kosten 15 Brötchen?', rv: 4,
+    fig: () => tab(BR, { l: shown && sub >= 2, r: shown && sub >= 3, e: shown && sub >= 3 }),
+    txt: '5 Brötchen kosten 2 €.',
+    eq: () => shown ? lines(['Dreimal so viele Brötchen, dreimal so viel Geld.', `5 ${op(3)} = 15`, `2 € ${op(3)} = 6 €`, '15 Brötchen kosten 6 €.'], sub) : '' },
+  { t: 'Aufgabe', enter: neueAufgabe,
+    fig: () => tab(auf.d1, { l: auf.s >= 1, r: auf.s >= 2, e: auf.s >= 2 }),
+    txt: () => aufFrage(), eq: aufEq,
+    btns: [{ l: 'Auflösen', f: () => { auf.s = (auf.s + 1) % 4; } }, { l: 'Neue Aufgabe', f: neueAufgabe }],
+    each: m => { const s = auf.s; auf.s = 3; m(); auf.s = s; } }
+];
+
+// ---------- Ablauf ----------
+// sub zählt bei Folien mit rv: n die schon aufgedeckten Schritte (1 bis n).
+let step = 0, shown = false, sub = 0, shownStep = -1;
+const done = (st = STEPS[step]) => shown && sub >= (st.rv || 1);
+const txv = x => (typeof x === 'function' ? x() : x) || '';
+function put(st, o = {}) {
+  $('title').textContent = o.t ?? txv(st.t);
+  $('txt').textContent = o.txt ?? txv(st.txt);
+  $('eq').innerHTML = o.eq ?? (st.eq ? st.eq() : '');
+}
+// Überschrift, Text und Rechnung bekommen gleich beim Betreten der Folie den Platz ihres vollsten Zustands.
+// So bleibt die Zeichnung gleich groß, wenn unten Schritte dazukommen. st.each(m) misst weitere Zustände.
+const BOX = ['title', 'txt', 'eq'];
+function reserve(st) {
+  const keep = [shown, sub], hi = BOX.map(() => 0);
+  BOX.forEach(id => { $(id).style.minHeight = ''; });
+  const m = o => { put(st, o); BOX.forEach((id, i) => { hi[i] = Math.max(hi[i], $(id).offsetHeight); }); };
+  for (let i = 0; i <= (st.rv || 0); i++) { shown = i > 0; sub = i; m(); }
+  [shown, sub] = keep;
+  if (st.each) st.each(o => m(o));
+  m();
+  BOX.forEach((id, i) => { $(id).style.minHeight = hi[i] + 'px'; });
+}
+// Was trotzdem größer wird, behält seinen Platz bis zur nächsten Folie.
+const grow = () => BOX.forEach(id => { const e = $(id), h = e.offsetHeight; if (h > parseFloat(e.style.minHeight || 0)) e.style.minHeight = h + 'px'; });
+function render() {
+  const st = STEPS[step];
+  if (shownStep !== step) reserve(st);
+  $('fig').innerHTML = st.fig();
+  put(st); grow();
+  if (shownStep !== step) {
+    shownStep = step;
+    $('extras').innerHTML = (st.btns || []).map((b, i) => `<button data-b="${i}">${b.l}</button>`).join('');
+    $('cnt').textContent = `${step + 1} / ${STEPS.length}`;
+  }
+  $('prev').disabled = step === 0 && !(shown && sub > 0);
+  $('next').disabled = step === STEPS.length - 1 && !(st.rv && !done(st));
+}
+// end: beim Zurückgehen auf der vorigen Folie mit allen Schritten aufgedeckt landen.
+function go(d, end) {
+  const n = step + d; if (n < 0 || n >= STEPS.length) return;
+  step = n; shown = false; sub = 0;
+  if (STEPS[step].enter) STEPS[step].enter();
+  if (end && STEPS[step].rv) { shown = true; sub = STEPS[step].rv; }
+  render();
+}
+// Zurück nimmt immer nur einen Schritt zurück. Erst am Anfang einer Folie geht es zur vorigen.
+const back = () => { if (STEPS[step].rv && shown && sub > 0) { sub--; shown = sub > 0; render(); } else go(-1, true); };
+$('prev').addEventListener('click', back);
+// Bei Folien mit verdecktem Ergebnis deckt jeder Druck einen Schritt auf, danach geht es weiter.
+const fwd = () => { const st = STEPS[step]; if (st.rv && !done(st)) { shown = true; sub = Math.min(st.rv, sub + 1); render(); } else go(1); };
+addEventListener('resize', () => { shownStep = -1; render(); });
+$('next').addEventListener('click', fwd);
+$('extras').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  STEPS[step].btns[+b.dataset.b].f(); render();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); fwd(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); back(); }
+});
+if (STEPS[0].enter) STEPS[0].enter();
+render();
+// Vollbild: Knopf oder Taste F. Nach einem Seitenwechsel holt der erste Tipp das Vollbild zurück.
+(() => {
+  const d = document, el = d.documentElement, b = d.getElementById('fs');
+  if (!b) return;
+  // Als App vom Home-Bildschirm gibt es keine Browserleisten. Vollbild brächte dort nur das X oben links.
+  const app = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches;
+  if (app || !(d.fullscreenEnabled || d.webkitFullscreenEnabled)) { b.hidden = true; return; }
+  const on = () => !!(d.fullscreenElement || d.webkitFullscreenElement);
+  const want = v => { try { if (v === undefined) return sessionStorage.getItem('fs') === '1'; sessionStorage.setItem('fs', v ? '1' : '0'); } catch (e) { return false; } };
+  const call = (o, f) => { if (!f) return; try { const p = f.call(o); if (p && p.catch) p.catch(() => {}); } catch (e) {} };
+  const enter = () => call(el, el.requestFullscreen || el.webkitRequestFullscreen);
+  const exit = () => call(d, d.exitFullscreen || d.webkitExitFullscreen);
+  const toggle = () => { if (on()) { want(false); exit(); } else { want(true); enter(); } };
+  let leaving = false;
+  const sync = () => {
+    const f = on(); el.classList.toggle('fs', f); if (!f) el.classList.remove('wide');
+    b.setAttribute('aria-pressed', f); b.title = f ? 'Vollbild beenden (F)' : 'Vollbild (F)';
+  };
+  const change = () => { sync(); if (!on() && !leaving) want(false); };   // mit X oder Esc beendet
+  b.addEventListener('click', toggle);
+  d.addEventListener('fullscreenchange', change);
+  d.addEventListener('webkitfullscreenchange', change);
+  d.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (a) { if (!a.hasAttribute('download')) leaving = true; return; }
+    if (!b.contains(e.target) && !on() && want()) enter();
+  }, true);
+  d.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggle(); }
+    else if (e.key !== 'Escape' && !on() && want()) enter();
+  });
+  addEventListener('pagehide', () => { leaving = true; });
+  addEventListener('pageshow', () => { leaving = false; sync(); });
+  sync();
+})();
+// App vom Home-Bildschirm: Sie hat keine Zurück-Taste. Links führen deshalb nur zu eigenen Seiten, und die haben alle einen Weg zum Menü.
+if (navigator.standalone === true || matchMedia('(display-mode: standalone)').matches) document.addEventListener('click', e => {
+  const a = e.target.closest('a[href]'); if (!a) return;
+  const u = new URL(a.href);
+  if (a.hasAttribute('download') || u.origin !== location.origin || !/(\/|\.html)$/.test(u.pathname)) e.preventDefault();
+}, true);
+// Offline: Nach dem ersten Aufruf liegen alle Stunden im Speicher.
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
