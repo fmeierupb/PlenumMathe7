@@ -235,7 +235,7 @@ function lenaHit(p) {
   return null;
 }
 const MERK1a = 'Zeichne eine Tabelle und beschrifte sie.';
-const MERK1b = 'Trage die drei Werte ein, die du kennst.';
+const MERK1b = 'Trage die Werte ein, die du kennst.';
 const MERK2a = 'Mit welcher Rechnung kommst du vom oberen zum unteren Wert?';
 const MERK2b = 'Rechne auf der anderen Seite genauso.';
 // Merksätze in einem abgesetzten Kasten unter dem Bild
@@ -257,7 +257,7 @@ function uebenFig() {
   const y0 = Math.round(G4.T + (G4.hh + 4 * G4.rh) / 2 - 131);
   s += `<rect class="merkbox" x="760" y="${y0}" width="700" height="262" rx="14"/>`;
   const zl = (y, t, nr) => (nr ? tt(786, y0 + y, nr, 'tm', 28, 'start') : '') + tt(822, y0 + y, t, 'tm', 28, 'start');
-  s += zl(44, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(84, 'Trage die drei Werte ein, die du kennst.');
+  s += zl(44, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(84, 'Trage die Werte ein, die du kennst.');
   s += zl(140, 'Mit welcher Rechnung kommst du vom', '2.') + zl(180, 'oberen zum unteren Wert?') + zl(220, 'Rechne auf der anderen Seite genauso.');
   return s;
 }
