@@ -66,6 +66,7 @@ svg .to2{fill:var(--c2);font:700 34px system-ui,sans-serif}
 svg .tq2{fill:var(--mut);font:700 30px system-ui,sans-serif}
 svg .tq3{fill:var(--mut);font:600 28px system-ui,sans-serif}
 svg .tm{fill:var(--fg);font:600 22px system-ui,sans-serif;white-space:pre}
+svg .tmh{fill:var(--fg);font:700 22px system-ui,sans-serif}
 svg .labbg{fill:var(--bg)}
 svg .pf{stroke:var(--fg);stroke-width:3}
 svg .pfh{fill:var(--fg)}
@@ -254,9 +255,10 @@ const G4 = { L: 203, cw: 160, T: 30, hh: 85, rh: 85, fk: 28, fw: 44, fb: 32, ain
 function uebenFig() {
   let s = tabelle(G4, ALLES);
   // Merksätze rechts neben der Tabelle, auf deren Höhe mittig
-  const y0 = Math.round(G4.T + (G4.hh + 4 * G4.rh) / 2 - 131);
-  s += `<rect class="merkbox" x="760" y="${y0}" width="700" height="262" rx="14"/>`;
-  const zl = (y, t, nr) => (nr ? tt(786, y0 + y, nr, 'tm', 28, 'start') : '') + tt(822, y0 + y, t, 'tm', 28, 'start');
+  // Die Überschrift Zweisatz steht oben im Merkkasten, die Folie selbst hat keine.
+  const y0 = Math.round(G4.T + (G4.hh + 4 * G4.rh) / 2 - 157);
+  s += `<rect class="merkbox" x="760" y="${y0}" width="700" height="314" rx="14"/>` + tt(786, y0 + 42, 'Zweisatz', 'tmh', 40, 'start');
+  const zl = (y, t, nr) => (nr ? tt(786, y0 + 52 + y, nr, 'tm', 28, 'start') : '') + tt(822, y0 + 52 + y, t, 'tm', 28, 'start');
   s += zl(44, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(84, 'Trage die Werte ein, die du kennst.');
   s += zl(140, 'Mit welcher Rechnung kommst du vom', '2.') + zl(180, 'oberen zum unteren Wert?') + zl(220, 'Rechne auf der anderen Seite genauso.');
   return s;
@@ -271,7 +273,7 @@ const STEPS = [
   { t: 'Werte mit dem Zweisatz berechnen', rv: 1, vb: [W3, H3],
     parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r', 'z3l', 'b3l', 'b3r', 'z3r', 'z4l', 'b4l', 'b4r', 'z4r'], hit: lenaHit, fig: lenaFig,
     eq: lenaEq },
-  { t: 'Zweisatz', vb: [W4, H4], fig: uebenFig }
+  { t: 'Zweisatz', noT: 1, vb: [W4, H4], fig: uebenFig }
 ];
 
 // ---------- Ablauf ----------
@@ -308,6 +310,7 @@ const grow = () => BOX.forEach(id => { const e = $(id), h = e.offsetHeight; if (
 let FX = {};
 function render() {
   const st = STEPS[step];
+  $('title').style.display = st.noT ? 'none' : '';
   if (shownStep !== step) reserve(st);
   // Erst Text und Rechnung setzen, damit die Größe des Bildes feststeht, bevor es gezeichnet wird.
   put(st); grow();
