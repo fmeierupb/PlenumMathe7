@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mathe 7">
+<meta name="theme-color" content="#0f766e">
+<title>Zweisatz und Dreisatz</title>
+<style>
+:root{--bg:#fbfaf6;--fg:#161a22;--mut:#8b93a5;--line:#d9d7cf;--c1:#2563eb;--c2:#f08a00;--c3:#12a150;--cr:#d81e1e;--btn:#fff;--head:#eef3ee}
+@media (prefers-color-scheme:dark){:root{--bg:#12151b;--fg:#f0f2f6;--mut:#7d8596;--line:#343b48;--c1:#5b9bff;--c2:#ffad33;--c3:#3ddc84;--cr:#ff5c5c;--btn:#1f242d;--head:#1c2a22}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{display:flex;flex-direction:column;height:100dvh;padding:12px 16px calc(12px + env(safe-area-inset-bottom));user-select:none;-webkit-user-select:none}
+h1{margin:0;font-size:clamp(26px,4.2vw,52px);line-height:1.15;min-height:1.2em}
+#fig{flex:1;min-height:0;width:100%;touch-action:none}
+#txt{font-size:clamp(18px,2.4vw,30px);min-height:1.5em;text-align:center}
+#eq{font-size:clamp(20px,3vw,38px);font-weight:700;min-height:1.5em;text-align:center;line-height:1.35}
+#eq .dim{opacity:.42}
+#eq .small{font-size:.72em;font-weight:600}
+#eq .line{margin:.12em 0}
+#eq .merk{display:inline-block;text-align:left;font-weight:600;font-size:.58em;line-height:1.48;max-width:46em;border:3px solid var(--c3);border-radius:14px;padding:.7em 1.2em;background:rgba(18,161,80,.08)}
+#eq .merk>div{display:grid;grid-template-columns:1.8em 1fr}
+#eq .merk>div+div{margin-top:.45em}
+.k.cr{color:var(--cr)}.k.c1{color:var(--c1)}.k.c2{color:var(--c2)}.k.c3{color:var(--c3)}
+footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;row-gap:8px;margin-top:10px}
+button,#menu{font:inherit;font-size:clamp(16px,2vw,24px);color:inherit;background:var(--btn);border:1px solid var(--line);border-radius:12px;padding:12px 18px;cursor:pointer;touch-action:manipulation;text-decoration:none}
+button:disabled{opacity:.3}
+#fs svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
+#fs .fo,html.fs #fs .fi{display:none}
+html.fs #fs .fo{display:inline}
+#cnt{color:var(--mut);font-size:clamp(14px,1.6vw,20px);min-width:3.5em;text-align:center}
+#next{margin-left:auto;background:var(--c1);border-color:var(--c1);color:#fff;font-weight:700}
+@media (max-width:700px){footer{gap:8px}button,#menu{padding:10px 12px}#cnt{min-width:0}}
+@media (max-width:420px){#prev .lbl{display:none}}
+svg .ln{stroke:var(--fg);stroke-width:4;fill:none}
+svg .thin{stroke:var(--fg);stroke-width:2.5;fill:none}
+svg .head{fill:var(--head)}
+svg .box{fill:var(--btn);stroke:var(--line);stroke-width:3}
+svg .merkbox{fill:rgba(18,161,80,.08);stroke:var(--c3);stroke-width:3}
+svg .tx{fill:var(--fg);font:700 34px system-ui,sans-serif}
+svg .ts{fill:var(--mut);font:600 26px system-ui,sans-serif}
+svg .th{fill:var(--fg);font:700 27px system-ui,sans-serif}
+svg .vr{fill:var(--cr);font:700 44px system-ui,sans-serif}
+svg .vb{fill:var(--c1);font:700 44px system-ui,sans-serif}
+svg .vq{fill:var(--mut);font:700 44px system-ui,sans-serif}
+svg .op{fill:var(--c2);font:700 34px system-ui,sans-serif}
+svg .bo{stroke:var(--c2);stroke-width:5;fill:none;stroke-linecap:round}
+svg .note{fill:#fff7d6;stroke:var(--fg);stroke-width:3}
+svg .noteLine{stroke:#d7b86b;stroke-width:2}
+svg .ring{fill:var(--c1)}
+</style>
+</head>
+<body>
+<h1 id="title"></h1>
+<svg id="fig" viewBox="0 0 1200 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label=""></svg>
+<div id="txt"></div>
+<div id="eq" aria-live="polite"></div>
+<footer>
+<a id="menu" href="./">Menü</a>
+<button id="fs" aria-label="Vollbild" title="Vollbild (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="fi" d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/><path class="fo" d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg></button>
+<button id="prev">‹ <span class="lbl">Zurück</span></button>
+<span id="cnt"></span>
+<button id="next">Weiter ›</button>
+</footer>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const KB = x => `<span class="k cr">${x}</span>`;
+const KG = x => `<span class="k c1">${x}</span>`;
+const KO = x => `<span class="k c2">${x}</span>`;
+const text = (x, y, s, c = 'tx', a = 'middle') => `<text class="${c}" x="${x}" y="${y}" text-anchor="${a}" dominant-baseline="central">${s}</text>`;
+const defs = () => '<defs><marker id="arr" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto"><path d="M1 1L11 6L1 11Z" fill="var(--c2)"/></marker></defs>';
+
+function heft(x, y, s = 1) {
+  return `<g transform="translate(${x},${y}) scale(${s})"><rect class="note" x="0" y="0" width="72" height="92" rx="7"/><line class="noteLine" x1="12" y1="27" x2="60" y2="27"/><line class="noteLine" x1="12" y1="43" x2="60" y2="43"/><line class="noteLine" x1="12" y1="59" x2="60" y2="59"/><circle class="ring" cx="8" cy="15" r="4"/><circle class="ring" cx="8" cy="77" r="4"/></g>`;
+}
+function hefte(cx, y, n) {
+  const cols = n > 4 ? 3 : n;
+  const gapX = 88, gapY = 112, rows = Math.ceil(n / cols), width = (cols - 1) * gapX + 72;
+  let s = `<g transform="translate(${cx - width / 2},${y})">`;
+  for (let i = 0; i < n; i++) s += heft((i % cols) * gapX, Math.floor(i / cols) * gapY, .92);
+  return s + '</g>';
+}
+function arrow(x, y1, y2, label, side) {
+  const out = 74 * side, lx = x + 88 * side, a = side < 0 ? 'end' : 'start';
+  return `<path class="bo" marker-end="url(#arr)" d="M${x},${y1} C${x + out},${y1 + 14} ${x + out},${y2 - 14} ${x},${y2}"/>` + text(lx, (y1 + y2) / 2, label, 'op', a);
+}
+function table(x, y, cw, hh, rh, headers, rows, visible = () => true) {
+  const w = 2 * cw, h = hh + rows.length * rh, mid = x + cw;
+  let s = `<rect class="head" x="${x}" y="${y}" width="${w}" height="${hh}"/><rect class="ln" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+  s += `<line class="ln" x1="${mid}" y1="${y}" x2="${mid}" y2="${y + h}"/><line class="ln" x1="${x}" y1="${y + hh}" x2="${x + w}" y2="${y + hh}"/>`;
+  for (let i = 1; i < rows.length; i++) s += `<line class="thin" x1="${x}" y1="${y + hh + i * rh}" x2="${x + w}" y2="${y + hh + i * rh}"/>`;
+  const hx = [x + cw / 2, x + 1.5 * cw];
+  headers.forEach((ls, j) => ls.forEach((line, i) => { s += text(hx[j], y + hh / 2 + (i - (ls.length - 1) / 2) * 28, visible('kopf') ? line : '?', visible('kopf') ? 'th' : 'ts'); }));
+  rows.forEach((r, i) => {
+    const cy = y + hh + (i + .5) * rh;
+    s += text(hx[0], cy, r[0], r[2] || 'vr');
+    s += text(hx[1], cy, r[1], r[3] || (r[1] === '?' ? 'vq' : 'vb'));
+  });
+  return s;
+}
+
+function startFig() {
+  const preis = vis('preis');
+  let s = defs();
+  s += hefte(300, 35, 6) + hefte(900, 90, 3);
+  s += text(300, 325, '6 Hefte', 'vr') + text(900, 325, '3 Hefte', 'vr');
+  s += text(300, 410, '18 €', 'vb') + text(900, 410, preis ? '9 €' : '?', preis ? 'vb' : 'vq');
+  return s;
+}
+const startHit = p => p.x > 760 && p.x < 1040 && p.y > 350 ? 'preis' : null;
+
+const G2 = { x: 390, y: 48, cw: 210, hh: 92, rh: 130 };
+function teilenFig() {
+  const rows = [['6', '18'], ['3', '9']];
+  let s = defs() + table(G2.x, G2.y, G2.cw, G2.hh, G2.rh, [['Anzahl der', 'Hefte'], ['Preis', 'in €']], rows, vis);
+  const top = G2.y + G2.hh + G2.rh / 2, bottom = top + G2.rh, left = G2.x - 22, right = G2.x + 2 * G2.cw + 22;
+  if (vis('links')) s += arrow(left, top + 8, bottom - 8, ': 2', -1);
+  if (vis('rechts')) s += arrow(right, top + 8, bottom - 8, ': 2', 1);
+  return s;
+}
+function teilenHit(p) {
+  if (p.y < G2.y + G2.hh) return 'kopf';
+  if (p.x < G2.x) return 'links';
+  if (p.x > G2.x + 2 * G2.cw) return 'rechts';
+  return null;
+}
+function teilenEq() {
+  const satz = vis('satz') ? `Halb so viele ${KB('Hefte')} kosten halb so viel ${KG('Geld')}.` : '<span class="dim">Was bedeutet „: 2“ für beide Größen?</span>';
+  const prop = vis('prop') ? '<div class="small">Die Zuordnung ist proportional.</div>' : '<div class="small dim" data-part="prop">Ist die Zuordnung proportional?</div>';
+  return `<div class="line" data-part="satz">${satz}</div>${prop}`;
+}
+
+const G3 = { x: 390, y: 35, cw: 210, hh: 88, rh: 105 };
+function brueckeFig() {
+  const eins = vis('eins');
+  const rows = [['6', '18'], [eins ? '1' : '?', '?', eins ? 'vr' : 'vq'], ['4', '?']];
+  let s = defs() + table(G3.x, G3.y, G3.cw, G3.hh, G3.rh, [['Anzahl der', 'Hefte'], ['Preis', 'in €']], rows, () => true);
+  if (eins) s += `<rect class="merkbox" x="70" y="165" width="250" height="110" rx="14"/>${text(195, 205, 'Zuerst auf', 'ts')}${text(195, 245, '1 Heft', 'tx')}`;
+  return s;
+}
+const brueckeHit = p => p.y > G3.y + G3.hh + G3.rh && p.y < G3.y + G3.hh + 2 * G3.rh ? 'eins' : null;
+function brueckeEq() {
+  const grund = '<div class="small">Von 6 auf 4 führt kein einfacher ganzzahliger Mal- oder Geteilt-Schritt.</div>';
+  return grund + (vis('eins')
+    ? '<div class="small" data-part="eins">Wir ergänzen die Zeile für <span class="k cr">1 Heft</span>. Aus dem Zweisatz wird ein Dreisatz.</div>'
+    : '<div class="small dim" data-part="eins">Welcher Zwischenwert hilft immer?</div>');
+}
+
+const G4 = { x: 390, y: 28, cw: 210, hh: 86, rh: 108 };
+function dreiFig() {
+  const teilen = vis('teilen'), mal = vis('mal');
+  const rows = [['6', '18'], ['1', teilen ? '3' : '?'], ['4', mal ? '12' : '?']];
+  let s = defs() + table(G4.x, G4.y, G4.cw, G4.hh, G4.rh, [['Anzahl der', 'Hefte'], ['Preis', 'in €']], rows, () => true);
+  const r1 = G4.y + G4.hh + G4.rh / 2, r2 = r1 + G4.rh, r3 = r2 + G4.rh, left = G4.x - 22, right = G4.x + 2 * G4.cw + 22;
+  if (teilen) s += arrow(left, r1 + 7, r2 - 7, ': 6', -1) + arrow(right, r1 + 7, r2 - 7, ': 6', 1);
+  if (mal) s += arrow(left, r2 + 7, r3 - 7, '· 4', -1) + arrow(right, r2 + 7, r3 - 7, '· 4', 1);
+  return s;
+}
+function dreiHit(p) {
+  const split = G4.y + G4.hh + 1.5 * G4.rh;
+  if (p.x < G4.x || p.x > G4.x + 2 * G4.cw) return p.y < split ? 'teilen' : 'mal';
+  if (p.y > G4.y + G4.hh + G4.rh && p.y < G4.y + G4.hh + 2 * G4.rh) return 'teilen';
+  if (p.y >= G4.y + G4.hh + 2 * G4.rh) return 'mal';
+  return null;
+}
+function dreiEq() {
+  const lines = [];
+  if (vis('teilen')) lines.push(`${KG('18 €')} ${KO(': 6')} = ${KG('3 €')}`);
+  if (vis('mal')) lines.push(`${KG('3 €')} ${KO('· 4')} = ${KG('12 €')}`);
+  if (vis('antwort')) lines.push('<span class="k c3">4 Hefte kosten 12 €.</span>');
+  if (!lines.length) return '<div class="small dim">Rechne zuerst auf 1.</div>';
+  return lines.map((x, i) => `<div class="${i < lines.length - 1 ? 'small' : ''}" data-part="${i === 0 ? 'teilen' : i === 1 ? 'mal' : 'antwort'}">${x}</div>`).join('');
+}
+
+function vergleichFig() {
+  let s = defs();
+  s += `<rect class="box" x="30" y="20" width="540" height="445" rx="18"/><rect class="box" x="630" y="20" width="540" height="445" rx="18"/>`;
+  s += text(300, 65, 'Zweisatz – ein Schritt', 'tx') + text(900, 65, 'Dreisatz – über 1', 'tx');
+  const a = { x: 150, y: 105, cw: 150, hh: 70, rh: 105 };
+  s += table(a.x, a.y, a.cw, a.hh, a.rh, [['Hefte'], ['Preis in €']], [['6', '18'], ['3', '9']], () => true);
+  s += arrow(a.x - 20, a.y + a.hh + a.rh / 2 + 7, a.y + a.hh + 1.5 * a.rh - 7, ': 2', -1);
+  s += arrow(a.x + 2 * a.cw + 20, a.y + a.hh + a.rh / 2 + 7, a.y + a.hh + 1.5 * a.rh - 7, ': 2', 1);
+  s += text(300, 420, 'Der Zielwert wird direkt erreicht.', 'ts');
+  const b = { x: 750, y: 92, cw: 150, hh: 66, rh: 82 };
+  s += table(b.x, b.y, b.cw, b.hh, b.rh, [['Hefte'], ['Preis in €']], [['6', '18'], ['1', '3'], ['4', '12']], () => true);
+  const t1 = b.y + b.hh + b.rh / 2, t2 = t1 + b.rh, t3 = t2 + b.rh;
+  s += arrow(b.x - 18, t1 + 5, t2 - 5, ': 6', -1) + arrow(b.x + 2 * b.cw + 18, t1 + 5, t2 - 5, ': 6', 1);
+  s += arrow(b.x - 18, t2 + 5, t3 - 5, '· 4', -1) + arrow(b.x + 2 * b.cw + 18, t2 + 5, t3 - 5, '· 4', 1);
+  s += text(900, 420, 'Zwei Schritte führen über 1.', 'ts');
+  return s;
+}
+
+const STEPS = [
+  {
+    t:'Weniger Hefte – welcher Preis?', vb:[1200,500], parts:['preis'], hit:startHit, fig:startFig,
+    txt:() => `6 Hefte kosten 18 €. Mia möchte nur 3 Hefte kaufen. Wie viel bezahlt sie?`,
+    eq:() => vis('preis') ? `${KG('18 €')} ${KO(': 2')} = ${KG('9 €')}` : '' ,
+    alt:() => vis('preis') ? 'Sechs Hefte kosten 18 Euro. Drei Hefte kosten 9 Euro.' : 'Sechs Hefte kosten 18 Euro. Der Preis für drei Hefte ist gesucht.'
+  },
+  {
+    t:'Zweisatz mit Teilen', vb:[1200,470], mobileVb:[250,0,700,470], parts:['kopf','links','rechts','satz','prop'], hit:teilenHit, fig:teilenFig, eq:teilenEq,
+    txt:() => vis('kopf') ? `Anzahl der ${KB('Hefte')} → ${KG('Preis in €')}` : 'Welche Größen sind einander zugeordnet?',
+    alt:() => 'Tabelle: Sechs Hefte kosten 18 Euro, drei Hefte kosten 9 Euro. Beide Größen werden durch zwei geteilt.'
+  },
+  {
+    t:'Ein Schritt reicht nicht immer', vb:[1200,480], mobileVb:[45,0,920,480], parts:['eins'], hit:brueckeHit, fig:brueckeFig, eq:brueckeEq,
+    txt:() => '6 Hefte kosten 18 €. Was kosten 4 Hefte?',
+    alt:() => vis('eins') ? 'Tabelle mit den Zeilen sechs Hefte, ein Heft und vier Hefte. Die Preise für ein und vier Hefte sind noch gesucht.' : 'Von sechs Heften zu vier Heften führt kein einfacher ganzzahliger Mal- oder Geteilt-Schritt.'
+  },
+  {
+    t:'Dreisatz: erst auf 1, dann zum Ziel', vb:[1200,485], mobileVb:[245,0,710,485], parts:['teilen','mal','antwort'], hit:dreiHit, fig:dreiFig, eq:dreiEq,
+    txt:() => `Auf beiden Seiten rechnen wir immer gleich.`,
+    alt:() => `Dreisatztabelle: Sechs Hefte kosten 18 Euro. Ein Heft kostet ${vis('teilen') ? '3 Euro' : 'noch unbekannt'}. Vier Hefte kosten ${vis('mal') ? '12 Euro' : 'noch unbekannt'}.`
+  },
+  {
+    t:'Vom Zweisatz zum Dreisatz', vb:[1200,490], fig:vergleichFig,
+    txt:'',
+    eq:() => '<div class="merk"><div><b>1.</b><span>Teile die erste Größe auf 1. Rechne auf der anderen Seite genauso.</span></div><div><b>2.</b><span>Multipliziere beide Größen mit dem passenden Faktor.</span></div><div><b>3.</b><span>Schreibe einen Antwortsatz.</span></div></div>',
+    alt:'Vergleich: Beim Zweisatz wird der Zielwert in einem Schritt erreicht. Beim Dreisatz führen zwei Schritte über den Wert eins.'
+  }
+];
+
+let step = 0, opened = new Set(), shownStep = -1;
+const vis = k => opened.has(k);
+const done = (st = STEPS[step]) => !st.parts || st.parts.every(k => opened.has(k));
+const value = x => (typeof x === 'function' ? x() : x) || '';
+function flip(k) {
+  if (opened.has(k)) {
+    opened.delete(k);
+    if (k === 'teilen') { opened.delete('mal'); opened.delete('antwort'); }
+    if (k === 'mal') opened.delete('antwort');
+    return;
+  }
+  if (k === 'mal') opened.add('teilen');
+  if (k === 'antwort') { opened.add('teilen'); opened.add('mal'); }
+  opened.add(k);
+}
+function put(st) {
+  $('title').textContent = value(st.t);
+  $('txt').innerHTML = value(st.txt);
+  $('eq').innerHTML = value(st.eq);
+}
+function viewBoxFor(st) {
+  if (st.mobileVb && innerWidth < 600 && innerHeight > innerWidth) return st.mobileVb;
+  const [w,h] = st.vb || [1200,520];
+  return [0,0,w,h];
+}
+const BOX = ['title','txt','eq'];
+function reserve(st) {
+  const keep = new Set(opened), hi = BOX.map(() => 0);
+  BOX.forEach(id => { $(id).style.minHeight = ''; });
+  const measure = () => { put(st); BOX.forEach((id, i) => { hi[i] = Math.max(hi[i], $(id).offsetHeight); }); };
+  opened = new Set(); measure();
+  opened = new Set(st.parts || []); measure();
+  opened = keep; measure();
+  BOX.forEach((id, i) => { $(id).style.minHeight = hi[i] + 'px'; });
+}
+function render() {
+  const st = STEPS[step];
+  if (shownStep !== step) reserve(st);
+  put(st);
+  const [vx,vy,vw,vh] = viewBoxFor(st), alt = $('fig'), neu = alt.cloneNode(false);
+  neu.setAttribute('viewBox', `${vx} ${vy} ${vw} ${vh}`);
+  neu.setAttribute('aria-label', value(st.alt));
+  neu.innerHTML = st.fig();
+  alt.replaceWith(neu);
+  shownStep = step;
+  $('cnt').textContent = `${step + 1} / ${STEPS.length}`;
+  $('prev').disabled = step === 0 && opened.size === 0;
+  $('next').disabled = step === STEPS.length - 1 && done(st);
+}
+function go(d, end = false) {
+  const n = step + d; if (n < 0 || n >= STEPS.length) return;
+  step = n; opened = end ? new Set(STEPS[step].parts || []) : new Set(); shownStep = -1; render();
+}
+function back() {
+  if (opened.size) { opened = new Set(); render(); }
+  else go(-1, true);
+}
+function fwd() {
+  const st = STEPS[step];
+  if (!done(st)) { opened = new Set(st.parts); render(); }
+  else go(1);
+}
+$('prev').addEventListener('click', back);
+$('next').addEventListener('click', fwd);
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); fwd(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); back(); }
+});
+function svgPt(e) {
+  const [vx,vy,vw,vh] = viewBoxFor(STEPS[step]), r = $('fig').getBoundingClientRect(), sc = Math.min(r.width / vw, r.height / vh);
+  return {x:vx + (e.clientX - r.left - (r.width - vw * sc) / 2) / sc, y:vy + (e.clientY - r.top - (r.height - vh * sc) / 2) / sc};
+}
+document.addEventListener('pointerdown', e => {
+  if (!e.target.closest || !e.target.closest('#fig')) return;
+  const st = STEPS[step], k = st.hit && st.hit(svgPt(e));
+  if (k) { flip(k); render(); }
+});
+$('eq').addEventListener('pointerdown', e => {
+  const p = e.target.closest('[data-part]');
+  if (p && STEPS[step].parts && STEPS[step].parts.includes(p.dataset.part)) { flip(p.dataset.part); render(); }
+});
+addEventListener('resize', () => { shownStep = -1; render(); });
+render();
+
+// Vollbild: Knopf oder Taste F. Nach einem Seitenwechsel holt der erste Tipp das Vollbild zurück.
+(() => {
+  const d = document, el = d.documentElement, b = d.getElementById('fs');
+  const app = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches;
+  if (app || !(d.fullscreenEnabled || d.webkitFullscreenEnabled)) { b.hidden = true; return; }
+  const on = () => !!(d.fullscreenElement || d.webkitFullscreenElement);
+  const want = v => { try { if (v === undefined) return sessionStorage.getItem('fs') === '1'; sessionStorage.setItem('fs', v ? '1' : '0'); } catch (e) { return false; } };
+  const call = (o, f) => { if (!f) return; try { const p = f.call(o); if (p && p.catch) p.catch(() => {}); } catch (e) {} };
+  const enter = () => call(el, el.requestFullscreen || el.webkitRequestFullscreen);
+  const exit = () => call(d, d.exitFullscreen || d.webkitExitFullscreen);
+  const toggle = () => { if (on()) { want(false); exit(); } else { want(true); enter(); } };
+  let leaving = false;
+  const sync = () => { const f = on(); el.classList.toggle('fs', f); b.setAttribute('aria-pressed', f); b.title = f ? 'Vollbild beenden (F)' : 'Vollbild (F)'; };
+  const change = () => { sync(); if (!on() && !leaving) want(false); };
+  b.addEventListener('click', toggle);
+  d.addEventListener('fullscreenchange', change);
+  d.addEventListener('webkitfullscreenchange', change);
+  d.addEventListener('click', e => { const a = e.target.closest('a[href]'); if (a) { leaving = true; return; } if (!b.contains(e.target) && !on() && want()) enter(); }, true);
+  d.addEventListener('keydown', e => { if (e.ctrlKey || e.metaKey || e.altKey) return; if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggle(); } else if (e.key !== 'Escape' && !on() && want()) enter(); });
+  addEventListener('pagehide', () => { leaving = true; });
+  addEventListener('pageshow', () => { leaving = false; sync(); });
+  sync();
+})();
+if (navigator.standalone === true || matchMedia('(display-mode: standalone)').matches) document.addEventListener('click', e => {
+  const a = e.target.closest('a[href]'); if (!a) return;
+  const u = new URL(a.href);
+  if (a.hasAttribute('download') || u.origin !== location.origin || !/(\/|\.html)$/.test(u.pathname)) e.preventDefault();
+}, true);
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>

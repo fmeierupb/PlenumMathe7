@@ -38,7 +38,7 @@ html.fs.wide img{height:auto;background:#fff;margin-bottom:12px}
 <main id="pages"><img id="img" alt=""><img id="img2" alt="Seite 2"></main>
 <script>
 'use strict';
-const AB = {"ab-zweisatz": "Zweisatz"};
+const AB = {"ab-zweisatz": "Zweisatz", "ab-dreisatz": "Zweisatz und Dreisatz"};
 const q = new URLSearchParams(location.search).get('n'), n = AB[q] ? q : Object.keys(AB)[0];
 document.getElementById('img').src = 'ab/' + n + '.svg';
 // Seite 2: Rückseite mit den restlichen Aufgaben und Kästchen

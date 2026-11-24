@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="595.2755905511812" height="841.8897637795277" preserveAspectRatio="xMinYMin meet" viewBox="0 0 595 841" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="595.2755905511812" height="841.8897637795277"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-841)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="28" y="799.8897637795277" style="font-family: Arial, sans-serif; font-weight: 700; font-size: 22px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1599) scale(1,-1)">Zweisatz und Dreisatz</text>
+			<text x="490.23066867618115" y="799.8897637795277" style="font-family: Arial, sans-serif; font-size: 9px;fill: rgb(46%,46%,46%); stroke:none;" transform="translate(0,1599) scale(1,-1)">Dreisatz anwenden</text>
+			<path d="M 28,788.889764 L 567.275591,788.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<circle cx="35" cy="766.8897637795277" r="10" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,12%,12%); fill-rule: evenodd;"/>
+			<text x="32.497314453125" y="762.8897637795277" style="font-family: Arial, sans-serif; font-weight: 700; font-size: 9px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,1525) scale(1,-1)">4</text>
+			<text x="52" y="760.8897637795277" style="font-family: Arial, sans-serif; font-weight: 700; font-size: 10.5px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1521) scale(1,-1)">Schreibe die Zuordnung auf. Beschrifte die Tabelle und rechne über 1.</text>
+			<text x="28" y="736.8897637795277" style="font-family: Arial, sans-serif; font-size: 9.5px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1473) scale(1,-1)">a) 5 kg Äpfel kosten 15 €.</text>
+			<text x="28" y="722.8897637795277" style="font-family: Arial, sans-serif; font-size: 9.5px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1445) scale(1,-1)">    Wie viel kosten 8 kg?</text>
+			<text x="298" y="736.8897637795277" style="font-family: Arial, sans-serif; font-size: 9.5px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1473) scale(1,-1)">b) Ein Drucker druckt in 4 Minuten 72 Seiten.</text>
+			<text x="298" y="722.8897637795277" style="font-family: Arial, sans-serif; font-size: 9.5px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1445) scale(1,-1)">    Wie viele Seiten druckt er in 7 Minuten?</text>
+			<text x="28" y="696.8897637795277" style="font-family: Arial, sans-serif; font-size: 9.5px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1393) scale(1,-1)">Zuordnung:</text>
+			<path d="M 90,693.889764 L 278,693.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<text x="298" y="696.8897637795277" style="font-family: Arial, sans-serif; font-size: 9.5px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1393) scale(1,-1)">Zuordnung:</text>
+			<path d="M 360,693.889764 L 833,693.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<rect x="83" y="499.8897637795277" width="145" height="173.0" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: none; fill-rule: evenodd;"/>
+			<rect x="83" y="634.8897637795277" width="145" height="38.0" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,89%,89%); fill-rule: evenodd;"/>
+			<path d="M 155.5,672.889764 L 155.5,499.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 83,634.889764 L 228,634.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 83,589.889764 L 228,589.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 0.75;"/>
+			<path d="M 83,544.889764 L 228,544.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 0.75;"/>
+			<text x="116.46923828125" y="609.3897637795277" style="font-family: Arial, sans-serif; font-size: 10px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1218) scale(1,-1)">5</text>
+			<text x="186.1884765625" y="609.3897637795277" style="font-family: Arial, sans-serif; font-size: 10px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1218) scale(1,-1)">15</text>
+			<text x="116.46923828125" y="564.3897637795277" style="font-family: Arial, sans-serif; font-size: 10px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1128) scale(1,-1)">1</text>
+			<text x="116.46923828125" y="519.3897637795277" style="font-family: Arial, sans-serif; font-size: 10px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1038) scale(1,-1)">8</text>
+			<path d="M 78 608.389764 C 60 606.389764 60 573.389764 78 571.389764 " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1.1; fill: none; fill-rule: evenodd;"/>
+			<path d="M 78 571.389764 L 83 578.389764 L 72 574.389764 Z " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,12%,12%); fill-rule: evenodd;"/>
+			<rect x="35" y="580.8897637795277" width="24" height="18.0" rx="3" ry="3" style="stroke: none; stroke-linecap: butt; stroke-width: 0.7; fill: rgb(81%,81%,81%); fill-rule: evenodd;"/>
+			<path d="M 233 608.389764 C 251 606.389764 251 573.389764 233 571.389764 " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1.1; fill: none; fill-rule: evenodd;"/>
+			<path d="M 233 571.389764 L 228 578.389764 L 239 574.389764 Z " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,12%,12%); fill-rule: evenodd;"/>
+			<rect x="252" y="580.8897637795277" width="24" height="18.0" rx="3" ry="3" style="stroke: none; stroke-linecap: butt; stroke-width: 0.7; fill: rgb(81%,81%,81%); fill-rule: evenodd;"/>
+			<path d="M 78 563.389764 C 60 561.389764 60 528.389764 78 526.389764 " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1.1; fill: none; fill-rule: evenodd;"/>
+			<path d="M 78 526.389764 L 83 533.389764 L 72 529.389764 Z " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,12%,12%); fill-rule: evenodd;"/>
+			<rect x="35" y="535.8897637795277" width="24" height="18.0" rx="3" ry="3" style="stroke: none; stroke-linecap: butt; stroke-width: 0.7; fill: rgb(81%,81%,81%); fill-rule: evenodd;"/>
+			<path d="M 233 563.389764 C 251 561.389764 251 528.389764 233 526.389764 " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1.1; fill: none; fill-rule: evenodd;"/>
+			<path d="M 233 526.389764 L 228 533.389764 L 239 529.389764 Z " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,12%,12%); fill-rule: evenodd;"/>
+			<rect x="252" y="535.8897637795277" width="24" height="18.0" rx="3" ry="3" style="stroke: none; stroke-linecap: butt; stroke-width: 0.7; fill: rgb(81%,81%,81%); fill-rule: evenodd;"/>
+			<rect x="353" y="499.8897637795277" width="145" height="173.0" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: none; fill-rule: evenodd;"/>
+			<rect x="353" y="634.8897637795277" width="145" height="38.0" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,89%,89%); fill-rule: evenodd;"/>
+			<path d="M 425.5,672.889764 L 425.5,499.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 353,634.889764 L 498,634.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 353,589.889764 L 498,589.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 0.75;"/>
+			<path d="M 353,544.889764 L 498,544.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 0.75;"/>
+			<text x="386.46923828125" y="609.3897637795277" style="font-family: Arial, sans-serif; font-size: 10px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1218) scale(1,-1)">4</text>
+			<text x="456.1884765625" y="609.3897637795277" style="font-family: Arial, sans-serif; font-size: 10px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1218) scale(1,-1)">72</text>
+			<text x="386.46923828125" y="564.3897637795277" style="font-family: Arial, sans-serif; font-size: 10px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1128) scale(1,-1)">1</text>
+			<text x="386.46923828125" y="519.3897637795277" style="font-family: Arial, sans-serif; font-size: 10px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,1038) scale(1,-1)">7</text>
+			<path d="M 348 608.389764 C 330 606.389764 330 573.389764 348 571.389764 " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1.1; fill: none; fill-rule: evenodd;"/>
+			<path d="M 348 571.389764 L 353 578.389764 L 342 574.389764 Z " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,12%,12%); fill-rule: evenodd;"/>
+			<rect x="305" y="580.8897637795277" width="24" height="18.0" rx="3" ry="3" style="stroke: none; stroke-linecap: butt; stroke-width: 0.7; fill: rgb(81%,81%,81%); fill-rule: evenodd;"/>
+			<path d="M 503 608.389764 C 521 606.389764 521 573.389764 503 571.389764 " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1.1; fill: none; fill-rule: evenodd;"/>
+			<path d="M 503 571.389764 L 498 578.389764 L 509 574.389764 Z " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,12%,12%); fill-rule: evenodd;"/>
+			<rect x="522" y="580.8897637795277" width="24" height="18.0" rx="3" ry="3" style="stroke: none; stroke-linecap: butt; stroke-width: 0.7; fill: rgb(81%,81%,81%); fill-rule: evenodd;"/>
+			<path d="M 348 563.389764 C 330 561.389764 330 528.389764 348 526.389764 " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1.1; fill: none; fill-rule: evenodd;"/>
+			<path d="M 348 526.389764 L 353 533.389764 L 342 529.389764 Z " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,12%,12%); fill-rule: evenodd;"/>
+			<rect x="305" y="535.8897637795277" width="24" height="18.0" rx="3" ry="3" style="stroke: none; stroke-linecap: butt; stroke-width: 0.7; fill: rgb(81%,81%,81%); fill-rule: evenodd;"/>
+			<path d="M 503 563.389764 C 521 561.389764 521 528.389764 503 526.389764 " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1.1; fill: none; fill-rule: evenodd;"/>
+			<path d="M 503 526.389764 L 498 533.389764 L 509 529.389764 Z " style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,12%,12%); fill-rule: evenodd;"/>
+			<rect x="522" y="535.8897637795277" width="24" height="18.0" rx="3" ry="3" style="stroke: none; stroke-linecap: butt; stroke-width: 0.7; fill: rgb(81%,81%,81%); fill-rule: evenodd;"/>
+			<text x="28" y="465.8897637795277" style="font-family: Arial, sans-serif; font-size: 9.5px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,931) scale(1,-1)">Antwort:</text>
+			<path d="M 71,462.889764 L 278,462.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<text x="298" y="465.8897637795277" style="font-family: Arial, sans-serif; font-size: 9.5px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,931) scale(1,-1)">Antwort:</text>
+			<path d="M 341,462.889764 L 833,462.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<path d="M 71,444.889764 L 250,444.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<path d="M 341,444.889764 L 535,444.889764 Z" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<circle cx="35" cy="408.8897637795277" r="10" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,12%,12%); fill-rule: evenodd;"/>
+			<text x="32.497314453125" y="404.8897637795277" style="font-family: Arial, sans-serif; font-weight: 700; font-size: 9px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,809) scale(1,-1)">5</text>
+			<text x="52" y="402.8897637795277" style="font-family: Arial, sans-serif; font-weight: 700; font-size: 10.5px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,805) scale(1,-1)">Arbeite im Heft: Zuordnung, Dreisatz-Tabelle, Rechnung und Antwortsatz.</text>
+			<text x="28" y="371.8897637795277" style="font-family: Arial, sans-serif; font-size: 10px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,743) scale(1,-1)">a) 3 m Stoff kosten 21 €. Wie viel kosten 8 m?</text>
+			<text x="28" y="342.8897637795277" style="font-family: Arial, sans-serif; font-size: 10px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,685) scale(1,-1)">b) 6 Kartons enthalten zusammen 48 Flaschen. Wie viele Flaschen enthalten 9 Kartons?</text>
+			<text x="28" y="313.8897637795277" style="font-family: Arial, sans-serif; font-size: 10px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,627) scale(1,-1)">c) In 5 Minuten fließen 40 Liter Wasser aus einem Hahn. Wie viel sind es in 12 Minuten?</text>
+			<circle cx="35" cy="270.8897637795277" r="10" style="stroke: rgb(12%,12%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,12%,12%); fill-rule: evenodd;"/>
+			<path d="M 35 264.889764 L 36.58702 268.705418 L 40.706339 269.035662 L 37.567853 271.72411 L 38.526712 275.743866 L 35 273.589764 L 31.473288 275.743866 L 32.432147 271.72411 L 29.293661 269.035662 L 33.41298 268.705418 Z " style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 0.4; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="52" y="264.8897637795277" style="font-family: Arial, sans-serif; font-weight: 700; font-size: 10.5px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,529) scale(1,-1)">Was hat Lina falsch gemacht? Rechne mit einem Dreisatz richtig.</text>
+			<text x="28" y="236.8897637795277" style="font-family: Arial, sans-serif; font-size: 9.7px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,473) scale(1,-1)">6 Müsliriegel kosten 18 €. Lina möchte den Preis für 4 Riegel berechnen.</text>
+			<text x="28" y="219.8897637795277" style="font-family: Arial, sans-serif; font-size: 9.7px;fill: rgb(12%,12%,12%); stroke:none;" transform="translate(0,439) scale(1,-1)">Sie rechnet: 18 € : 6 = 3 €. Dann 3 € + 4 = 7 €. Also kosten 4 Riegel 7 €.</text>
+			<rect x="35" y="24.889763779527698" width="525.2755905511812" height="157.0" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.5; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<path d="M 49,181.889764 L 49,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 63,181.889764 L 63,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 77,181.889764 L 77,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 91,181.889764 L 91,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 105,181.889764 L 105,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 119,181.889764 L 119,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 133,181.889764 L 133,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 147,181.889764 L 147,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 161,181.889764 L 161,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 175,181.889764 L 175,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 189,181.889764 L 189,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 203,181.889764 L 203,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 217,181.889764 L 217,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 231,181.889764 L 231,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 245,181.889764 L 245,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 259,181.889764 L 259,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 273,181.889764 L 273,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 287,181.889764 L 287,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 301,181.889764 L 301,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 315,181.889764 L 315,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 329,181.889764 L 329,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 343,181.889764 L 343,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 357,181.889764 L 357,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 371,181.889764 L 371,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 385,181.889764 L 385,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 399,181.889764 L 399,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 413,181.889764 L 413,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 427,181.889764 L 427,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 441,181.889764 L 441,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 455,181.889764 L 455,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 469,181.889764 L 469,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 483,181.889764 L 483,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 497,181.889764 L 497,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 511,181.889764 L 511,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 525,181.889764 L 525,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 539,181.889764 L 539,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 553,181.889764 L 553,24.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 35,167.889764 L 560.275591,167.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 35,153.889764 L 560.275591,153.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 35,139.889764 L 560.275591,139.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 35,125.889764 L 560.275591,125.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 35,111.889764 L 560.275591,111.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 35,97.889764 L 560.275591,97.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 35,83.889764 L 560.275591,83.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 35,69.889764 L 560.275591,69.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 35,55.889764 L 560.275591,55.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 35,41.889764 L 560.275591,41.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+			<path d="M 35,27.889764 L 560.275591,27.889764 Z" style="stroke: rgb(72%,72%,72%); stroke-linecap: butt; stroke-width: 0.35;"/>
+		</g>
+	</g>
+</svg>
