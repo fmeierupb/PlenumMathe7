@@ -217,8 +217,8 @@ function zweisatzFig() {
 const W3 = 1320, H3 = 445;
 const G3t = { L: 600, cw: 200, T: 40, hh: 85, rh: 110, fk: 28, fw: 48, fb: 34, a: 40 };
 function teilenFig() {
-  let s = '<g data-fx="0.22">' + foto(IMG6, W6, H6, 150, 250, 150) + foto(IMG3, W3i, H3i, 390, 250, 150) +
-    text(150, 280, 'Tom', 'ts') + text(390, 280, 'Mia', 'ts') + '</g>';
+  let s = '<g data-fx="0.22">' + foto(IMG6, W6, H6, 150, 290, 220) + foto(IMG3, W3i, H3i, 470, 290, 220) +
+    text(150, 322, 'Tom', 'ts') + text(470, 322, 'Mia', 'ts') + '</g>';
   const r2 = vis('z2l') ? ['3', vis('z2r') ? '9' : '?'] : ['', ''];
   s += `<g data-fx="0.72" data-m="${G3t.L + G3t.cw}" data-k="tab">` + tab(G3t, [vis('z1') ? ['6', '18'] : ['', ''], r2], vis('kopf'));
   if (vis('b2l')) s += tbogen(G3t, 0, -1, ': 2');
