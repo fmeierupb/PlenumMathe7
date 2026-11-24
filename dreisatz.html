@@ -31,6 +31,8 @@ h1{margin:0;font-size:clamp(26px,4.2vw,52px);line-height:1.15;min-height:1.2em}
 /* Drei Merksätze nebeneinander, damit der Kasten flach bleibt und die Tabelle groß */
 #eq .merk.m3{display:grid;grid-template-columns:repeat(3,1fr);column-gap:1.4em;max-width:none;width:100%;box-sizing:border-box;font-size:.5em}
 #eq .merk.m3>div+div{margin-top:0}
+#eq .merk.ks{font-size:.8em;line-height:1.35;max-width:none}
+#eq .merk.ks>div+div{margin-top:.25em}
 .k.c1{color:var(--c1)}.k.c2{color:var(--c2)}.k.c3{color:var(--c3)}.k.cr{color:var(--cr)}
 footer{display:flex;gap:10px;align-items:center;margin-top:10px}
 #extras{display:flex;gap:10px;margin:0 auto}
@@ -266,10 +268,10 @@ function teilenEq() {
 const W2 = 1100, H2 = 445;
 const G3 = { L: 340, cw: 210, T: 20, hh: 92, rh: 105, fk: 30, fw: 48, fb: 34, a: 36 };
 // Folie 5 wie Folie 3 der Zweisatz-Stunde: links die Bilder, rechts die Tabelle Schritt für Schritt, darunter die Merksätze.
-const G6 = { L: 600, cw: 210, T: 20, hh: 92, rh: 100, fk: 30, fw: 48, fb: 34, a: 36 };
+const G6 = { L: 600, cw: 210, T: 20, hh: 92, rh: 115, fk: 30, fw: 48, fb: 34, a: 36 };
 function dreiFig() {
-  let s = '<g data-fx="0.22">' + foto(IMG6, W6, H6, 150, 290, 220) + foto(IMG4, W4i, H4i, 470, 290, 220) +
-    text(150, 322, 'Tom', 'ts') + text(470, 322, 'Ben', 'ts') + '</g>';
+  let s = '<g data-fx="0.22">' + foto(IMG6, W6, H6, 150, 330, 250) + foto(IMG4, W4i, H4i, 470, 330, 250) +
+    text(150, 364, 'Tom', 'ts') + text(470, 364, 'Ben', 'ts') + '</g>';
   const q = (l, r, lv, rv) => [vis(l) ? lv : '', vis(r) ? rv : vis(l) ? '?' : ''];
   const rows = [[vis('z1l') ? '6' : '', vis('z1r') ? '18' : ''], q('z2l', 'z2r', '1', '3'), q('z3l', 'z3r', '4', '12')];
   s += `<g data-fx="0.72" data-m="${G6.L + G6.cw}" data-k="tab">` + tab(G6, rows, vis('kopf'));
@@ -296,29 +298,31 @@ function dreiHit(p) {
 }
 // Merksätze nah am Schulbuch, sie wachsen mit den Schritten in der Tabelle
 function dreiEq() {
-  const z = [], werte = ['z1l', 'z1r', 'z3l'].some(vis);
-  if (vis('kopf') || werte || vis('z2l')) z.push(`<div><b>1.</b><span>Zeichne eine Tabelle und beschrifte sie.${werte ? '<br>Trage die Werte ein, die du kennst.' : ''}${vis('z2l') ? '<br>Trage in der mittleren Zeile eine 1 ein.' : ''}</span></div>`);
-  if (['b1l', 'b1r'].some(vis)) z.push(`<div><b>2.</b><span>Mit welcher Rechnung kommst du vom oberen Wert zur 1: mal oder geteilt?${vis('b1r') ? '<br>Rechne auf der anderen Seite genauso.' : ''}</span></div>`);
-  if (['b2l', 'b2r'].some(vis)) z.push(`<div><b>3.</b><span>Mit welcher Rechnung kommst du von der 1 zum unteren Wert: mal oder geteilt?${vis('b2r') ? '<br>Rechne auf der anderen Seite genauso.' : ''}</span></div>`);
-  // feste Spalten: auch noch nicht aufgedeckte Punkte behalten ihren Platz
-  while (z.length < 3) z.push('<div></div>');
-  return z.some(x => x !== '<div></div>') ? `<div class="merk m3">${z.join('')}</div>` : '';
+  // Stichworte statt Buchwortlaut, damit es von hinten lesbar bleibt. Der Buchwortlaut steht auf der letzten Folie.
+  // Alles steht von Anfang an im Kasten, nur unsichtbar. So bleibt der Kasten gleich groß.
+  const werte = ['z1l', 'z1r', 'z3l'].some(vis), w = (on, t) => `<span${on ? '' : ' style="visibility:hidden"'}>${t}</span>`;
+  const z = [
+    [vis('kopf') || werte || vis('z2l'), '1.', w(vis('kopf') || werte || vis('z2l'), 'Tabelle zeichnen') + w(werte || vis('z2l'), ', Werte eintragen') + w(vis('z2l'), ', 1 in die Mitte')],
+    [['b1l', 'b1r'].some(vis), '2.', w(['b1l', 'b1r'].some(vis), 'Vom oberen Wert zur 1') + w(vis('b1r'), ', andere Seite genauso')],
+    [['b2l', 'b2r'].some(vis), '3.', w(['b2l', 'b2r'].some(vis), 'Von der 1 zum unteren Wert') + w(vis('b2r'), ', andere Seite genauso')]
+  ];
+  return z[0][0] ? `<div class="merk ks">${z.map(([on, n, t]) => `<div>${w(on, `<b>${n}</b>`)}<span>${t}</span></div>`).join('')}</div>` : '';
 }
 
 // ---------- Folie 5: fertige Tabelle mit Merksätzen ----------
-const W5 = 1480, H5 = 470;
-const G5 = { L: 183, cw: 210, T: 40, hh: 100, rh: 140, fk: 30, fw: 54, fb: 38, a: 44 };
+const W5 = 1380, H5 = 590;
+const G5 = { L: 104, cw: 145, T: 14, hh: 96, rh: 155, fk: 21, fw: 54, fb: 32, a: 36 };
 function merkFig() {
   let s = tab(G5, [['6', '18'], ['1', '3'], ['4', '12']], true);
   s += tbogen(G5, 0, -1, ': 6') + tbogen(G5, 0, 1, ': 6') + tbogen(G5, 1, -1, '· 4') + tbogen(G5, 1, 1, '· 4');
   // Die Überschrift Dreisatz steht oben im Merkkasten, die Folie selbst hat keine.
   // Merksätze nah am Schulbuch (Dreifach Mathe, Wissen: Werte mit dem Dreisatz berechnen)
-  const y0 = 8;
-  s += `<rect class="merkbox" x="790" y="${y0}" width="820" height="556" rx="14"/>` + tt(818, y0 + 46, 'Dreisatz', 'tmh', 44, 'start');
-  const zl = (y, t, nr) => (nr ? tt(818, y0 + 58 + y, nr, 'tm', 31, 'start') : '') + tt(858, y0 + 58 + y, t, 'tm', 31, 'start');
-  s += zl(44, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(88, 'Trage die Werte ein, die du kennst.') + zl(132, 'Trage in der mittleren Zeile eine 1 ein.');
-  s += zl(196, 'Mit welcher Rechnung kommst du vom', '2.') + zl(240, 'oberen Wert zur 1: mal oder geteilt?') + zl(284, 'Rechne auf der anderen Seite genauso.');
-  s += zl(348, 'Mit welcher Rechnung kommst du von', '3.') + zl(392, 'der 1 zum unteren Wert: mal oder geteilt?') + zl(436, 'Rechne auf der anderen Seite genauso.');
+  const x0 = 524, y0 = 4, F = 36;
+  s += `<rect class="merkbox" x="${x0}" y="${y0}" width="${W5 - x0 - 4}" height="582" rx="14"/>` + tt(x0 + 28, y0 + 48, 'Dreisatz', 'tmh', 50, 'start');
+  const zl = (y, t, nr) => (nr ? tt(x0 + 28, y, nr, 'tm', F, 'start') : '') + tt(x0 + 68, y, t, 'tm', F, 'start');
+  s += zl(120, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(169, 'Trage die Werte ein, die du kennst.') + zl(218, 'Trage in der mittleren Zeile eine 1 ein.');
+  s += zl(285, 'Mit welcher Rechnung kommst du vom', '2.') + zl(334, 'oberen Wert zur 1: mal oder geteilt?') + zl(383, 'Rechne auf der anderen Seite genauso.');
+  s += zl(450, 'Mit welcher Rechnung kommst du von der 1', '3.') + zl(499, 'zum unteren Wert: mal oder geteilt?') + zl(548, 'Rechne auf der anderen Seite genauso.');
   return s;
 }
 
@@ -330,8 +334,8 @@ const STEPS = [
   { t: 'Überlege zuerst', vb: [920, 506, 90, 2], seq: 1, parts: ['zuo', 'k', 'p', 'prop'], hit: startHit, eqHit: 'prop', fig: startFig, eq: startEq },
   { t: 'Letzte Stunde: Zweisatz', noT: 1, vb: [1595, 528, -5, 12], fig: zweisatzFig },
   { t: 'Zweisatz mit Teilen', vb: [1320, 345, 0, 28], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z2l', 'b2l', 'b2r', 'z2r'], hit: teilenHit, fig: teilenFig, eq: teilenEq },
-  { t: 'Werte mit dem Dreisatz berechnen', vb: [1320, 410, 0, 12], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z3l', 'z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'], hit: dreiHit, fig: dreiFig, eq: dreiEq },
-  { t: 'Dreisatz', noT: 1, vb: [1555, 568, 62, 2], fig: merkFig }
+  { t: 'Werte mit dem Dreisatz berechnen', vb: [1320, 458, 0, 12], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z3l', 'z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'], hit: dreiHit, fig: dreiFig, eq: dreiEq },
+  { t: 'Dreisatz', noT: 1, vb: [W5, H5], fig: merkFig }
 ];
 
 // ---------- Ablauf ----------
