@@ -112,10 +112,10 @@ b.append(paar((H, [("4", "6"), ("8", "")], A2), (H, [("4", "6"), ("2", "")], A2)
 b.append(G)
 
 b.append(r"\aufgabe{2}{Schreibe die Zuordnung auf. Rechne zuerst auf 1, dann zum gesuchten Wert.}")
-b.append(ab(r"Im Schreibwarenladen kosten 8 Hefte 20~€.\\Wie viel kosten 3 Hefte?", r"Im Supermarkt kosten 6 Hefte 13,20~€.\\Wie viel kosten 14 Hefte?") + r"\vspace{4mm}")
+b.append(ab(r"Im Schreibwarenladen kosten 8 Hefte 20~€.\\Wie viel kosten 3 Hefte?", r"Im Supermarkt kosten 3 Hefte 6,60~€.\\Wie viel kosten 14 Hefte?") + r"\vspace{4mm}")
 b.append(zuo() + r"\vspace{3mm}")
 H = (r"Anzahl der Hefte", r"Preis in €")
-b.append(paar((H, [("8", "20"), ("1", ""), ("3", "")], A3), (H, [("6", "13,20"), ("1", ""), ("14", "")], A3)))
+b.append(paar((H, [("8", "20"), ("1", ""), ("3", "")], A3), (H, [("3", "6,60"), ("1", ""), ("14", "")], A3)))
 b.append(G)
 
 b.append(r"\aufgabe{3}{Schreibe die Zuordnung auf. Trage die 1 selbst ein und rechne.}")
