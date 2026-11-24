@@ -19,13 +19,13 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 body{display:flex;flex-direction:column;height:100dvh;padding:12px 16px calc(12px + env(safe-area-inset-bottom));user-select:none;-webkit-user-select:none}
 h1{margin:0;font-size:clamp(26px,4.2vw,52px);line-height:1.15;min-height:1.2em}
 #fig{flex:1;min-height:0;width:100%;touch-action:none}
-#txt{font-size:clamp(18px,2.6vw,32px);min-height:1.4em;text-align:center}
-#eq{font-size:clamp(22px,3.6vw,44px);font-weight:700;min-height:1.4em;text-align:center;font-variant-numeric:tabular-nums;line-height:1.35}
+#txt{font-size:clamp(20px,3vw,38px);min-height:1.4em;text-align:center}
+#eq{font-size:clamp(24px,4.1vw,50px);font-weight:700;min-height:1.4em;text-align:center;font-variant-numeric:tabular-nums;line-height:1.35}
 #eq .dim{opacity:.7;font-size:.85em}
 #txt .dim{opacity:.7}
 #eq .m{font-weight:600;font-size:.72em;text-align:left;max-width:30em;margin:0 auto}
 #eq .m2{font-size:.8em}
-#eq .merk{display:inline-block;text-align:left;font-weight:600;font-size:.6em;line-height:1.45;max-width:40em;border:3px solid var(--c3);border-radius:14px;padding:.7em 1.2em;background:rgba(18,161,80,.08)}
+#eq .merk{display:inline-block;text-align:left;font-weight:600;font-size:.66em;line-height:1.45;max-width:40em;border:3px solid var(--c3);border-radius:14px;padding:.7em 1.2em;background:rgba(18,161,80,.08)}
 #eq .merk>div{display:grid;grid-template-columns:1.6em 1fr}
 #eq .merk>div+div{margin-top:.6em}
 .k.c1{color:var(--c1)}.k.c2{color:var(--c2)}.k.c3{color:var(--c3)}.k.cr{color:var(--cr)}
@@ -49,23 +49,23 @@ svg .ln{stroke:var(--fg);stroke-width:4;fill:none}
 svg .thin{stroke:var(--fg);stroke-width:2.5;fill:none}
 svg .head{fill:var(--head)}
 svg .tx{fill:var(--fg);font:700 30px system-ui,sans-serif}
-svg .ts{fill:var(--mut);font:600 24px system-ui,sans-serif}
+svg .ts{fill:var(--mut);font:600 30px system-ui,sans-serif}
 svg .th{fill:var(--fg);font:600 26px system-ui,sans-serif}
 svg .tn{fill:var(--fg);font:600 54px system-ui,sans-serif}
 svg .tnb{fill:var(--cr);font:600 54px system-ui,sans-serif}
 svg .tng{fill:var(--c1);font:600 54px system-ui,sans-serif}
 svg .thb{fill:var(--cr);font:600 26px system-ui,sans-serif}
 svg .thg{fill:var(--c1);font:600 26px system-ui,sans-serif}
-svg .tb{fill:var(--cr);font:700 30px system-ui,sans-serif}
-svg .tg{fill:var(--c1);font:700 30px system-ui,sans-serif}
+svg .tb{fill:var(--cr);font:700 38px system-ui,sans-serif}
+svg .tg{fill:var(--c1);font:700 38px system-ui,sans-serif}
 svg .tq{fill:var(--mut);font:600 54px system-ui,sans-serif}
 svg .tr{fill:var(--c1);font:700 54px system-ui,sans-serif}
 svg .bo{stroke:var(--c2);stroke-width:5;fill:none;stroke-linecap:round}
 svg .ah{fill:var(--c2)}
 svg .to{fill:var(--c2);font:700 42px system-ui,sans-serif}
-svg .to2{fill:var(--c2);font:700 34px system-ui,sans-serif}
-svg .tq2{fill:var(--mut);font:700 30px system-ui,sans-serif}
-svg .tq3{fill:var(--mut);font:600 28px system-ui,sans-serif}
+svg .to2{fill:var(--c2);font:700 40px system-ui,sans-serif}
+svg .tq2{fill:var(--mut);font:700 38px system-ui,sans-serif}
+svg .tq3{fill:var(--mut);font:600 34px system-ui,sans-serif}
 svg .tm{fill:var(--fg);font:600 22px system-ui,sans-serif;white-space:pre}
 svg .tmh{fill:var(--fg);font:700 22px system-ui,sans-serif}
 svg .labbg{fill:var(--bg)}
@@ -169,25 +169,25 @@ const W6 = 640, H6 = 420, W3i = 640, H3i = 495;
 // Foto mittig um cx, Unterkante bei yb, Höhe h
 const foto = (src, w0, h0, cx, yb, h) => { const w = Math.round(w0 * h / h0); return `<image href="${src}" x="${cx - w / 2}" y="${yb - h}" width="${w}" height="${h}"/>`; };
 // Pfeil nach rechts mit Rechenzeichen darüber
-const pfeilW = y => `<line class="bo" x1="425" y1="${y}" x2="655" y2="${y}"/><polygon class="ah" points="675,${y} 653,${y - 12} 653,${y + 12}"/>` + text(550, y - 26, ': 2', 'to2');
+const pfeilW = y => `<line class="bo" x1="442" y1="${y}" x2="638" y2="${y}"/><polygon class="ah" points="658,${y} 636,${y - 12} 636,${y + 12}"/>` + text(550, y - 26, ': 2', 'to2');
 // Folie 1 zeigt nur die Rechnung, Folie 2 dasselbe Bild mit Preis, Zuordnung und Proportionalität.
 const pv = () => step > 0 || vis('preis');
 function startFig() {
   let s = step === 0 ? '' : vis('zuo') ? '<g data-cx="550">' + text(540, 30, 'Anzahl der Schnellhefter', 'tb', 'end') + `<line class="pf" x1="552" y1="30" x2="582" y2="30"/><polygon class="pfh" points="594,30 580,22 580,38"/>` + text(606, 30, 'Preis', 'tg', 'start') + '</g>'
     : text(550, 30, 'Welche Größen sind einander zugeordnet?', 'tq3');
-  s += foto(IMG6, W6, H6, 300, 335, 230) + foto(IMG3, W3i, H3i, 800, 335, 230);
-  s += text(300, 362, 'Tom', 'ts') + text(800, 362, 'Mia', 'ts');
-  s += text(300, 400, '6 Schnellhefter', 'tb') + text(800, 400, '3 Schnellhefter', 'tb');
-  s += text(300, 465, '18 €', 'tg') + (pv() ? text(800, 465, '9 €', 'tg') : text(800, 465, '?', 'tq2'));
-  if (vis('k')) s += pfeilW(400);
-  if (vis('p')) s += pfeilW(465);
+  s += foto(IMG6, W6, H6, 270, 335, 230) + foto(IMG3, W3i, H3i, 830, 335, 230);
+  s += text(270, 365, 'Tom', 'ts') + text(830, 365, 'Mia', 'ts');
+  s += text(270, 408, '6 Schnellhefter', 'tb') + text(830, 408, '3 Schnellhefter', 'tb');
+  s += text(270, 478, '18 €', 'tg') + (pv() ? text(830, 478, '9 €', 'tg') : text(830, 478, '?', 'tq2'));
+  if (vis('k')) s += pfeilW(408);
+  if (vis('p')) s += pfeilW(478);
   return s;
 }
 function startHit(p) {
-  if (step === 0) return p.x >= 730 && p.x < 900 && p.y > 440 && p.y < 495 ? 'preis' : null;
+  if (step === 0) return p.x >= 730 && p.x < 930 && p.y > 450 && p.y < 510 ? 'preis' : null;
   if (p.y < 60) return 'zuo';
-  if (p.x > 380 && p.x < 720 && p.y > 360 && p.y < 432) return 'k';
-  if (p.x > 380 && p.x < 720 && p.y >= 432 && p.y < 505) return 'p';
+  if (p.x > 420 && p.x < 680 && p.y > 360 && p.y < 443) return 'k';
+  if (p.x > 420 && p.x < 680 && p.y >= 443 && p.y < 515) return 'p';
   return null;
 }
 function startEq() {
@@ -201,21 +201,21 @@ function startEq() {
 
 // ---------- Folie 2: Erinnerung an die letzte Stunde ----------
 const WZ = 1480, HZ = 470;
-const GZ = { L: 203, cw: 160, T: 30, hh: 85, rh: 85, fk: 28, fw: 44, fb: 32, a: 34 };
+const GZ = { L: 203, cw: 170, T: 20, hh: 95, rh: 105, fk: 30, fw: 52, fb: 36, a: 40 };
 function zweisatzFig() {
   let s = tab(GZ, [['1', '1,20'], ['2', '2,40'], ['3', '3,60'], ['6', '7,20']], [['Anzahl der', 'Kugeln'], ['Preis', 'in €']]);
-  for (const side of [-1, 1]) s += tbogen2(GZ, 0, 2, side, '· 3', 115) + tbogen(GZ, 0, side, '· 2') + tbogen(GZ, 2, side, '· 2');
-  const y0 = Math.round(GZ.T + (GZ.hh + 4 * GZ.rh) / 2 - 157);
-  s += `<rect class="merkbox" x="760" y="${y0}" width="700" height="314" rx="14"/>` + tt(786, y0 + 42, 'Zweisatz', 'tmh', 40, 'start');
-  const zl = (y, t, nr) => (nr ? tt(786, y0 + 52 + y, nr, 'tm', 28, 'start') : '') + tt(822, y0 + 52 + y, t, 'tm', 28, 'start');
-  s += zl(44, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(84, 'Trage die Werte ein, die du kennst.');
-  s += zl(140, 'Mit welcher Rechnung kommst du vom', '2.') + zl(180, 'oberen zum unteren Wert?') + zl(220, 'Rechne auf der anderen Seite genauso.');
+  for (const side of [-1, 1]) s += tbogen2(GZ, 0, 2, side, '· 3', 135) + tbogen(GZ, 0, side, '· 2') + tbogen(GZ, 2, side, '· 2');
+  const y0 = 60;
+  s += `<rect class="merkbox" x="780" y="${y0}" width="800" height="400" rx="14"/>` + tt(808, y0 + 48, 'Zweisatz', 'tmh', 46, 'start');
+  const zl = (y, t, nr) => (nr ? tt(808, y0 + 60 + y, nr, 'tm', 33, 'start') : '') + tt(850, y0 + 60 + y, t, 'tm', 33, 'start');
+  s += zl(50, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(96, 'Trage die Werte ein, die du kennst.');
+  s += zl(162, 'Mit welcher Rechnung kommst du vom', '2.') + zl(208, 'oberen zum unteren Wert?') + zl(254, 'Rechne auf der anderen Seite genauso.');
   return s;
 }
 
 // ---------- Folie 3: Zweisatz mit Teilen, Tabelle Schritt für Schritt wie beim Eis ----------
 const W3 = 1320, H3 = 445;
-const G3t = { L: 600, cw: 200, T: 40, hh: 85, rh: 110, fk: 28, fw: 48, fb: 34, a: 40 };
+const G3t = { L: 600, cw: 210, T: 40, hh: 92, rh: 115, fk: 30, fw: 48, fb: 34, a: 40 };
 function teilenFig() {
   let s = '<g data-fx="0.22">' + foto(IMG6, W6, H6, 150, 290, 220) + foto(IMG3, W3i, H3i, 470, 290, 220) +
     text(150, 322, 'Tom', 'ts') + text(470, 322, 'Mia', 'ts') + '</g>';
@@ -248,7 +248,7 @@ function teilenEq() {
 
 // ---------- Folie 4 und 5: über 1 ----------
 const W2 = 1100, H2 = 445;
-const G3 = { L: 350, cw: 200, T: 20, hh: 85, rh: 100, fk: 28, fw: 48, fb: 34, a: 36 };
+const G3 = { L: 340, cw: 210, T: 20, hh: 92, rh: 105, fk: 30, fw: 48, fb: 34, a: 36 };
 function brueckeFig() {
   let s = tab(G3, [['6', '18'], vis('eins') ? ['1', '?'] : ['', ''], ['4', '?']], true);
   if (vis('eins')) s += `<rect class="merkbox" x="70" y="${G3.T + G3.hh + G3.rh + 10}" width="220" height="80" rx="14"/>` + tt(180, G3.T + G3.hh + 1.5 * G3.rh, 'Zuerst auf 1', 'tmh', 30);
@@ -281,34 +281,34 @@ const dreiEq = () => {
 
 // ---------- Folie 5: fertige Tabelle mit Merksätzen ----------
 const W5 = 1480, H5 = 470;
-const G5 = { L: 183, cw: 200, T: 40, hh: 85, rh: 110, fk: 28, fw: 44, fb: 32, a: 38 };
+const G5 = { L: 183, cw: 210, T: 40, hh: 100, rh: 140, fk: 30, fw: 54, fb: 38, a: 44 };
 function merkFig() {
   let s = tab(G5, [['6', '18'], ['1', '3'], ['4', '12']], true);
   s += tbogen(G5, 0, -1, ': 6') + tbogen(G5, 0, 1, ': 6') + tbogen(G5, 1, -1, '· 4') + tbogen(G5, 1, 1, '· 4');
   // Die Überschrift Dreisatz steht oben im Merkkasten, die Folie selbst hat keine.
   // Merksätze nah am Schulbuch (Dreifach Mathe, Wissen: Werte mit dem Dreisatz berechnen)
   const y0 = 8;
-  s += `<rect class="merkbox" x="760" y="${y0}" width="710" height="454" rx="14"/>` + tt(786, y0 + 40, 'Dreisatz', 'tmh', 38, 'start');
-  const zl = (y, t, nr) => (nr ? tt(786, y0 + 50 + y, nr, 'tm', 26, 'start') : '') + tt(820, y0 + 50 + y, t, 'tm', 26, 'start');
-  s += zl(36, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(72, 'Trage die Werte ein, die du kennst.') + zl(108, 'Trage in der mittleren Zeile eine 1 ein.');
-  s += zl(160, 'Mit welcher Rechnung kommst du vom', '2.') + zl(196, 'oberen Wert zur 1: mal oder geteilt?') + zl(232, 'Rechne auf der anderen Seite genauso.');
-  s += zl(284, 'Mit welcher Rechnung kommst du von', '3.') + zl(320, 'der 1 zum unteren Wert: mal oder geteilt?') + zl(356, 'Rechne auf der anderen Seite genauso.');
+  s += `<rect class="merkbox" x="790" y="${y0}" width="820" height="556" rx="14"/>` + tt(818, y0 + 46, 'Dreisatz', 'tmh', 44, 'start');
+  const zl = (y, t, nr) => (nr ? tt(818, y0 + 58 + y, nr, 'tm', 31, 'start') : '') + tt(858, y0 + 58 + y, t, 'tm', 31, 'start');
+  s += zl(44, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(88, 'Trage die Werte ein, die du kennst.') + zl(132, 'Trage in der mittleren Zeile eine 1 ein.');
+  s += zl(196, 'Mit welcher Rechnung kommst du vom', '2.') + zl(240, 'oberen Wert zur 1: mal oder geteilt?') + zl(284, 'Rechne auf der anderen Seite genauso.');
+  s += zl(348, 'Mit welcher Rechnung kommst du von', '3.') + zl(392, 'der 1 zum unteren Wert: mal oder geteilt?') + zl(436, 'Rechne auf der anderen Seite genauso.');
   return s;
 }
 
 // seq: Weiter deckt die Teile einzeln in dieser Reihenfolge auf, Zurück nimmt den letzten wieder weg.
 // chain: Ein Teil zieht die vorigen mit, Zudecken nimmt die späteren mit.
 const STEPS = [
-  { t: 'Mia kauft Schnellhefter', vb: [W1, H1], seq: 1, parts: ['preis'], hit: startHit, fig: startFig,
+  { t: 'Mia kauft Schnellhefter', vb: [920, 506, 90, 2], seq: 1, parts: ['preis'], hit: startHit, fig: startFig,
     txt: () => `Tom kauft ${KB('6 Schnellhefter')} für ${KG('18 €')}. Mia möchte nur ${KB('3 Schnellhefter')}. Wie viel bezahlt sie?`, eq: startEq },
-  { t: 'Überlege zuerst', vb: [W1, H1], seq: 1, parts: ['zuo', 'k', 'p', 'prop'], hit: startHit, eqHit: 'prop', fig: startFig, eq: startEq },
-  { t: 'Letzte Stunde: Zweisatz', noT: 1, vb: [WZ, HZ], fig: zweisatzFig },
-  { t: 'Zweisatz mit Teilen', vb: [W3, H3], seq: 1, parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r'], hit: teilenHit, fig: teilenFig, eq: teilenEq },
-  { t: 'Ein Schritt reicht nicht immer', vb: [W2, H2], seq: 1, parts: ['eins'], hit: brueckeHit, fig: brueckeFig,
+  { t: 'Überlege zuerst', vb: [920, 506, 90, 2], seq: 1, parts: ['zuo', 'k', 'p', 'prop'], hit: startHit, eqHit: 'prop', fig: startFig, eq: startEq },
+  { t: 'Letzte Stunde: Zweisatz', noT: 1, vb: [1595, 528, -5, 12], fig: zweisatzFig },
+  { t: 'Zweisatz mit Teilen', vb: [1320, 345, 0, 28], seq: 1, parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r'], hit: teilenHit, fig: teilenFig, eq: teilenEq },
+  { t: 'Ein Schritt reicht nicht immer', vb: [810, 420, 60, 12], seq: 1, parts: ['eins'], hit: brueckeHit, fig: brueckeFig,
     txt: () => `${KB('6 Schnellhefter')} kosten ${KG('18 €')}. Was kosten ${KB('4 Schnellhefter')}?`, eq: brueckeEq },
-  { t: 'Dreisatz: erst auf 1, dann zum Ziel', vb: [W2, H2], seq: 1, chain: 1, parts: ['teilen', 'mal', 'antwort'], hit: dreiHit, fig: dreiFig,
+  { t: 'Dreisatz: erst auf 1, dann zum Ziel', vb: [810, 420, 60, 12], seq: 1, chain: 1, parts: ['teilen', 'mal', 'antwort'], hit: dreiHit, fig: dreiFig,
     txt: 'Auf beiden Seiten rechnen wir immer gleich.', eq: dreiEq },
-  { t: 'Dreisatz', noT: 1, vb: [W5, H5], fig: merkFig }
+  { t: 'Dreisatz', noT: 1, vb: [1555, 568, 62, 2], fig: merkFig }
 ];
 
 // ---------- Ablauf ----------
@@ -354,8 +354,9 @@ function render() {
   // Erst Text und Rechnung setzen, damit die Größe des Bildes feststeht, bevor es gezeichnet wird.
   put(st); grow();
   // Das Bild wird jedes Mal als neues Element eingesetzt. So bleiben auf dem iPad keine Reste des alten Stands stehen.
-  const [vw, vh] = st.vb || [800, 520], alt = $('fig'), neu = alt.cloneNode(false);
-  neu.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+  // vb: [Breite, Höhe, links, oben]. Links und oben schneiden leeren Rand weg, damit das Bild die Fläche besser nutzt.
+  const [vw, vh, vx = 0, vy = 0] = st.vb || [800, 520], alt = $('fig'), neu = alt.cloneNode(false);
+  neu.setAttribute('viewBox', `${vx} ${vy} ${vw} ${vh}`);
   neu.innerHTML = st.fig();
   alt.replaceWith(neu);
   // Gruppen mit data-cx werden nach ihrer tatsächlichen Breite mittig auf diese Stelle gesetzt.
@@ -366,7 +367,7 @@ function render() {
   const r = neu.getBoundingClientRect(), sc = Math.min(r.width / vw, r.height / vh), sw = r.width / sc;
   neu.querySelectorAll('[data-fx]').forEach(g => {
     const m = g.dataset.m ? +g.dataset.m : (b => b.x + b.width / 2)(g.getBBox());
-    const d = (vw - sw) / 2 + +g.dataset.fx * sw - m;
+    const d = vx + (vw - sw) / 2 + +g.dataset.fx * sw - m;
     FX[g.dataset.k || ''] = d; g.setAttribute('transform', `translate(${d},0)`);
   });
   if (shownStep !== step) {
@@ -411,9 +412,9 @@ document.addEventListener('keydown', e => {
 });
 // Antippen im Bild deckt den Teil an dieser Stelle auf, nochmal Antippen verdeckt ihn wieder.
 function svgPt(e) {
-  const [vw, vh] = STEPS[step].vb || [800, 520];
+  const [vw, vh, vx = 0, vy = 0] = STEPS[step].vb || [800, 520];
   const r = $('fig').getBoundingClientRect(), sc = Math.min(r.width / vw, r.height / vh);
-  return { x: (e.clientX - r.left - (r.width - vw * sc) / 2) / sc, y: (e.clientY - r.top - (r.height - vh * sc) / 2) / sc };
+  return { x: vx + (e.clientX - r.left - (r.width - vw * sc) / 2) / sc, y: vy + (e.clientY - r.top - (r.height - vh * sc) / 2) / sc };
 }
 // Das Bild wird bei jedem Zeichnen ersetzt, deshalb hört die Seite selbst auf Tipps ins Bild.
 document.addEventListener('pointerdown', e => {
