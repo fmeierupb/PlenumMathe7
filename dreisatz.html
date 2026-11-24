@@ -142,7 +142,7 @@ function tab(g, rows, kopf) {
   s += `<rect class="ln" x="${g.L}" y="${g.T}" width="${2 * g.cw}" height="${B - g.T}"/>`;
   s += `<line class="ln" x1="${M}" y1="${g.T}" x2="${M}" y2="${B}"/><line class="ln" x1="${g.L}" y1="${H}" x2="${R}" y2="${H}"/>`;
   for (let i = 1; i < n; i++) s += `<line class="thin" x1="${g.L}" y1="${H + i * g.rh}" x2="${R}" y2="${H + i * g.rh}"/>`;
-  if (kopf) KOPF.forEach((ls, j) => ls.forEach((l, i) => { s += tt(cx[j], g.T + g.hh / 2 + (i - 0.5) * g.fk * 1.2, l, j ? 'fb' : 'fr', g.fk); }));
+  if (kopf) (kopf === true ? KOPF : kopf).forEach((ls, j) => ls.forEach((l, i) => { s += tt(cx[j], g.T + g.hh / 2 + (i - 0.5) * g.fk * 1.2, l, j ? 'fb' : 'fr', g.fk); }));
   const cell = (x, y, v, k) => v === '?' ? tt(x, y, '?', 'fq', g.fw) : v ? tt(x, y, v, k, g.fw) : '';
   rows.forEach(([l, r], i) => { s += cell(cx[0], ry(i), l, 'fr') + cell(cx[1], ry(i), r, 'fb'); });
   return s;
@@ -153,52 +153,104 @@ const tbogen = (g, i, side, lab) => {
   return ebogen(side < 0 ? g.L - 15 : g.L + 2 * g.cw + 15, g.a, ry(i) + 4, ry(i + 1), lab, g.fb, side);
 };
 
+// Bogen von Zeile i nach Zeile j mit eigener Ausbuchtung a
+const tbogen2 = (g, i, j, side, lab, a) => {
+  const H = g.T + g.hh, ry = k => H + (k + 0.5) * g.rh;
+  return ebogen(side < 0 ? g.L - 15 : g.L + 2 * g.cw + 15, a, ry(i) - 4, ry(j), lab, g.fb, side);
+};
+
 // ---------- Folie 1: Mia kauft Hefte (Breitbild) ----------
+// Erst die Rechnung, dann auf derselben Folie die Zuordnung und die Frage nach der Proportionalität. Wie beim Eis.
 const W1 = 1100, H1 = 520;
 function heft(x, y) {
   return `<g transform="translate(${x},${y})"><rect class="note" x="0" y="0" width="72" height="92" rx="7"/>` +
     [27, 43, 59, 75].map(l => `<line class="noteLine" x1="14" y1="${l}" x2="60" y2="${l}"/>`).join('') +
     [18, 46, 74].map(r => `<circle class="ring" cx="5" cy="${r}" r="4"/>`).join('') + '</g>';
 }
-// n Hefte als Stapel in Reihen zu drei, Unterkante bei yb, mittig um cx
+// n Hefte in Reihen zu drei, Unterkante bei yb, mittig um cx
 function hefte(cx, yb, n) {
   const rows = Math.ceil(n / 3); let s = '';
   for (let i = 0; i < n; i++) { const r = Math.floor(i / 3), c = i % 3; s += heft(cx - 128 + c * 88, yb - 92 - (rows - 1 - r) * 108); }
   return s;
 }
+// Pfeil nach rechts mit Rechenzeichen darüber
+const pfeilW = y => `<line class="bo" x1="400" y1="${y}" x2="680" y2="${y}"/><polygon class="ah" points="700,${y} 678,${y - 12} 678,${y + 12}"/>` + text(550, y - 26, ': 2', 'to2');
 function startFig() {
-  let s = hefte(300, 330, 6) + hefte(800, 330, 3);
+  let s = !vis('preis') ? '' : vis('zuo') ? '<g data-cx="550">' + text(540, 30, 'Anzahl der Hefte', 'tb', 'end') + `<line class="pf" x1="552" y1="30" x2="582" y2="30"/><polygon class="pfh" points="594,30 580,22 580,38"/>` + text(606, 30, 'Preis', 'tg', 'start') + '</g>'
+    : text(550, 30, 'Welche Größen sind einander zugeordnet?', 'tq3');
+  s += hefte(300, 330, 6) + hefte(800, 330, 3);
   s += text(300, 362, 'Laden', 'ts') + text(800, 362, 'Mia', 'ts');
   s += text(300, 400, '6 Hefte', 'tb') + text(800, 400, '3 Hefte', 'tb');
   s += text(300, 465, '18 €', 'tg') + (vis('preis') ? text(800, 465, '9 €', 'tg') : text(800, 465, '?', 'tq2'));
+  if (vis('k')) s += pfeilW(400);
+  if (vis('p')) s += pfeilW(465);
   return s;
 }
-const startHit = p => p.x >= 700 && p.x < 900 && p.y > 440 && p.y < 495 ? 'preis' : null;
-
-// ---------- Folie 2: Zweisatz mit Teilen ----------
-const W2 = 1100, H2 = 445;
-const G2 = { L: 390, cw: 160, T: 40, hh: 85, rh: 110, fk: 28, fw: 48, fb: 34, a: 40 };
-function teilenFig() {
-  let s = tab(G2, [['6', '18'], ['3', '9']], vis('kopf'));
-  if (vis('links')) s += tbogen(G2, 0, -1, ': 2');
-  if (vis('rechts')) s += tbogen(G2, 0, 1, ': 2');
-  return s;
-}
-function teilenHit(p) {
-  const R = G2.L + 2 * G2.cw, H = G2.T + G2.hh;
-  if (p.x >= G2.L && p.x <= R && p.y < H) return 'kopf';
-  if (p.y > H && p.x < G2.L && p.x > G2.L - 200) return 'links';
-  if (p.y > H && p.x > R && p.x < R + 200) return 'rechts';
+function startHit(p) {
+  if (p.x >= 730 && p.x < 900 && p.y > 440 && p.y < 495) return 'preis';
+  if (!vis('preis')) return null;
+  if (p.y < 60) return 'zuo';
+  if (p.x > 380 && p.x < 720 && p.y > 360 && p.y < 432) return 'k';
+  if (p.x > 380 && p.x < 720 && p.y >= 432 && p.y < 505) return 'p';
   return null;
 }
-// Erst der Satz zu den Bögen, darunter die Frage. Die Antwort kommt mit einem Tipp auf die Frage.
-function teilenEq() {
-  const l = vis('links'), r = vis('rechts');
-  const satz = l && r ? `Halb so viele ${KB('Hefte')} kosten halb so viel ${KG('Geld')}.` : l ? `Halb so viele ${KB('Hefte')} …` : r ? `… halb so viel ${KG('Geld')}.` : '&nbsp;';
-  return `<div class="m2">${satz}</div>` + (vis('prop') ? '<div class="m2 tap">Ja, die Zuordnung ist proportional.</div>' : '<div class="m2 dim tap">Ist die Zuordnung proportional?</div>');
+function startEq() {
+  if (!vis('preis')) return '';
+  const k = vis('k'), q = vis('p');
+  const satz = k && q ? `Halb so viele ${KB('Hefte')}, halb so viel ${KG('Geld')}.` : k ? `Halb so viele ${KB('Hefte')} …` : q ? `… halb so viel ${KG('Geld')}.` : '&nbsp;';
+  return `<div class="m2">${KG('18 €')} ${opd(2)} = ${KG('9 €')}</div><div class="m2">${satz}</div>` +
+    (vis('prop') ? '<div class="m2 tap">Ja, die Zuordnung ist proportional.</div>' : '<div class="m2 dim tap">Ist die Zuordnung proportional?</div>');
 }
 
-// ---------- Folie 3 und 4: über 1 ----------
+// ---------- Folie 2: Erinnerung an die letzte Stunde ----------
+const WZ = 1480, HZ = 470;
+const GZ = { L: 203, cw: 160, T: 30, hh: 85, rh: 85, fk: 28, fw: 44, fb: 32, a: 34 };
+function zweisatzFig() {
+  let s = tab(GZ, [['1', '1,20'], ['2', '2,40'], ['3', '3,60'], ['6', '7,20']], [['Anzahl der', 'Kugeln'], ['Preis', 'in €']]);
+  for (const side of [-1, 1]) s += tbogen2(GZ, 0, 2, side, '· 3', 115) + tbogen(GZ, 0, side, '· 2') + tbogen(GZ, 2, side, '· 2');
+  const y0 = Math.round(GZ.T + (GZ.hh + 4 * GZ.rh) / 2 - 157);
+  s += `<rect class="merkbox" x="760" y="${y0}" width="700" height="314" rx="14"/>` + tt(786, y0 + 42, 'Zweisatz', 'tmh', 40, 'start');
+  const zl = (y, t, nr) => (nr ? tt(786, y0 + 52 + y, nr, 'tm', 28, 'start') : '') + tt(822, y0 + 52 + y, t, 'tm', 28, 'start');
+  s += zl(44, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(84, 'Trage die Werte ein, die du kennst.');
+  s += zl(140, 'Mit welcher Rechnung kommst du vom', '2.') + zl(180, 'oberen zum unteren Wert?') + zl(220, 'Rechne auf der anderen Seite genauso.');
+  return s;
+}
+
+// ---------- Folie 3: Zweisatz mit Teilen, Tabelle Schritt für Schritt wie beim Eis ----------
+const W3 = 1320, H3 = 445;
+const G3t = { L: 640, cw: 160, T: 40, hh: 85, rh: 110, fk: 28, fw: 48, fb: 34, a: 40 };
+function teilenFig() {
+  let s = `<g data-fx="0.22"><g transform="translate(60,40) scale(.62)">${hefte(300, 330, 6)}</g><g transform="translate(300,40) scale(.62)">${hefte(300, 330, 3)}</g>` +
+    text(246, 300, 'Laden', 'ts') + text(486, 300, 'Mia', 'ts') + '</g>';
+  const r2 = vis('z2l') ? ['3', vis('z2r') ? '9' : '?'] : ['', ''];
+  s += `<g data-fx="0.72" data-m="${G3t.L + G3t.cw}" data-k="tab">` + tab(G3t, [vis('z1') ? ['6', '18'] : ['', ''], r2], vis('kopf'));
+  if (vis('b2l')) s += tbogen(G3t, 0, -1, ': 2');
+  if (vis('b2r')) s += tbogen(G3t, 0, 1, ': 2');
+  return s + '</g>';
+}
+function teilenHit(p) {
+  p = { x: p.x - (FX.tab || 0), y: p.y };
+  const L = G3t.L, M = L + G3t.cw, R = M + G3t.cw, H = G3t.T + G3t.hh;
+  if (p.x >= L && p.x <= R) {
+    if (p.y < H) return 'kopf';
+    if (p.y < H + G3t.rh) return 'z1';
+    return p.x < M ? 'z2l' : 'z2r';
+  }
+  if (p.y > H && p.x < L && p.x > L - 200) return 'b2l';
+  if (p.y > H && p.x > R && p.x < R + 200) return 'b2r';
+  return null;
+}
+// Merksätze wie beim Eis, nur jetzt mit Teilen
+function teilenEq() {
+  const z = [];
+  const werte = ['z1', 'z2l'].some(vis);
+  if (vis('kopf') || werte) z.push(`<div><b>1.</b><span>Zeichne eine Tabelle und beschrifte sie.${werte ? '<br>Trage die Werte ein, die du kennst.' : ''}</span></div>`);
+  if (['b2l', 'b2r'].some(vis)) z.push(`<div><b>2.</b><span>Mit welcher Rechnung kommst du vom oberen zum unteren Wert?${vis('b2r') ? '<br>Rechne auf der anderen Seite genauso.' : ''}</span></div>`);
+  return z.length ? `<div class="merk">${z.join('')}</div>` : '';
+}
+
+// ---------- Folie 4 und 5: über 1 ----------
+const W2 = 1100, H2 = 445;
 const G3 = { L: 390, cw: 160, T: 20, hh: 85, rh: 100, fk: 28, fw: 48, fb: 34, a: 36 };
 function brueckeFig() {
   let s = tab(G3, [['6', '18'], vis('eins') ? ['1', '?'] : ['', ''], ['4', '?']], true);
@@ -248,12 +300,10 @@ function merkFig() {
 // seq: Weiter deckt die Teile einzeln in dieser Reihenfolge auf, Zurück nimmt den letzten wieder weg.
 // chain: Ein Teil zieht die vorigen mit, Zudecken nimmt die späteren mit.
 const STEPS = [
-  { t: 'Mia kauft Hefte', vb: [W1, H1], seq: 1, parts: ['preis'], hit: startHit, fig: startFig,
-    txt: () => `${KB('6 Hefte')} kosten ${KG('18 €')}. Mia möchte nur ${KB('3 Hefte')}. Wie viel bezahlt sie?`,
-    eq: () => vis('preis') ? `<div class="m2">${KG('18 €')} ${opd(2)} = ${KG('9 €')}</div>` : '' },
-  { t: 'Zweisatz mit Teilen', vb: [W2, H2], seq: 1, parts: ['kopf', 'links', 'rechts', 'prop'], hit: teilenHit, eqHit: 'prop', fig: teilenFig,
-    txt: () => vis('kopf') ? `Anzahl der ${KB('Hefte')} → ${KG('Preis')}` : '<span class="dim">Welche Größen sind einander zugeordnet?</span>',
-    eq: teilenEq },
+  { t: 'Mia kauft Hefte', vb: [W1, H1], seq: 1, parts: ['preis', 'zuo', 'k', 'p', 'prop'], hit: startHit, eqHit: 'prop', fig: startFig,
+    txt: () => `${KB('6 Hefte')} kosten ${KG('18 €')}. Mia möchte nur ${KB('3 Hefte')}. Wie viel bezahlt sie?`, eq: startEq },
+  { t: 'Letzte Stunde: Zweisatz', noT: 1, vb: [WZ, HZ], fig: zweisatzFig },
+  { t: 'Zweisatz mit Teilen', vb: [W3, H3], seq: 1, parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r'], hit: teilenHit, fig: teilenFig, eq: teilenEq },
   { t: 'Ein Schritt reicht nicht immer', vb: [W2, H2], seq: 1, parts: ['eins'], hit: brueckeHit, fig: brueckeFig,
     txt: () => `${KB('6 Hefte')} kosten ${KG('18 €')}. Was kosten ${KB('4 Hefte')}?`, eq: brueckeEq },
   { t: 'Dreisatz: erst auf 1, dann zum Ziel', vb: [W2, H2], seq: 1, chain: 1, parts: ['teilen', 'mal', 'antwort'], hit: dreiHit, fig: dreiFig,
