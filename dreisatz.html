@@ -269,12 +269,13 @@ const W2 = 1100, H2 = 445;
 const G3 = { L: 340, cw: 210, T: 20, hh: 92, rh: 105, fk: 30, fw: 48, fb: 34, a: 36 };
 // Folie 5: links kleiner die Bilder und darunter die Stichworte, rechts groß die Tabelle.
 const W7 = 1150, H7 = 592;
-const G6 = { L: 683, cw: 180, T: 99, hh: 96, rh: 110, fk: 26, fw: 62, fb: 36, a: 36 };
+// Tabelle in denselben Schriftgrößen wie auf Folie 4
+const G6 = { L: 686, cw: 183, T: 117, hh: 80, rh: 100, fk: 26, fw: 42, fb: 30, a: 35 };
 function dreiFig() {
   const werte = ['z1l', 'z1r', 'z3l'].some(vis), k1 = vis('kopf') || werte;
   const k2 = ['z2l', 'b1l', 'b1r', 'z2r'].some(vis), k3 = ['b2l', 'b2r', 'z3r'].some(vis);
   let s = '<g data-fx="0.2435" data-m="280">' + foto(IMG6, W6, H6, 158, 225, 205) + foto(IMG4, W4i, H4i, 493, 225, 205) +
-    text(158, 257, 'Tom', 'ts') + text(493, 257, 'Ben', 'ts');
+    tt(158, 254, 'Tom', 'ts', 26) + tt(493, 254, 'Ben', 'ts', 26);
   // Stichworte statt Buchwortlaut, damit es von hinten lesbar bleibt. Der Buchwortlaut steht auf der letzten Folie.
   // Der Kasten steht ganz da, sobald der erste Teil aufgedeckt ist. Noch nicht aufgedeckte Wörter sind unsichtbar.
   if (k1) {
@@ -317,14 +318,15 @@ function dreiHit(p) {
   return null;
 }
 // ---------- Folie 5: fertige Tabelle mit Merksätzen ----------
-const W5 = 1380, H5 = 590;
-const G5 = { L: 104, cw: 145, T: 14, hh: 96, rh: 155, fk: 21, fw: 54, fb: 32, a: 36 };
+// Tabelle im selben Verhältnis wie auf Folie 4 und 5, nur kleiner, damit der Merkkasten groß bleibt
+const W5 = 1418, H5 = 590;
+const G5 = { L: 95, cw: 179, T: 107, hh: 79, rh: 99, fk: 25.6, fw: 41.5, fb: 29.3, a: 30 };
 function merkFig() {
   let s = tab(G5, [['6', '18'], ['1', '3'], ['4', '12']], true);
   s += tbogen(G5, 0, -1, ': 6') + tbogen(G5, 0, 1, ': 6') + tbogen(G5, 1, -1, '· 4') + tbogen(G5, 1, 1, '· 4');
   // Die Überschrift Dreisatz steht oben im Merkkasten, die Folie selbst hat keine.
   // Merksätze nah am Schulbuch (Dreifach Mathe, Wissen: Werte mit dem Dreisatz berechnen)
-  const x0 = 524, y0 = 4, F = 36;
+  const x0 = 562, y0 = 4, F = 36;
   s += `<rect class="merkbox" x="${x0}" y="${y0}" width="${W5 - x0 - 4}" height="582" rx="14"/>` + tt(x0 + 28, y0 + 48, 'Dreisatz', 'tmh', 50, 'start');
   const zl = (y, t, nr) => (nr ? tt(x0 + 28, y, nr, 'tm', F, 'start') : '') + tt(x0 + 68, y, t, 'tm', F, 'start');
   s += zl(120, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(169, 'Trage die Werte ein, die du kennst.') + zl(218, 'Trage in der mittleren Zeile eine 1 ein.');
