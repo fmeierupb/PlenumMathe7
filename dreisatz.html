@@ -386,6 +386,9 @@ function merkFig() {
     h = (3.33 + 1.36 * (Z.flat().length - 1) + 0.5 * (Z.length - 1) + 0.95) * F;
     if (h <= BH) break;
   }
+  // Etwas kleiner als der größtmögliche Wert
+  F *= 0.88; Z = S.map(r => umbruch(r.map(t => [t, true]), F, BW - 2.67 * F));
+  h = (3.33 + 1.36 * (Z.flat().length - 1) + 0.5 * (Z.length - 1) + 0.95) * F;
   const bx = (W5 - sw) / 2 + M, by = (H5 - h) / 2;
   let s = `<rect class="merkbox" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${BW.toFixed(1)}" height="${h.toFixed(1)}" rx="16"/>` +
     tt(bx + 0.78 * F, by + 1.33 * F, 'Dreisatz', 'tmh', 1.39 * F, 'start');
