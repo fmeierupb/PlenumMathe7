@@ -262,7 +262,7 @@ const G3 = { L: 340, cw: 210, T: 20, hh: 92, rh: 105, fk: 30, fw: 48, fb: 34, a:
 // Dreisatz-Folie im Breitbild: links die Tabelle, rechts die Schritte als Text im Bild, damit die Tabelle groß bleibt.
 const G6 = { L: 150, cw: 210, T: 20, hh: 92, rh: 105, fk: 30, fw: 48, fb: 34, a: 36 };
 // Zeile aus farbigen Stücken: [Text, Klasse] mit r rot, b blau, o orange, sonst schwarz
-const zeile = (y, teile, dim) => `<text class="tz${dim ? ' tzd' : ''}" x="760" y="${y}" dominant-baseline="central">` +
+const zeile = (y, teile, dim) => `<text class="tz${dim ? ' tzd' : ''}" x="760" y="${y}" dominant-baseline="central" xml:space="preserve">` +
   teile.map(([t, c]) => c ? `<tspan class="z${c}">${t}</tspan>` : t).join('') + '</text>';
 // Alles einzeln: Werte, Bögen und jede Textzeile erscheinen per Weiter der Reihe nach oder per Antippen.
 // Rechts stehen die Zeilen auf festen Plätzen, damit nichts springt, wenn etwas dazukommt.
