@@ -179,7 +179,7 @@ function startFig() {
   let s = !vis('preis') ? '' : vis('zuo') ? '<g data-cx="550">' + text(540, 30, 'Anzahl der Hefte', 'tb', 'end') + `<line class="pf" x1="552" y1="30" x2="582" y2="30"/><polygon class="pfh" points="594,30 580,22 580,38"/>` + text(606, 30, 'Preis', 'tg', 'start') + '</g>'
     : text(550, 30, 'Welche Größen sind einander zugeordnet?', 'tq3');
   s += hefte(300, 330, 6) + hefte(800, 330, 3);
-  s += text(300, 362, 'Laden', 'ts') + text(800, 362, 'Mia', 'ts');
+  s += text(300, 362, 'Tom', 'ts') + text(800, 362, 'Mia', 'ts');
   s += text(300, 400, '6 Hefte', 'tb') + text(800, 400, '3 Hefte', 'tb');
   s += text(300, 465, '18 €', 'tg') + (vis('preis') ? text(800, 465, '9 €', 'tg') : text(800, 465, '?', 'tq2'));
   if (vis('k')) s += pfeilW(400);
@@ -221,7 +221,7 @@ const W3 = 1320, H3 = 445;
 const G3t = { L: 640, cw: 160, T: 40, hh: 85, rh: 110, fk: 28, fw: 48, fb: 34, a: 40 };
 function teilenFig() {
   let s = `<g data-fx="0.22"><g transform="translate(60,40) scale(.62)">${hefte(300, 330, 6)}</g><g transform="translate(300,40) scale(.62)">${hefte(300, 330, 3)}</g>` +
-    text(246, 300, 'Laden', 'ts') + text(486, 300, 'Mia', 'ts') + '</g>';
+    text(246, 300, 'Tom', 'ts') + text(486, 300, 'Mia', 'ts') + '</g>';
   const r2 = vis('z2l') ? ['3', vis('z2r') ? '9' : '?'] : ['', ''];
   s += `<g data-fx="0.72" data-m="${G3t.L + G3t.cw}" data-k="tab">` + tab(G3t, [vis('z1') ? ['6', '18'] : ['', ''], r2], vis('kopf'));
   if (vis('b2l')) s += tbogen(G3t, 0, -1, ': 2');
@@ -301,7 +301,7 @@ function merkFig() {
 // chain: Ein Teil zieht die vorigen mit, Zudecken nimmt die späteren mit.
 const STEPS = [
   { t: 'Mia kauft Hefte', vb: [W1, H1], seq: 1, parts: ['preis', 'zuo', 'k', 'p', 'prop'], hit: startHit, eqHit: 'prop', fig: startFig,
-    txt: () => `${KB('6 Hefte')} kosten ${KG('18 €')}. Mia möchte nur ${KB('3 Hefte')}. Wie viel bezahlt sie?`, eq: startEq },
+    txt: () => `Tom kauft ${KB('6 Hefte')} für ${KG('18 €')}. Mia möchte nur ${KB('3 Hefte')}. Wie viel bezahlt sie?`, eq: startEq },
   { t: 'Letzte Stunde: Zweisatz', noT: 1, vb: [WZ, HZ], fig: zweisatzFig },
   { t: 'Zweisatz mit Teilen', vb: [W3, H3], seq: 1, parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r'], hit: teilenHit, fig: teilenFig, eq: teilenEq },
   { t: 'Ein Schritt reicht nicht immer', vb: [W2, H2], seq: 1, parts: ['eins'], hit: brueckeHit, fig: brueckeFig,
