@@ -306,11 +306,12 @@ function dreiFig() {
   // Sind die bekannten Werte eingetragen, braucht es die Fotos nicht mehr. Dann steht der Kasten groß links neben der Tabelle.
   const gross = ['z1l', 'z1r', 'z3l'].every(vis) || ['z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'].some(vis);
   // Die ganze sichtbare Breite wird genutzt: rechts die Tabelle, links der Kasten. Auf breiten Bildschirmen wird beides größer.
-  const sw = sichtbar(W7, H7), x0 = (W7 - sw) / 2, x1 = x0 + sw;
+  // Ringsherum bleibt ein Rand von M frei.
+  const M = 20, sw = sichtbar(W7, H7), x0 = (W7 - sw) / 2 + M, x1 = x0 + sw - 2 * M;
   const g = Math.min(1.6, 1.1 + 0.45 * (sw - W7) / 560);
   const G = { cw: 183 * g, hh: 80 * g, rh: 100 * g, fk: 26 * g, fw: 44 * g, fb: 32 * g, a: 32 * g };
   G.m = 23 + G.a + 1.4 * G.fb; G.L = x1 - G.m - 2 * G.cw; G.T = (H7 - G.hh - 3 * G.rh) / 2; G6 = G;
-  const bx = x0 + 2, bw = G.L - G.m - 22 - bx;
+  const bx = x0, bw = G.L - G.m - 22 - bx;
   let s = '';
   // Der Dreisatz aus dem Buch entsteht Satz für Satz mit den Schritten in der Tabelle. Noch nicht aufgedeckte Sätze sind unsichtbar.
   const R = [[k1, [['Zeichne eine Tabelle und beschrifte sie.', k1], ['Trage die Werte ein, die du kennst.', werte], ['Trage in der mittleren Zeile eine 1 ein.', vis('z2l')]]],
@@ -319,14 +320,14 @@ function dreiFig() {
   const sp = 1.22, hoehe = (Z, F) => (2.24 + sp * (Z.reduce((m, r) => m + r[1].length, 0) - 1) + 0.45 * (Z.length - 1)) * F;
   // Schrift so groß, wie der ganze Dreisatz im großen Kasten Platz hat. Mit den Fotos gilt dieselbe Schrift.
   let F = 44, Z;
-  for (; F > 20; F--) { Z = R.map(([on, st]) => [on, umbruch(st, F, bw - 2.6 * F)]); if (hoehe(Z, F) <= H7 - 8) break; }
+  for (; F > 20; F--) { Z = R.map(([on, st]) => [on, umbruch(st, F, bw - 2.6 * F)]); if (hoehe(Z, F) <= H7 - 2 * M) break; }
   // Mit den Fotos: Fotos oben so breit wie der Kasten, darunter der Kasten mit dem ersten Satz.
   let y0;
   if (!gross) {
     const hf = Math.min(230, (bw - 14) / 3.077), w6 = W6 * hf / H6, w4 = W4i * hf / H4i, fx = bx + (bw - w6 - w4 - 14) / 2;
-    s += foto(IMG6, W6, H6, fx + w6 / 2, 20 + hf, hf) + foto(IMG4, W4i, H4i, fx + w6 + 14 + w4 / 2, 20 + hf, hf) +
-      tt(fx + w6 / 2, 49 + hf, 'Tom', 'ts', 26 * g) + tt(fx + w6 + 14 + w4 / 2, 49 + hf, 'Ben', 'ts', 26 * g);
-    Z = Z.slice(0, 1); y0 = 80 + hf;
+    s += foto(IMG6, W6, H6, fx + w6 / 2, M + hf, hf) + foto(IMG4, W4i, H4i, fx + w6 + 14 + w4 / 2, M + hf, hf) +
+      tt(fx + w6 / 2, M + 29 + hf, 'Tom', 'ts', 26 * g) + tt(fx + w6 + 14 + w4 / 2, M + 29 + hf, 'Ben', 'ts', 26 * g);
+    Z = Z.slice(0, 1); y0 = M + 60 + hf;
   }
   if (k1) {
     const h = hoehe(Z, F);
@@ -364,16 +365,37 @@ function dreiHit(p) {
 }
 // ---------- Letzte Folie: nur der Dreisatz als großer Merkkasten ----------
 // Merksätze nah am Schulbuch (Dreifach Mathe, Wissen: Werte mit dem Dreisatz berechnen)
-const F8 = 44, W5 = Math.round(23.6 * F8) + 6, H5 = Math.round(16.17 * F8) + 6;
+const W5 = 1045, H5 = 717;
 function merkFig() {
-  // Der Kasten reicht über die ganze sichtbare Breite. Der Text steht als Block mittig darin.
-  const F = F8, sw = sichtbar(W5, H5), bx = (W5 - sw) / 2 + 3, y0 = 3, z = k => y0 + k * F, x0 = (W5 - 6 - 23.6 * F) / 2 + 3;
-  let s = `<rect class="merkbox" x="${bx.toFixed(1)}" y="${y0}" width="${(sw - 6).toFixed(1)}" height="${(16.17 * F).toFixed(0)}" rx="16"/>` +
-    tt(x0 + 0.78 * F, z(1.33), 'Dreisatz', 'tmh', 1.39 * F, 'start');
-  const zl = (k, t, nr) => (nr ? tt(x0 + 0.78 * F, z(k), nr, 'tm', F, 'start') : '') + tt(x0 + 1.89 * F, z(k), t, 'tm', F, 'start');
-  s += zl(3.33, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(4.69, 'Trage die Werte ein, die du kennst.') + zl(6.06, 'Trage in der mittleren Zeile eine 1 ein.');
-  s += zl(7.92, 'Mit welcher Rechnung kommst du vom', '2.') + zl(9.28, 'oberen Wert zur 1: mal oder geteilt?') + zl(10.64, 'Rechne auf der anderen Seite genauso.');
-  s += zl(12.5, 'Mit welcher Rechnung kommst du von der 1', '3.') + zl(13.86, 'zum unteren Wert: mal oder geteilt?') + zl(15.22, 'Rechne auf der anderen Seite genauso.');
+  // Ringsherum etwas Rand. Die Schrift wird so groß, dass der Text den Kasten füllt. Jeder Satz beginnt in einer neuen Zeile.
+  const M = 24, sw = sichtbar(W5, H5), BW = sw - 2 * M, BH = H5 - 2 * M;
+  const S = [['Zeichne eine Tabelle und beschrifte sie.', 'Trage die Werte ein, die du kennst.', 'Trage in der mittleren Zeile eine 1 ein.'],
+    ['Mit welcher Rechnung kommst du vom oberen Wert zur 1: mal oder geteilt?', 'Rechne auf der anderen Seite genauso.'],
+    ['Mit welcher Rechnung kommst du von der 1 zum unteren Wert: mal oder geteilt?', 'Rechne auf der anderen Seite genauso.']];
+  let F = 90, Z, h;
+  for (; F > 20; F--) {
+    Z = S.map(r => r.flatMap(t => umbruch([[t, true]], F, BW - 2.67 * F).map(l => l.map(x => x[0]).join(''))));
+    h = (3.33 + 1.36 * (Z.flat().length - 1) + 0.5 * (Z.length - 1) + 0.95) * F;
+    if (h <= BH) break;
+  }
+  // Ausgeglichen umbrechen: gleich viele Zeilen, aber möglichst gleich lang, damit kein einzelnes Wort allein steht.
+  const aus = t => {
+    const k = umbruch([[t, true]], F, BW - 2.67 * F).length;
+    let lo = 0, hi = BW - 2.67 * F;
+    for (let i = 0; i < 14; i++) { const m = (lo + hi) / 2; if (umbruch([[t, true]], F, m).length <= k) hi = m; else lo = m; }
+    return umbruch([[t, true]], F, hi).map(l => l.map(x => x[0]).join(''));
+  };
+  Z = S.map(r => r.flatMap(aus));
+  const bw = 2.67 * F + Math.max(...Z.flat().map(l => mw(l, F)), mw('Dreisatz', 1.39 * F) - 1.11 * F);
+  const bx = (W5 - bw) / 2, by = (H5 - h) / 2, x0 = bx;
+  let s = `<rect class="merkbox" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="16"/>` +
+    tt(x0 + 0.78 * F, by + 1.33 * F, 'Dreisatz', 'tmh', 1.39 * F, 'start');
+  let y = by + 3.33 * F;
+  Z.forEach((ls, i) => {
+    if (i) y += 0.5 * F;
+    s += tt(x0 + 0.78 * F, y, `${i + 1}.`, 'tm', F, 'start');
+    ls.forEach(l => { s += tt(x0 + 1.89 * F, y, l, 'tm', F, 'start'); y += 1.36 * F; });
+  });
   return s;
 }
 
