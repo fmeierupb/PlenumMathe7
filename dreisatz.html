@@ -276,7 +276,7 @@ const DZ = [
 ];
 const DY = (() => { let y = 46; return DZ.map(([, z]) => { const a = y; y += z.length * 48 + 12; return [a, y - 12]; }); })();
 function dreiFig() {
-  let s = tab(G6, [['6', '18'], ['1', vis('w3') ? '3' : ''], [vis('vier') ? '4' : '', vis('w12') ? '12' : '']], true);
+  let s = tab(G6, [['6', '18'], [vis('eins') ? '1' : '', vis('w3') ? '3' : ''], ['4', vis('w12') ? '12' : '']], true);
   if (vis('b1l')) s += tbogen(G6, 0, -1, ': 6');
   if (vis('b1r')) s += tbogen(G6, 0, 1, ': 6');
   if (vis('b2l')) s += tbogen(G6, 1, -1, '· 4');
@@ -291,7 +291,7 @@ function dreiHit(p) {
   const oben = p.y < H + 1.5 * G6.rh;
   if (p.x < L && p.x > L - 200) return oben ? 'b1l' : 'b2l';
   if (p.x > R && p.x < R + 200) return oben ? 'b1r' : 'b2r';
-  if (p.x >= L && p.x < M && row === 2) return 'vier';
+  if (p.x >= L && p.x < M && row === 1) return 'eins';
   if (p.x >= M && p.x <= R) return row === 1 ? 'w3' : row === 2 ? 'w12' : null;
   return null;
 }
@@ -321,7 +321,7 @@ const STEPS = [
   { t: 'Überlege zuerst', vb: [920, 506, 90, 2], seq: 1, parts: ['zuo', 'k', 'p', 'prop'], hit: startHit, eqHit: 'prop', fig: startFig, eq: startEq },
   { t: 'Letzte Stunde: Zweisatz', noT: 1, vb: [1595, 528, -5, 12], fig: zweisatzFig },
   { t: 'Zweisatz mit Teilen', vb: [1320, 345, 0, 28], seq: 1, parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r'], hit: teilenHit, fig: teilenFig, eq: teilenEq },
-  { t: 'Dreisatz: erst auf 1, dann zum Ziel', vb: [1612, 430, 38, 8], seq: 1, parts: ['vier', 'warum', 'b1l', 'b1r', 'w3', 'b2l', 'b2r', 'w12', 'antwort', 'frage', 'die1'], hit: dreiHit, fig: dreiFig },
+  { t: 'Dreisatz: erst auf 1, dann zum Ziel', vb: [1612, 430, 38, 8], seq: 1, parts: ['warum', 'eins', 'b1l', 'b1r', 'w3', 'b2l', 'b2r', 'w12', 'antwort', 'frage', 'die1'], hit: dreiHit, fig: dreiFig },
   { t: 'Dreisatz', noT: 1, vb: [1555, 568, 62, 2], fig: merkFig }
 ];
 
