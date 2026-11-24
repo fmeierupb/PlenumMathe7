@@ -269,8 +269,13 @@ const W2 = 1100, H2 = 445;
 const G3 = { L: 340, cw: 210, T: 20, hh: 92, rh: 105, fk: 30, fw: 48, fb: 34, a: 36 };
 // Folie 5: links kleiner die Bilder und darunter die Stichworte, rechts groß die Tabelle.
 const W7 = 1150, H7 = 672;
-// Tabelle in denselben Schriftgrößen wie auf Folie 4
-const G6 = { L: 691, cw: 183, T: 146, hh: 80, rh: 100, fk: 26, fw: 42, fb: 30, a: 30 };
+// Tabelle auf Folie 5. Wird in dreiFig je nach sichtbarer Breite neu berechnet, dreiHit liest sie.
+let G6 = { L: 691, cw: 183, T: 146, hh: 80, rh: 100, fk: 26, fw: 42, fb: 30, a: 30, m: 97 };
+// Sichtbare Breite eines Bildes mit viewBox W x H in Bildeinheiten. Breiter als W, wenn der Bildschirm breiter ist.
+function sichtbar(W, H) {
+  const r = $('fig').getBoundingClientRect(), sc = Math.min(r.width / W, r.height / H);
+  return sc > 0 ? Math.max(W, r.width / sc) : W;
+}
 // Breite eines Textes in der Schrift der Merksätze, gemessen an einem unsichtbaren SVG-Text
 const MW = new Map();
 function mw(str, F) {
@@ -300,44 +305,50 @@ function dreiFig() {
   const k2 = ['b1l', 'b1r'].some(vis), k3 = ['b2l', 'b2r'].some(vis);
   // Sind die bekannten Werte eingetragen, braucht es die Fotos nicht mehr. Dann steht der Kasten groß links neben der Tabelle.
   const gross = ['z1l', 'z1r', 'z3l'].every(vis) || ['z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'].some(vis);
-  let s = '<g data-fx="0.2513" data-m="289">';
-  // Vorher ist der Kasten so breit wie die beiden Fotos zusammen.
-  if (!gross) s += foto(IMG6, W6, H6, 140.7, 202, 182) + foto(IMG4, W4i, H4i, 434.7, 202, 182) +
-    tt(140.7, 231, 'Tom', 'ts', 26) + tt(434.7, 231, 'Ben', 'ts', 26);
+  // Die ganze sichtbare Breite wird genutzt: rechts die Tabelle, links der Kasten. Auf breiten Bildschirmen wird beides größer.
+  const sw = sichtbar(W7, H7), x0 = (W7 - sw) / 2, x1 = x0 + sw;
+  const g = Math.min(1.6, 1.1 + 0.45 * (sw - W7) / 560);
+  const G = { cw: 183 * g, hh: 80 * g, rh: 100 * g, fk: 26 * g, fw: 44 * g, fb: 32 * g, a: 32 * g };
+  G.m = 23 + G.a + 1.4 * G.fb; G.L = x1 - G.m - 2 * G.cw; G.T = (H7 - G.hh - 3 * G.rh) / 2; G6 = G;
+  const bx = x0 + 2, bw = G.L - G.m - 22 - bx;
+  let s = '';
   // Der Dreisatz aus dem Buch entsteht Satz für Satz mit den Schritten in der Tabelle. Noch nicht aufgedeckte Sätze sind unsichtbar.
+  const R = [[k1, [['Zeichne eine Tabelle und beschrifte sie.', k1], ['Trage die Werte ein, die du kennst.', werte], ['Trage in der mittleren Zeile eine 1 ein.', vis('z2l')]]],
+    [k2, [['Mit welcher Rechnung kommst du vom oberen Wert zur 1: mal oder geteilt?', k2], ['Rechne auf der anderen Seite genauso.', vis('b1r')]]],
+    [k3, [['Mit welcher Rechnung kommst du von der 1 zum unteren Wert: mal oder geteilt?', k3], ['Rechne auf der anderen Seite genauso.', vis('b2r')]]]];
+  const sp = 1.22, hoehe = (Z, F) => (2.24 + sp * (Z.reduce((m, r) => m + r[1].length, 0) - 1) + 0.45 * (Z.length - 1)) * F;
+  // Schrift so groß, wie der ganze Dreisatz im großen Kasten Platz hat. Mit den Fotos gilt dieselbe Schrift.
+  let F = 44, Z;
+  for (; F > 20; F--) { Z = R.map(([on, st]) => [on, umbruch(st, F, bw - 2.6 * F)]); if (hoehe(Z, F) <= H7 - 8) break; }
+  // Mit den Fotos: Fotos oben so breit wie der Kasten, darunter der Kasten mit dem ersten Satz.
+  let y0;
+  if (!gross) {
+    const hf = Math.min(230, (bw - 14) / 3.077), w6 = W6 * hf / H6, w4 = W4i * hf / H4i, fx = bx + (bw - w6 - w4 - 14) / 2;
+    s += foto(IMG6, W6, H6, fx + w6 / 2, 20 + hf, hf) + foto(IMG4, W4i, H4i, fx + w6 + 14 + w4 / 2, 20 + hf, hf) +
+      tt(fx + w6 / 2, 49 + hf, 'Tom', 'ts', 26 * g) + tt(fx + w6 + 14 + w4 / 2, 49 + hf, 'Ben', 'ts', 26 * g);
+    Z = Z.slice(0, 1); y0 = 80 + hf;
+  }
   if (k1) {
-    const R = [[k1, [['Zeichne eine Tabelle und beschrifte sie.', k1], ['Trage die Werte ein, die du kennst.', werte], ['Trage in der mittleren Zeile eine 1 ein.', vis('z2l')]]],
-      [k2, [['Mit welcher Rechnung kommst du vom oberen Wert zur 1: mal oder geteilt?', k2], ['Rechne auf der anderen Seite genauso.', vis('b1r')]]],
-      [k3, [['Mit welcher Rechnung kommst du von der 1 zum unteren Wert: mal oder geteilt?', k3], ['Rechne auf der anderen Seite genauso.', vis('b2r')]]]];
-    // Mit den Fotos steht nur der erste Satz im Kasten. Die Schrift wird nur kleiner, wenn der ganze Text sonst nicht hineinpasst.
-    let F = 34, Z, h;
-    for (; F > 20; F--) {
-      Z = (gross ? R : R.slice(0, 1)).map(([on, st]) => [on, umbruch(st, F, 574 - 2.6 * F)]);
-      const n = Z.reduce((m, r) => m + r[1].length, 0);
-      h = (2.24 + 1.28 * (n - 1) + 0.45 * (Z.length - 1)) * F;
-      if (h <= (gross ? H7 - 8 : H7 - 270)) break;
-    }
-    const sp = 1.28 * F, gap = 0.45 * F, y0 = gross ? (H7 - h) / 2 : 262;
+    const h = hoehe(Z, F);
+    if (gross) y0 = (H7 - h) / 2;
     let y = y0 + 0.62 * F + F / 2, t = '';
     Z.forEach(([on, ls], i) => {
-      if (i) y += gap;
-      t += tt(0.625 * F, y, `${i + 1}.`, 'tmh', F, 'start').replace('<text', on ? '<text' : '<text visibility="hidden"');
-      ls.forEach(l => { t += tt(1.875 * F, y, l.map(([x, v]) => `<tspan${v ? '' : ' visibility="hidden"'}>${x}</tspan>`).join(''), 'tm', F, 'start'); y += sp; });
+      if (i) y += 0.45 * F;
+      t += tt(bx + 0.625 * F, y, `${i + 1}.`, 'tmh', F, 'start').replace('<text', on ? '<text' : '<text visibility="hidden"');
+      ls.forEach(l => { t += tt(bx + 1.875 * F, y, l.map(([x, v]) => `<tspan${v ? '' : ' visibility="hidden"'}>${x}</tspan>`).join(''), 'tm', F, 'start'); y += sp * F; });
     });
-    s += `<rect class="merkbox" x="2" y="${y0.toFixed(0)}" width="574" height="${h.toFixed(0)}" rx="14"/>` + t;
+    s += `<rect class="merkbox" x="${bx.toFixed(1)}" y="${y0.toFixed(0)}" width="${bw.toFixed(1)}" height="${h.toFixed(0)}" rx="14"/>` + t;
   }
-  s += '</g>';
   const q = (l, r, lv, rv) => [vis(l) ? lv : '', vis(r) ? rv : vis(l) ? '?' : ''];
   const rows = [[vis('z1l') ? '6' : '', vis('z1r') ? '18' : ''], q('z2l', 'z2r', '1', '3'), q('z3l', 'z3r', '4', '12')];
-  s += `<g data-fx="0.76" data-m="${G6.L + G6.cw}" data-k="tab">` + tab(G6, rows, vis('kopf'));
-  if (vis('b1l')) s += tbogen(G6, 0, -1, ': 6');
-  if (vis('b1r')) s += tbogen(G6, 0, 1, ': 6');
-  if (vis('b2l')) s += tbogen(G6, 1, -1, '· 4');
-  if (vis('b2r')) s += tbogen(G6, 1, 1, '· 4');
-  return s + '</g>';
+  s += tab(G, rows, vis('kopf'));
+  if (vis('b1l')) s += tbogen(G, 0, -1, ': 6');
+  if (vis('b1r')) s += tbogen(G, 0, 1, ': 6');
+  if (vis('b2l')) s += tbogen(G, 1, -1, '· 4');
+  if (vis('b2r')) s += tbogen(G, 1, 1, '· 4');
+  return s;
 }
 function dreiHit(p) {
-  p = { x: p.x - (FX.tab || 0), y: p.y };
   const L = G6.L, M = L + G6.cw, R = M + G6.cw, H = G6.T + G6.hh, row = Math.floor((p.y - H) / G6.rh);
   if (p.x >= L && p.x <= R) {
     if (p.y < H) return 'kopf';
@@ -347,16 +358,17 @@ function dreiHit(p) {
     return null;
   }
   const oben = p.y < H + 1.5 * G6.rh;
-  if (p.y > H && p.x < L && p.x > L - 125) return oben ? 'b1l' : 'b2l';
-  if (p.y > H && p.x > R && p.x < R + 200) return oben ? 'b1r' : 'b2r';
+  if (p.y > H && p.x < L && p.x > L - G6.m) return oben ? 'b1l' : 'b2l';
+  if (p.y > H && p.x > R && p.x < R + G6.m + 20) return oben ? 'b1r' : 'b2r';
   return null;
 }
 // ---------- Letzte Folie: nur der Dreisatz als großer Merkkasten ----------
 // Merksätze nah am Schulbuch (Dreifach Mathe, Wissen: Werte mit dem Dreisatz berechnen)
 const F8 = 44, W5 = Math.round(23.6 * F8) + 6, H5 = Math.round(16.17 * F8) + 6;
 function merkFig() {
-  const F = F8, x0 = 3, y0 = 3, z = k => y0 + k * F;
-  let s = `<rect class="merkbox" x="${x0}" y="${y0}" width="${W5 - 6}" height="${(16.17 * F).toFixed(0)}" rx="16"/>` +
+  // Der Kasten reicht über die ganze sichtbare Breite. Der Text steht als Block mittig darin.
+  const F = F8, sw = sichtbar(W5, H5), bx = (W5 - sw) / 2 + 3, y0 = 3, z = k => y0 + k * F, x0 = (W5 - 6 - 23.6 * F) / 2 + 3;
+  let s = `<rect class="merkbox" x="${bx.toFixed(1)}" y="${y0}" width="${(sw - 6).toFixed(1)}" height="${(16.17 * F).toFixed(0)}" rx="16"/>` +
     tt(x0 + 0.78 * F, z(1.33), 'Dreisatz', 'tmh', 1.39 * F, 'start');
   const zl = (k, t, nr) => (nr ? tt(x0 + 0.78 * F, z(k), nr, 'tm', F, 'start') : '') + tt(x0 + 1.89 * F, z(k), t, 'tm', F, 'start');
   s += zl(3.33, 'Zeichne eine Tabelle und beschrifte sie.', '1.') + zl(4.69, 'Trage die Werte ein, die du kennst.') + zl(6.06, 'Trage in der mittleren Zeile eine 1 ein.');
