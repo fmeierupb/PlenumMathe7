@@ -268,19 +268,20 @@ function teilenEq() {
 const W2 = 1100, H2 = 445;
 const G3 = { L: 340, cw: 210, T: 20, hh: 92, rh: 105, fk: 30, fw: 48, fb: 34, a: 36 };
 // Folie 5: links kleiner die Bilder und darunter die Stichworte, rechts groß die Tabelle.
-const W7 = 1150, H7 = 592;
+const W7 = 1150, H7 = 566;
 // Tabelle in denselben Schriftgrößen wie auf Folie 4
-const G6 = { L: 686, cw: 183, T: 117, hh: 80, rh: 100, fk: 26, fw: 42, fb: 30, a: 35 };
+const G6 = { L: 691, cw: 183, T: 103, hh: 80, rh: 100, fk: 26, fw: 42, fb: 30, a: 30 };
 function dreiFig() {
   const werte = ['z1l', 'z1r', 'z3l'].some(vis), k1 = vis('kopf') || werte;
   const k2 = ['z2l', 'b1l', 'b1r', 'z2r'].some(vis), k3 = ['b2l', 'b2r', 'z3r'].some(vis);
-  let s = '<g data-fx="0.2435" data-m="280">' + foto(IMG6, W6, H6, 158, 225, 205) + foto(IMG4, W4i, H4i, 493, 225, 205) +
-    tt(158, 254, 'Tom', 'ts', 26) + tt(493, 254, 'Ben', 'ts', 26);
+  // Der Kasten ist so breit wie die beiden Fotos zusammen.
+  let s = '<g data-fx="0.2513" data-m="289">' + foto(IMG6, W6, H6, 140.7, 202, 182) + foto(IMG4, W4i, H4i, 434.7, 202, 182) +
+    tt(140.7, 231, 'Tom', 'ts', 26) + tt(434.7, 231, 'Ben', 'ts', 26);
   // Stichworte statt Buchwortlaut, damit es von hinten lesbar bleibt. Der Buchwortlaut steht auf der letzten Folie.
   // Der Kasten steht ganz da, sobald der erste Teil aufgedeckt ist. Noch nicht aufgedeckte Wörter sind unsichtbar.
   if (k1) {
     // Schrift so groß wie die Merksätze auf Folie 4
-    const F = 32, y0 = 290, sp = 1.28 * F, gap = 0.45 * F;
+    const F = 32, y0 = 262, sp = 1.28 * F, gap = 0.45 * F;
     const R = [[k1, [[['Tabelle zeichnen, beschriften', k1]], [['und bekannte Werte eintragen.', werte]]]],
       [k2, [[['Vom oberen Wert rechnen', k2]], [['wir zur 1.', k2]]]],
       [k3, [[['Von der 1 rechnen wir', k3]], [['zu beliebigem Wert.', k3]]]]];
@@ -290,12 +291,12 @@ function dreiFig() {
       t += tt(20, y, `${i + 1}.`, 'tmh', F, 'start').replace('<text', on ? '<text' : '<text visibility="hidden"');
       ls.forEach(l => { t += tt(60, y, l.map(([x, v]) => `<tspan${v ? '' : ' visibility="hidden"'}>${x}</tspan>`).join(''), 'tm', F, 'start'); y += sp; });
     });
-    s += `<rect class="merkbox" x="2" y="${y0}" width="556" height="${(y - sp + F / 2 + 0.62 * F - y0).toFixed(0)}" rx="14"/>` + t;
+    s += `<rect class="merkbox" x="2" y="${y0}" width="574" height="${(y - sp + F / 2 + 0.62 * F - y0).toFixed(0)}" rx="14"/>` + t;
   }
   s += '</g>';
   const q = (l, r, lv, rv) => [vis(l) ? lv : '', vis(r) ? rv : vis(l) ? '?' : ''];
   const rows = [[vis('z1l') ? '6' : '', vis('z1r') ? '18' : ''], q('z2l', 'z2r', '1', '3'), q('z3l', 'z3r', '4', '12')];
-  s += `<g data-fx="0.7504" data-m="${G6.L + G6.cw}" data-k="tab">` + tab(G6, rows, vis('kopf'));
+  s += `<g data-fx="0.76" data-m="${G6.L + G6.cw}" data-k="tab">` + tab(G6, rows, vis('kopf'));
   if (vis('b1l')) s += tbogen(G6, 0, -1, ': 6');
   if (vis('b1r')) s += tbogen(G6, 0, 1, ': 6');
   if (vis('b2l')) s += tbogen(G6, 1, -1, '· 4');
@@ -343,7 +344,7 @@ const STEPS = [
   { t: 'Überlege zuerst', vb: [920, 506, 90, 2], seq: 1, parts: ['zuo', 'k', 'p', 'prop'], hit: startHit, eqHit: 'prop', fig: startFig, eq: startEq },
   { t: 'Letzte Stunde: Zweisatz', noT: 1, vb: [1595, 528, -5, 12], fig: zweisatzFig },
   { t: 'Zweisatz mit Teilen', vb: [1320, 345, 0, 28], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z2l', 'b2l', 'b2r', 'z2r'], hit: teilenHit, fig: teilenFig, eq: teilenEq },
-  { t: 'Werte mit dem Dreisatz berechnen', vb: [W7, H7, 0, 12], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z3l', 'z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'], hit: dreiHit, fig: dreiFig },
+  { t: 'Werte mit dem Dreisatz berechnen', vb: [W7, H7, 0, 10], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z3l', 'z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'], hit: dreiHit, fig: dreiFig },
   { t: 'Dreisatz', noT: 1, vb: [W5, H5], fig: merkFig }
 ];
 
