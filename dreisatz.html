@@ -23,6 +23,8 @@ h1{margin:0;font-size:clamp(26px,4.2vw,52px);line-height:1.15;min-height:1.2em}
 #eq{font-size:clamp(24px,4.1vw,50px);font-weight:700;min-height:1.4em;text-align:center;font-variant-numeric:tabular-nums;line-height:1.35}
 #eq .dim{opacity:.7;font-size:.85em}
 #txt .dim{opacity:.7}
+/* Ohne Text kein leerer Streifen über der Rechnung, damit das Bild den Platz bekommt */
+#txt:empty{min-height:0}
 #eq .m{font-weight:600;font-size:.72em;text-align:left;max-width:30em;margin:0 auto}
 #eq .m2{font-size:.8em}
 #eq .merk{display:inline-block;text-align:left;font-weight:600;font-size:.66em;line-height:1.45;max-width:40em;border:3px solid var(--c3);border-radius:14px;padding:.7em 1.2em;background:rgba(18,161,80,.08)}
@@ -31,7 +33,7 @@ h1{margin:0;font-size:clamp(26px,4.2vw,52px);line-height:1.15;min-height:1.2em}
 /* Drei Merksätze nebeneinander, damit der Kasten flach bleibt und die Tabelle groß */
 #eq .merk.m3{display:grid;grid-template-columns:repeat(3,1fr);column-gap:1.4em;max-width:none;width:100%;box-sizing:border-box;font-size:.5em}
 #eq .merk.m3>div+div{margin-top:0}
-#eq .merk.ks{font-size:.8em;line-height:1.35;max-width:none}
+#eq .merk.ks{font-size:.8em;line-height:1.25;max-width:none;padding:.45em 1.1em}
 #eq .merk.ks>div+div{margin-top:.25em}
 .k.c1{color:var(--c1)}.k.c2{color:var(--c2)}.k.c3{color:var(--c3)}.k.cr{color:var(--cr)}
 footer{display:flex;gap:10px;align-items:center;margin-top:10px}
