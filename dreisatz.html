@@ -264,29 +264,36 @@ const G6 = { L: 150, cw: 210, T: 20, hh: 92, rh: 105, fk: 30, fw: 48, fb: 34, a:
 // Zeile aus farbigen Stücken: [Text, Klasse] mit r rot, b blau, o orange, sonst schwarz
 const zeile = (y, teile, dim) => `<text class="tz${dim ? ' tzd' : ''}" x="760" y="${y}" dominant-baseline="central">` +
   teile.map(([t, c]) => c ? `<tspan class="z${c}">${t}</tspan>` : t).join('') + '</text>';
+// Alles einzeln: Werte, Bögen und jede Textzeile erscheinen per Weiter der Reihe nach oder per Antippen.
+// Rechts stehen die Zeilen auf festen Plätzen, damit nichts springt, wenn etwas dazukommt.
+const DZ = [
+  ['warum', [[['4', 'r'], [' ist kein Vielfaches und kein Teiler von '], ['6', 'r'], ['.']], [['Dann hilft ein Zwischenschritt.']]]],
+  ['w3', [[['18 €', 'b'], [' '], [': 6', 'o'], [' = '], ['3 €', 'b']]]],
+  ['w12', [[['3 €', 'b'], [' '], ['· 4', 'o'], [' = '], ['12 €', 'b']]]],
+  ['antwort', [[['4 Schnellhefter', 'r'], [' kosten '], ['12 €', 'b'], ['.']]]],
+  ['frage', [[['Welcher Zwischenwert hilft immer?']]]],
+  ['die1', [[['Die '], ['1', 'r'], ['. Drei Schritte, deshalb heißt es Dreisatz.']]]]
+];
+const DY = (() => { let y = 46; return DZ.map(([, z]) => { const a = y; y += z.length * 48 + 12; return [a, y - 12]; }); })();
 function dreiFig() {
-  const t = vis('teilen'), m = vis('mal');
-  let s = tab(G6, [['6', '18'], ['1', t ? '3' : '?'], ['4', m ? '12' : '?']], true);
-  if (t) s += tbogen(G6, 0, -1, ': 6') + tbogen(G6, 0, 1, ': 6');
-  if (m) s += tbogen(G6, 1, -1, '· 4') + tbogen(G6, 1, 1, '· 4');
-  // Schritte rechts, der jüngste kräftig, die früheren leicht abgeschwächt
-  const Z = [
-    [[['4', 'r'], [' ist kein Vielfaches und kein Teiler von '], ['6', 'r'], ['.']], [['Dann hilft ein Zwischenschritt.']]],
-    [[['18 €', 'b'], [' '], [': 6', 'o'], [' = '], ['3 €', 'b']]],
-    [[['3 €', 'b'], [' '], ['· 4', 'o'], [' = '], ['12 €', 'b']]],
-    [[['4 Schnellhefter', 'r'], [' kosten '], ['12 €', 'b'], ['.']]],
-    vis('die1') ? [[['Die '], ['1', 'r'], [' hilft immer. Das sind drei Schritte,']], [['deshalb heißt das Verfahren Dreisatz.']]] : [[['Welcher Zwischenwert hilft immer?']]]
-  ];
-  const n = 1 + ['teilen', 'mal', 'antwort', 'frage'].filter(vis).length;
-  let y = 45;
-  Z.slice(0, n).forEach((blk, i) => { blk.forEach(z => { s += zeile(y, z, i < n - 1); y += 52; }); y += 16; });
+  let s = tab(G6, [['6', '18'], ['1', vis('w3') ? '3' : ''], [vis('vier') ? '4' : '', vis('w12') ? '12' : '']], true);
+  if (vis('b1l')) s += tbogen(G6, 0, -1, ': 6');
+  if (vis('b1r')) s += tbogen(G6, 0, 1, ': 6');
+  if (vis('b2l')) s += tbogen(G6, 1, -1, '· 4');
+  if (vis('b2r')) s += tbogen(G6, 1, 1, '· 4');
+  DZ.forEach(([k, z], i) => { if (vis(k)) z.forEach((t, j) => { s += zeile(DY[i][0] + j * 48, t); }); });
   return s;
 }
 function dreiHit(p) {
-  const H = G6.T + G6.hh, mid = H + 1.5 * G6.rh;
+  const H = G6.T + G6.hh, L = G6.L, M = L + G6.cw, R = M + G6.cw, row = Math.floor((p.y - H) / G6.rh);
+  if (p.x > 720) { const i = DY.findIndex(([a, b]) => p.y > a - 30 && p.y < b + 10); return i < 0 ? null : DZ[i][0]; }
   if (p.y < H) return null;
-  if (p.x < G6.L - 200 || p.x > G6.L + 2 * G6.cw + 200) return null;
-  return p.y < mid ? 'teilen' : 'mal';
+  const oben = p.y < H + 1.5 * G6.rh;
+  if (p.x < L && p.x > L - 200) return oben ? 'b1l' : 'b2l';
+  if (p.x > R && p.x < R + 200) return oben ? 'b1r' : 'b2r';
+  if (p.x >= L && p.x < M && row === 2) return 'vier';
+  if (p.x >= M && p.x <= R) return row === 1 ? 'w3' : row === 2 ? 'w12' : null;
+  return null;
 }
 
 // ---------- Folie 5: fertige Tabelle mit Merksätzen ----------
@@ -314,8 +321,7 @@ const STEPS = [
   { t: 'Überlege zuerst', vb: [920, 506, 90, 2], seq: 1, parts: ['zuo', 'k', 'p', 'prop'], hit: startHit, eqHit: 'prop', fig: startFig, eq: startEq },
   { t: 'Letzte Stunde: Zweisatz', noT: 1, vb: [1595, 528, -5, 12], fig: zweisatzFig },
   { t: 'Zweisatz mit Teilen', vb: [1320, 345, 0, 28], seq: 1, parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r'], hit: teilenHit, fig: teilenFig, eq: teilenEq },
-  { t: 'Dreisatz: erst auf 1, dann zum Ziel', vb: [1545, 440, 38, 12], seq: 1, chain: 1, parts: ['teilen', 'mal', 'antwort', 'frage', 'die1'], hit: dreiHit, fig: dreiFig,
-    txt: () => `${KB('6 Schnellhefter')} kosten ${KG('18 €')}. Was kosten ${KB('4 Schnellhefter')}?` },
+  { t: 'Dreisatz: erst auf 1, dann zum Ziel', vb: [1612, 430, 38, 8], seq: 1, parts: ['vier', 'warum', 'b1l', 'b1r', 'w3', 'b2l', 'b2r', 'w12', 'antwort', 'frage', 'die1'], hit: dreiHit, fig: dreiFig },
   { t: 'Dreisatz', noT: 1, vb: [1555, 568, 62, 2], fig: merkFig }
 ];
 
