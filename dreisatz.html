@@ -287,18 +287,25 @@ function mw(str, F) {
   }
   return MW.get(k);
 }
-// Bricht Sätze [Text, sichtbar] auf die Breite b um. Jede Zeile ist eine Liste von Stücken [Text, sichtbar].
+// Bricht Sätze [Text, sichtbar] auf die Breite b um, wie normaler Fließtext. Jede Zeile ist eine Liste von Wörtern [Wort, sichtbar].
 function umbruch(saetze, F, b) {
   const w = saetze.flatMap(([t, v]) => t.split(' ').map(x => [x, v])), z = [];
   let l = [], str = '';
   w.forEach(([x, v]) => {
     const neu = str ? str + ' ' + x : x;
-    if (str && mw(neu, F) > b) { z.push(l); l = []; str = x; } else str = neu;
-    const last = l[l.length - 1], tx = l.length ? ' ' + x : x;
-    if (last && last[1] === v) last[0] += tx; else l.push([tx, v]);
+    if (str && mw(neu, F) > b) { z.push(l); l = [[x, v]]; str = x; } else { l.push([x, v]); str = neu; }
   });
   if (l.length) z.push(l);
   return z;
+}
+// Eine Zeile im Blocksatz: Jedes Wort steht für sich, die Lücken werden gleichmäßig verteilt.
+// Die letzte Zeile eines Absatzes bleibt linksbündig. Unsichtbare Wörter halten ihren Platz.
+function zeile(x, y, l, b, F, letzte) {
+  const ws = l.map(([w]) => mw(w, F)), leer = mw('a a', F) - mw('aa', F);
+  const gap = letzte || l.length < 2 ? leer : (b - ws.reduce((a, c) => a + c, 0)) / (l.length - 1);
+  let xx = x, t = '';
+  l.forEach(([w, v], i) => { t += `<tspan x="${xx.toFixed(1)}"${v ? '' : ' visibility="hidden"'}>${w}</tspan>`; xx += ws[i] + gap; });
+  return `<text class="tm" style="font-size:${F}px" y="${y.toFixed(1)}" dominant-baseline="central">${t}</text>`;
 }
 function dreiFig() {
   const werte = ['z1l', 'z1r', 'z3l'].some(vis), k1 = vis('kopf') || werte;
@@ -336,7 +343,8 @@ function dreiFig() {
     Z.forEach(([on, ls], i) => {
       if (i) y += 0.45 * F;
       t += tt(bx + 0.625 * F, y, `${i + 1}.`, 'tmh', F, 'start').replace('<text', on ? '<text' : '<text visibility="hidden"');
-      ls.forEach(l => { t += tt(bx + 1.875 * F, y, l.map(([x, v]) => `<tspan${v ? '' : ' visibility="hidden"'}>${x}</tspan>`).join(''), 'tm', F, 'start'); y += sp * F; });
+      // Linksbündig, im schmalen Kasten würde Blocksatz große Lücken reißen.
+      ls.forEach(l => { t += zeile(bx + 1.875 * F, y, l, bw - 2.6 * F, F, true); y += sp * F; });
     });
     s += `<rect class="merkbox" x="${bx.toFixed(1)}" y="${y0.toFixed(0)}" width="${bw.toFixed(1)}" height="${h.toFixed(0)}" rx="14"/>` + t;
   }
@@ -367,34 +375,25 @@ function dreiHit(p) {
 // Merksätze nah am Schulbuch (Dreifach Mathe, Wissen: Werte mit dem Dreisatz berechnen)
 const W5 = 1045, H5 = 717;
 function merkFig() {
-  // Ringsherum etwas Rand. Die Schrift wird so groß, dass der Text den Kasten füllt. Jeder Satz beginnt in einer neuen Zeile.
+  // Ringsherum etwas Rand. Jede Regel ist ein Absatz im Blocksatz. Die Schrift wird so groß, dass der Text den Kasten füllt.
   const M = 24, sw = sichtbar(W5, H5), BW = sw - 2 * M, BH = H5 - 2 * M;
   const S = [['Zeichne eine Tabelle und beschrifte sie.', 'Trage die Werte ein, die du kennst.', 'Trage in der mittleren Zeile eine 1 ein.'],
     ['Mit welcher Rechnung kommst du vom oberen Wert zur 1: mal oder geteilt?', 'Rechne auf der anderen Seite genauso.'],
     ['Mit welcher Rechnung kommst du von der 1 zum unteren Wert: mal oder geteilt?', 'Rechne auf der anderen Seite genauso.']];
   let F = 90, Z, h;
-  for (; F > 20; F--) {
-    Z = S.map(r => r.flatMap(t => umbruch([[t, true]], F, BW - 2.67 * F).map(l => l.map(x => x[0]).join(''))));
+  for (; F > 20; F -= 0.5) {
+    Z = S.map(r => umbruch(r.map(t => [t, true]), F, BW - 2.67 * F));
     h = (3.33 + 1.36 * (Z.flat().length - 1) + 0.5 * (Z.length - 1) + 0.95) * F;
     if (h <= BH) break;
   }
-  // Ausgeglichen umbrechen: gleich viele Zeilen, aber möglichst gleich lang, damit kein einzelnes Wort allein steht.
-  const aus = t => {
-    const k = umbruch([[t, true]], F, BW - 2.67 * F).length;
-    let lo = 0, hi = BW - 2.67 * F;
-    for (let i = 0; i < 14; i++) { const m = (lo + hi) / 2; if (umbruch([[t, true]], F, m).length <= k) hi = m; else lo = m; }
-    return umbruch([[t, true]], F, hi).map(l => l.map(x => x[0]).join(''));
-  };
-  Z = S.map(r => r.flatMap(aus));
-  const bw = 2.67 * F + Math.max(...Z.flat().map(l => mw(l, F)), mw('Dreisatz', 1.39 * F) - 1.11 * F);
-  const bx = (W5 - bw) / 2, by = (H5 - h) / 2, x0 = bx;
-  let s = `<rect class="merkbox" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="16"/>` +
-    tt(x0 + 0.78 * F, by + 1.33 * F, 'Dreisatz', 'tmh', 1.39 * F, 'start');
+  const bx = (W5 - sw) / 2 + M, by = (H5 - h) / 2;
+  let s = `<rect class="merkbox" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${BW.toFixed(1)}" height="${h.toFixed(1)}" rx="16"/>` +
+    tt(bx + 0.78 * F, by + 1.33 * F, 'Dreisatz', 'tmh', 1.39 * F, 'start');
   let y = by + 3.33 * F;
   Z.forEach((ls, i) => {
     if (i) y += 0.5 * F;
-    s += tt(x0 + 0.78 * F, y, `${i + 1}.`, 'tm', F, 'start');
-    ls.forEach(l => { s += tt(x0 + 1.89 * F, y, l, 'tm', F, 'start'); y += 1.36 * F; });
+    s += tt(bx + 0.78 * F, y, `${i + 1}.`, 'tm', F, 'start');
+    ls.forEach((l, j) => { s += zeile(bx + 1.89 * F, y, l, BW - 2.67 * F, F, j === ls.length - 1); y += 1.36 * F; });
   });
   return s;
 }
