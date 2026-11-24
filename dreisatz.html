@@ -274,24 +274,31 @@ const G6 = { L: 691, cw: 183, T: 103, hh: 80, rh: 100, fk: 26, fw: 42, fb: 30, a
 function dreiFig() {
   const werte = ['z1l', 'z1r', 'z3l'].some(vis), k1 = vis('kopf') || werte;
   const k2 = ['z2l', 'b1l', 'b1r', 'z2r'].some(vis), k3 = ['b2l', 'b2r', 'z3r'].some(vis);
-  // Der Kasten ist so breit wie die beiden Fotos zusammen.
-  let s = '<g data-fx="0.2513" data-m="289">' + foto(IMG6, W6, H6, 140.7, 202, 182) + foto(IMG4, W4i, H4i, 434.7, 202, 182) +
+  // Sind die bekannten Werte eingetragen, braucht es die Fotos nicht mehr. Dann steht der Kasten groß links neben der Tabelle.
+  const gross = ['z1l', 'z1r', 'z3l'].every(vis) || k2 || k3;
+  let s = '<g data-fx="0.2513" data-m="289">';
+  // Vorher ist der Kasten so breit wie die beiden Fotos zusammen.
+  if (!gross) s += foto(IMG6, W6, H6, 140.7, 202, 182) + foto(IMG4, W4i, H4i, 434.7, 202, 182) +
     tt(140.7, 231, 'Tom', 'ts', 26) + tt(434.7, 231, 'Ben', 'ts', 26);
   // Stichworte statt Buchwortlaut, damit es von hinten lesbar bleibt. Der Buchwortlaut steht auf der letzten Folie.
   // Der Kasten steht ganz da, sobald der erste Teil aufgedeckt ist. Noch nicht aufgedeckte Wörter sind unsichtbar.
   if (k1) {
-    // Schrift so groß wie die Merksätze auf Folie 4
-    const F = 32, y0 = 262, sp = 1.28 * F, gap = 0.45 * F;
-    const R = [[k1, [[['Tabelle zeichnen, beschriften', k1]], [['und bekannte Werte eintragen.', werte]]]],
+    // Klein so groß wie die Merksätze auf Folie 4
+    const F = gross ? 38 : 32, sp = 1.28 * F, gap = 0.45 * F;
+    const R = [[k1, gross ? [[['Tabelle zeichnen,', k1]], [['beschriften', k1], [' und bekannte', werte]], [['Werte eintragen.', werte]]]
+      : [[['Tabelle zeichnen, beschriften', k1]], [['und bekannte Werte eintragen.', werte]]]],
       [k2, [[['Vom oberen Wert rechnen', k2]], [['wir zur 1.', k2]]]],
       [k3, [[['Von der 1 rechnen wir', k3]], [['zu beliebigem Wert.', k3]]]]];
+    const n = R.reduce((m, r) => m + r[1].length, 0), h = (2.24 + 1.28 * (n - 1) + 0.9) * F;
+    // Groß mittig neben der Tabelle, klein unter den Fotos
+    const y0 = gross ? G6.T + (G6.hh + 3 * G6.rh) / 2 - h / 2 : 262;
     let y = y0 + 0.62 * F + F / 2, t = '';
     R.forEach(([on, ls], i) => {
       if (i) y += gap;
-      t += tt(20, y, `${i + 1}.`, 'tmh', F, 'start').replace('<text', on ? '<text' : '<text visibility="hidden"');
-      ls.forEach(l => { t += tt(60, y, l.map(([x, v]) => `<tspan${v ? '' : ' visibility="hidden"'}>${x}</tspan>`).join(''), 'tm', F, 'start'); y += sp; });
+      t += tt(0.625 * F, y, `${i + 1}.`, 'tmh', F, 'start').replace('<text', on ? '<text' : '<text visibility="hidden"');
+      ls.forEach(l => { t += tt(1.875 * F, y, l.map(([x, v]) => `<tspan${v ? '' : ' visibility="hidden"'}>${x}</tspan>`).join(''), 'tm', F, 'start'); y += sp; });
     });
-    s += `<rect class="merkbox" x="2" y="${y0}" width="574" height="${(y - sp + F / 2 + 0.62 * F - y0).toFixed(0)}" rx="14"/>` + t;
+    s += `<rect class="merkbox" x="2" y="${y0.toFixed(0)}" width="574" height="${h.toFixed(0)}" rx="14"/>` + t;
   }
   s += '</g>';
   const q = (l, r, lv, rv) => [vis(l) ? lv : '', vis(r) ? rv : vis(l) ? '?' : ''];
