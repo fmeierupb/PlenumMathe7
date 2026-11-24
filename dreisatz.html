@@ -304,10 +304,10 @@ const STEPS = [
   { t: 'Überlege zuerst', vb: [920, 506, 90, 2], seq: 1, parts: ['zuo', 'k', 'p', 'prop'], hit: startHit, eqHit: 'prop', fig: startFig, eq: startEq },
   { t: 'Letzte Stunde: Zweisatz', noT: 1, vb: [1595, 528, -5, 12], fig: zweisatzFig },
   { t: 'Zweisatz mit Teilen', vb: [1320, 345, 0, 28], seq: 1, parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r'], hit: teilenHit, fig: teilenFig, eq: teilenEq },
-  { t: 'Ein Schritt reicht nicht immer', vb: [810, 420, 60, 12], seq: 1, parts: ['eins'], hit: brueckeHit, fig: brueckeFig,
-    txt: () => `${KB('6 Schnellhefter')} kosten ${KG('18 €')}. Was kosten ${KB('4 Schnellhefter')}?`, eq: brueckeEq },
   { t: 'Dreisatz: erst auf 1, dann zum Ziel', vb: [810, 420, 60, 12], seq: 1, chain: 1, parts: ['teilen', 'mal', 'antwort'], hit: dreiHit, fig: dreiFig,
     txt: 'Auf beiden Seiten rechnen wir immer gleich.', eq: dreiEq },
+  { t: 'Ein Schritt reicht nicht immer', vb: [810, 420, 60, 12], seq: 1, parts: ['eins'], hit: brueckeHit, fig: brueckeFig,
+    txt: () => `${KB('6 Schnellhefter')} kosten ${KG('18 €')}. Was kosten ${KB('4 Schnellhefter')}?`, eq: brueckeEq },
   { t: 'Dreisatz', noT: 1, vb: [1555, 568, 62, 2], fig: merkFig }
 ];
 
