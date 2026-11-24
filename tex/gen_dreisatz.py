@@ -112,22 +112,22 @@ b.append(paar((H, [("4", "6"), ("8", "")], A2), (H, [("4", "6"), ("2", "")], A2)
 b.append(G)
 
 b.append(r"\aufgabe{2}{Schreibe die Zuordnung auf. Rechne zuerst auf 1, dann zum gesuchten Wert.}")
-b.append(r"6 Hefte kosten 18~€. Mia kauft 4 Hefte, Ben 5 Hefte.\par\vspace{4mm}")
+b.append(r"8 Hefte kosten 20~€. Mia kauft 3 Hefte, Ben 12 Hefte.\par\vspace{4mm}")
 b.append(zuo() + r"\vspace{3mm}")
 H = (r"Anzahl der Hefte", r"Preis in €")
-b.append(paar((H, [("6", "18"), ("1", ""), ("4", "")], A3), (H, [("6", "18"), ("1", ""), ("5", "")], A3)))
+b.append(paar((H, [("8", "20"), ("1", ""), ("3", "")], A3), (H, [("8", "20"), ("1", ""), ("12", "")], A3)))
 b.append(G)
 
 b.append(r"\aufgabe{3}{Schreibe die Zuordnung auf. Trage die 1 selbst ein und rechne.}")
-b.append(r"3 Kinokarten kosten 24~€. Ayla kauft 7 Karten, Jonas 5 Karten.\par\vspace{4mm}")
+b.append(r"Ein Auto fährt mit 6 Litern Benzin 84~km. Wie weit kommt es mit 4 Litern, wie weit mit 15 Litern?\par\vspace{4mm}")
 b.append(zuo() + r"\vspace{3mm}")
-H = (r"Anzahl der Karten", r"Preis in €")
-b.append(paar((H, [("3", "24"), ("", ""), ("7", "")], A3), (H, [("3", "24"), ("", ""), ("5", "")], A3)))
+H = (r"Benzin in Liter", r"Strecke in km")
+b.append(paar((H, [("6", "84"), ("", ""), ("4", "")], A3), (H, [("6", "84"), ("", ""), ("15", "")], A3)))
 
 b.append(r"\newpage")
 b.append(r"\aufgabe{4}{Schreibe die Zuordnung auf. Beschrifte die Tabelle, trage die Werte ein und rechne.}")
-b.append(r"Auf dem Markt kaufen Frau Kaya und Herr Becker Obst.\par\vspace{2mm}")
-b.append(ab(r"5~kg Äpfel kosten 15~€.\\Wie viel kosten 8~kg Äpfel?", r"4~kg Birnen kosten 10~€.\\Wie viel kosten 6~kg Birnen?") + r"\vspace{4mm}")
+b.append(r"Auf dem Wochenmarkt kaufen Frau Kaya und Herr Becker ein.\par\vspace{2mm}")
+b.append(ab(r"3~kg Äpfel kosten 7,50~€.\\Wie viel kosten 5~kg Äpfel?", r"6 Gläser Honig kosten 27~€.\\Wie viel kosten 4 Gläser Honig?") + r"\vspace{4mm}")
 b.append(zuo() + r"\vspace{3mm}")
 E3 = [("", ""), ("", ""), ("", "")]
 b.append(paar((None, E3, A3), (None, E3, A3), labels=False))
@@ -135,16 +135,16 @@ b.append(r"\vspace{5mm}")
 b.append(r"\noindent\begin{minipage}[t]{89mm}Antwort: \linie{68mm}\\[6mm]\linie{87mm}\end{minipage}\hfill\begin{minipage}[t]{90.5mm}Antwort: \linie{69.5mm}\\[6mm]\linie{89mm}\end{minipage}\par" + G)
 
 b.append(r"\aufgabe{5}{Arbeite \underline{im Heft}: Zuordnung, Tabelle, Rechnung und Antwortsatz.}")
-b.append(r"""\begin{tabular}{@{}l@{\hspace{2mm}}l@{}}
-\textbf{a)} & 3~m Stoff kosten 21~€. Wie viel kosten 8~m?\\
-\textbf{b)} & 6 Kartons enthalten zusammen 48 Flaschen. Wie viele Flaschen enthalten 9 Kartons?\\
-\textbf{c)} & In 5 Minuten fließen 40 Liter Wasser aus einem Hahn. Wie viel sind es in 12 Minuten?
+b.append(r"""\begin{tabular}{@{}l@{\hspace{2mm}}p{176mm}@{}}
+\textbf{a)} & Ein Drucker druckt in 4 Minuten 96 Seiten. Wie viele Seiten druckt er in 15 Minuten?\\
+\textbf{b)} & 7 Eintrittskarten für den Zoo kosten 59,50~€. Wie viel kosten 3 Karten?\\
+\textbf{c)} & Für 4 Portionen Pfannkuchen braucht man 300~g Mehl. Wie viel Mehl brauchen 10 Portionen?
 \end{tabular}\par""" + G)
 
 b.append(r"\par\noindent\stern\hspace{2.5mm}\textbf{Für Schnelle: Arbeite \underline{im Heft}.}\par\vspace{2.5mm}")
 b.append(r"""\begin{tabular}{@{}l@{\hspace{2mm}}p{176mm}@{}}
-\textbf{a)} & 4 Brezeln kosten 3,20~€. Was kosten 7 Brezeln?\\
-\textbf{b)} & Für 5 Pizzen braucht man 750~g Mehl. Wie viel Mehl braucht man für 8 Pizzen?\\
+\textbf{a)} & 12 Flaschen Wasser kosten 5,40~€. Was kosten 7 Flaschen?\\
+\textbf{b)} & 6 Kugeln Eis kosten 9~€. Wie viele Kugeln bekommst du für 12~€?\\
 \textbf{c)} & Lina soll den Preis für 4 Müsliriegel berechnen. 6 Müsliriegel kosten 18~€. Sie rechnet: \mbox{„18~€ : 6 = 3~€.} \mbox{Dann 3~€ + 4 = 7~€.“} Was hat Lina falsch gemacht? Rechne richtig.\\
 \textbf{d)} & Eine Taxifahrt kostet 4~€ Grundgebühr und 2~€ pro Kilometer. Für 5~km zahlt man 14~€. Ben rechnet mit dem Dreisatz den Preis für 10~km aus und erhält 28~€. Stimmt das? Begründe.\\
 \textbf{e)} & Denke dir selbst eine Dreisatz-Aufgabe aus. Tausche sie mit deinem Nachbarn. Löst eure Aufgaben gegenseitig.
