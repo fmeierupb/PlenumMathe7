@@ -234,8 +234,9 @@ const G3t = { L: 600, cw: 210, T: 40, hh: 92, rh: 115, fk: 30, fw: 48, fb: 34, a
 function teilenFig() {
   let s = '<g data-fx="0.22">' + foto(IMG6, W6, H6, 150, 290, 220) + foto(IMG3, W3i, H3i, 470, 290, 220) +
     text(150, 322, 'Tom', 'ts') + text(470, 322, 'Mia', 'ts') + '</g>';
-  const r2 = vis('z2l') ? ['3', vis('z2r') ? '9' : '?'] : ['', ''];
-  s += `<g data-fx="0.72" data-m="${G3t.L + G3t.cw}" data-k="tab">` + tab(G3t, [vis('z1') ? ['6', '18'] : ['', ''], r2], vis('kopf'));
+  // jede Zahl für sich: rechts steht ein Fragezeichen, solange links schon da ist und rechts noch nicht
+  const r2 = [vis('z2l') ? '3' : '', vis('z2r') ? '9' : vis('z2l') ? '?' : ''];
+  s += `<g data-fx="0.72" data-m="${G3t.L + G3t.cw}" data-k="tab">` + tab(G3t, [[vis('z1l') ? '6' : '', vis('z1r') ? '18' : ''], r2], vis('kopf'));
   if (vis('b2l')) s += tbogen(G3t, 0, -1, ': 2');
   if (vis('b2r')) s += tbogen(G3t, 0, 1, ': 2');
   return s + '</g>';
@@ -245,7 +246,7 @@ function teilenHit(p) {
   const L = G3t.L, M = L + G3t.cw, R = M + G3t.cw, H = G3t.T + G3t.hh;
   if (p.x >= L && p.x <= R) {
     if (p.y < H) return 'kopf';
-    if (p.y < H + G3t.rh) return 'z1';
+    if (p.y < H + G3t.rh) return p.x < M ? 'z1l' : 'z1r';
     return p.x < M ? 'z2l' : 'z2r';
   }
   if (p.y > H && p.x < L && p.x > L - 200) return 'b2l';
@@ -255,7 +256,7 @@ function teilenHit(p) {
 // Merksätze wie beim Eis, nur jetzt mit Teilen
 function teilenEq() {
   const z = [];
-  const werte = ['z1', 'z2l'].some(vis);
+  const werte = ['z1l', 'z1r', 'z2l', 'z2r'].some(vis);
   if (vis('kopf') || werte) z.push(`<div><b>1.</b><span>Zeichne eine Tabelle und beschrifte sie.${werte ? '<br>Trage die Werte ein, die du kennst.' : ''}</span></div>`);
   if (['b2l', 'b2r'].some(vis)) z.push(`<div><b>2.</b><span>Mit welcher Rechnung kommst du vom oberen zum unteren Wert?${vis('b2r') ? '<br>Rechne auf der anderen Seite genauso.' : ''}</span></div>`);
   return z.length ? `<div class="merk">${z.join('')}</div>` : '';
@@ -269,8 +270,8 @@ const G6 = { L: 600, cw: 210, T: 20, hh: 92, rh: 100, fk: 30, fw: 48, fb: 34, a:
 function dreiFig() {
   let s = '<g data-fx="0.22">' + foto(IMG6, W6, H6, 150, 290, 220) + foto(IMG4, W4i, H4i, 470, 290, 220) +
     text(150, 322, 'Tom', 'ts') + text(470, 322, 'Ben', 'ts') + '</g>';
-  const q = (l, r, k) => vis(l) ? [vis(l) && l === 'z2l' ? '1' : '4', vis(r) ? k : '?'] : ['', ''];
-  const rows = [vis('z1') ? ['6', '18'] : ['', ''], q('z2l', 'z2r', '3'), q('z3l', 'z3r', '12')];
+  const q = (l, r, lv, rv) => [vis(l) ? lv : '', vis(r) ? rv : vis(l) ? '?' : ''];
+  const rows = [[vis('z1l') ? '6' : '', vis('z1r') ? '18' : ''], q('z2l', 'z2r', '1', '3'), q('z3l', 'z3r', '4', '12')];
   s += `<g data-fx="0.72" data-m="${G6.L + G6.cw}" data-k="tab">` + tab(G6, rows, vis('kopf'));
   if (vis('b1l')) s += tbogen(G6, 0, -1, ': 6');
   if (vis('b1r')) s += tbogen(G6, 0, 1, ': 6');
@@ -283,7 +284,7 @@ function dreiHit(p) {
   const L = G6.L, M = L + G6.cw, R = M + G6.cw, H = G6.T + G6.hh, row = Math.floor((p.y - H) / G6.rh);
   if (p.x >= L && p.x <= R) {
     if (p.y < H) return 'kopf';
-    if (row === 0) return 'z1';
+    if (row === 0) return p.x < M ? 'z1l' : 'z1r';
     if (row === 1) return p.x < M ? 'z2l' : 'z2r';
     if (row === 2) return p.x < M ? 'z3l' : 'z3r';
     return null;
@@ -295,7 +296,7 @@ function dreiHit(p) {
 }
 // Merksätze nah am Schulbuch, sie wachsen mit den Schritten in der Tabelle
 function dreiEq() {
-  const z = [], werte = ['z1', 'z3l'].some(vis);
+  const z = [], werte = ['z1l', 'z1r', 'z3l'].some(vis);
   if (vis('kopf') || werte || vis('z2l')) z.push(`<div><b>1.</b><span>Zeichne eine Tabelle und beschrifte sie.${werte ? '<br>Trage die Werte ein, die du kennst.' : ''}${vis('z2l') ? '<br>Trage in der mittleren Zeile eine 1 ein.' : ''}</span></div>`);
   if (['b1l', 'b1r'].some(vis)) z.push(`<div><b>2.</b><span>Mit welcher Rechnung kommst du vom oberen Wert zur 1: mal oder geteilt?${vis('b1r') ? '<br>Rechne auf der anderen Seite genauso.' : ''}</span></div>`);
   if (['b2l', 'b2r'].some(vis)) z.push(`<div><b>3.</b><span>Mit welcher Rechnung kommst du von der 1 zum unteren Wert: mal oder geteilt?${vis('b2r') ? '<br>Rechne auf der anderen Seite genauso.' : ''}</span></div>`);
@@ -328,8 +329,8 @@ const STEPS = [
     txt: () => `Tom kauft ${KB('6 Schnellhefter')} für ${KG('18 €')}. Mia möchte nur ${KB('3 Schnellhefter')}. Wie viel bezahlt sie?`, eq: startEq },
   { t: 'Überlege zuerst', vb: [920, 506, 90, 2], seq: 1, parts: ['zuo', 'k', 'p', 'prop'], hit: startHit, eqHit: 'prop', fig: startFig, eq: startEq },
   { t: 'Letzte Stunde: Zweisatz', noT: 1, vb: [1595, 528, -5, 12], fig: zweisatzFig },
-  { t: 'Zweisatz mit Teilen', vb: [1320, 345, 0, 28], seq: 1, parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r'], hit: teilenHit, fig: teilenFig, eq: teilenEq },
-  { t: 'Werte mit dem Dreisatz berechnen', vb: [1320, 410, 0, 12], seq: 1, parts: ['kopf', 'z1', 'z3l', 'z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'], hit: dreiHit, fig: dreiFig, eq: dreiEq },
+  { t: 'Zweisatz mit Teilen', vb: [1320, 345, 0, 28], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z2l', 'b2l', 'b2r', 'z2r'], hit: teilenHit, fig: teilenFig, eq: teilenEq },
+  { t: 'Werte mit dem Dreisatz berechnen', vb: [1320, 410, 0, 12], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z3l', 'z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'], hit: dreiHit, fig: dreiFig, eq: dreiEq },
   { t: 'Dreisatz', noT: 1, vb: [1555, 568, 62, 2], fig: merkFig }
 ];
 
