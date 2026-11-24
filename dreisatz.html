@@ -301,10 +301,11 @@ function dreiEq() {
   // Stichworte statt Buchwortlaut, damit es von hinten lesbar bleibt. Der Buchwortlaut steht auf der letzten Folie.
   // Alles steht von Anfang an im Kasten, nur unsichtbar. So bleibt der Kasten gleich groß.
   const werte = ['z1l', 'z1r', 'z3l'].some(vis), w = (on, t) => `<span${on ? '' : ' style="visibility:hidden"'}>${t}</span>`;
+  const k1 = vis('kopf') || werte, k2 = ['z2l', 'b1l', 'b1r', 'z2r'].some(vis), k3 = ['b2l', 'b2r', 'z3r'].some(vis);
   const z = [
-    [vis('kopf') || werte || vis('z2l'), '1.', w(vis('kopf') || werte || vis('z2l'), 'Tabelle zeichnen') + w(werte || vis('z2l'), ', Werte eintragen') + w(vis('z2l'), ', 1 in die Mitte')],
-    [['b1l', 'b1r'].some(vis), '2.', w(['b1l', 'b1r'].some(vis), 'Vom oberen Wert zur 1') + w(vis('b1r'), ', andere Seite genauso')],
-    [['b2l', 'b2r'].some(vis), '3.', w(['b2l', 'b2r'].some(vis), 'Von der 1 zum unteren Wert') + w(vis('b2r'), ', andere Seite genauso')]
+    [k1, '1.', w(k1, 'Tabelle zeichnen, beschriften') + '<br>' + w(werte, 'und bekannte Werte eintragen.')],
+    [k2, '2.', w(k2, 'Vom oberen Wert rechnen wir zur 1.')],
+    [k3, '3.', w(k3, 'Von der 1 rechnen wir zu beliebigem Wert.')]
   ];
   return z[0][0] ? `<div class="merk ks">${z.map(([on, n, t]) => `<div>${w(on, `<b>${n}</b>`)}<span>${t}</span></div>`).join('')}</div>` : '';
 }
