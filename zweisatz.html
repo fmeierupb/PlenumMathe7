@@ -170,9 +170,14 @@ const bogen = (x0, dx, ya, yb) => {
 // Bogen als halbe Ellipse von Zeile zu Zeile, Pfeilspitze zur Tabelle hin.
 // Das Rechenzeichen steht außen neben dem Scheitel und berührt keine Linie.
 const ebogen = (x0, a, ya, yb, k, fs, side) => {
+  // Halbe Ellipse von Zeile zu Zeile. Die Spitze folgt der Bogenlinie: Sie zeigt in Richtung der Sehne über ihre Länge, wie eine gebogene Spitze.
   const b = (yb - ya) / 2, sw = side < 0 ? 0 : 1, y = (ya + yb) / 2;
-  return `<path class="bo" d="M${x0},${ya} A${a} ${b} 0 0 ${sw} ${x0},${yb}"/>` +
-    `<polygon class="ah" points="${x0 - side * 8},${yb} ${x0 + side * 14},${yb - 12} ${x0 + side * 14},${yb + 12}"/>` +
+  const P = t => [x0 + side * a * Math.sin(t), y - b * Math.cos(t)], E = P(Math.PI);
+  let t = Math.PI; while (t > 0 && Math.hypot(P(t)[0] - E[0], P(t)[1] - E[1]) < 22) t -= 0.005;
+  const B = P(t), l = Math.hypot(E[0] - B[0], E[1] - B[1]), ux = (E[0] - B[0]) / l, uy = (E[1] - B[1]) / l;
+  const T = [B[0] + ux * 30, B[1] + uy * 30], f = p => p.map(v => v.toFixed(1)).join(',');
+  return `<path class="bo" d="M${x0},${ya} A${a} ${b} 0 0 ${sw} ${f(B)}"/>` +
+    `<polygon class="ah" points="${f(T)} ${f([B[0] - uy * 12, B[1] + ux * 12])} ${f([B[0] + uy * 12, B[1] - ux * 12])}"/>` +
     tt(x0 + side * (a + 8), y, '· ' + k, 'op', fs, side < 0 ? 'end' : 'start');
 };
 const KOPF = [['Anzahl der', 'Kugeln'], ['Preis', 'in €']];
