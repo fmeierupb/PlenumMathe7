@@ -170,30 +170,32 @@ const W6 = 640, H6 = 420, W3i = 640, H3i = 495;
 const foto = (src, w0, h0, cx, yb, h) => { const w = Math.round(w0 * h / h0); return `<image href="${src}" x="${cx - w / 2}" y="${yb - h}" width="${w}" height="${h}"/>`; };
 // Pfeil nach rechts mit Rechenzeichen darüber
 const pfeilW = y => `<line class="bo" x1="425" y1="${y}" x2="655" y2="${y}"/><polygon class="ah" points="675,${y} 653,${y - 12} 653,${y + 12}"/>` + text(550, y - 26, ': 2', 'to2');
+// Folie 1 zeigt nur die Rechnung, Folie 2 dasselbe Bild mit Preis, Zuordnung und Proportionalität.
+const pv = () => step > 0 || vis('preis');
 function startFig() {
-  let s = !vis('preis') ? '' : vis('zuo') ? '<g data-cx="550">' + text(540, 30, 'Anzahl der Schnellhefter', 'tb', 'end') + `<line class="pf" x1="552" y1="30" x2="582" y2="30"/><polygon class="pfh" points="594,30 580,22 580,38"/>` + text(606, 30, 'Preis', 'tg', 'start') + '</g>'
+  let s = step === 0 ? '' : vis('zuo') ? '<g data-cx="550">' + text(540, 30, 'Anzahl der Schnellhefter', 'tb', 'end') + `<line class="pf" x1="552" y1="30" x2="582" y2="30"/><polygon class="pfh" points="594,30 580,22 580,38"/>` + text(606, 30, 'Preis', 'tg', 'start') + '</g>'
     : text(550, 30, 'Welche Größen sind einander zugeordnet?', 'tq3');
   s += foto(IMG6, W6, H6, 300, 335, 230) + foto(IMG3, W3i, H3i, 800, 335, 230);
   s += text(300, 362, 'Tom', 'ts') + text(800, 362, 'Mia', 'ts');
   s += text(300, 400, '6 Schnellhefter', 'tb') + text(800, 400, '3 Schnellhefter', 'tb');
-  s += text(300, 465, '18 €', 'tg') + (vis('preis') ? text(800, 465, '9 €', 'tg') : text(800, 465, '?', 'tq2'));
+  s += text(300, 465, '18 €', 'tg') + (pv() ? text(800, 465, '9 €', 'tg') : text(800, 465, '?', 'tq2'));
   if (vis('k')) s += pfeilW(400);
   if (vis('p')) s += pfeilW(465);
   return s;
 }
 function startHit(p) {
-  if (p.x >= 730 && p.x < 900 && p.y > 440 && p.y < 495) return 'preis';
-  if (!vis('preis')) return null;
+  if (step === 0) return p.x >= 730 && p.x < 900 && p.y > 440 && p.y < 495 ? 'preis' : null;
   if (p.y < 60) return 'zuo';
   if (p.x > 380 && p.x < 720 && p.y > 360 && p.y < 432) return 'k';
   if (p.x > 380 && p.x < 720 && p.y >= 432 && p.y < 505) return 'p';
   return null;
 }
 function startEq() {
-  if (!vis('preis')) return '';
+  if (!pv()) return '';
   const k = vis('k'), q = vis('p');
   const satz = k && q ? `Halb so viele ${KB('Schnellhefter')}, halb so viel ${KG('Geld')}.` : k ? `Halb so viele ${KB('Schnellhefter')} …` : q ? `… halb so viel ${KG('Geld')}.` : '&nbsp;';
-  return `<div class="m2">${KG('18 €')} ${opd(2)} = ${KG('9 €')}</div><div class="m2">${satz}</div>` +
+  if (step === 0) return `<div class="m2">${KG('18 €')} ${opd(2)} = ${KG('9 €')}</div>`;
+  return `<div class="m2">${satz}</div>` +
     (vis('prop') ? '<div class="m2 tap">Ja, die Zuordnung ist proportional.</div>' : '<div class="m2 dim tap">Ist die Zuordnung proportional?</div>');
 }
 
@@ -297,8 +299,9 @@ function merkFig() {
 // seq: Weiter deckt die Teile einzeln in dieser Reihenfolge auf, Zurück nimmt den letzten wieder weg.
 // chain: Ein Teil zieht die vorigen mit, Zudecken nimmt die späteren mit.
 const STEPS = [
-  { t: 'Mia kauft Schnellhefter', vb: [W1, H1], seq: 1, parts: ['preis', 'zuo', 'k', 'p', 'prop'], hit: startHit, eqHit: 'prop', fig: startFig,
+  { t: 'Mia kauft Schnellhefter', vb: [W1, H1], seq: 1, parts: ['preis'], hit: startHit, fig: startFig,
     txt: () => `Tom kauft ${KB('6 Schnellhefter')} für ${KG('18 €')}. Mia möchte nur ${KB('3 Schnellhefter')}. Wie viel bezahlt sie?`, eq: startEq },
+  { t: 'Überlege zuerst', vb: [W1, H1], seq: 1, parts: ['zuo', 'k', 'p', 'prop'], hit: startHit, eqHit: 'prop', fig: startFig, eq: startEq },
   { t: 'Letzte Stunde: Zweisatz', noT: 1, vb: [WZ, HZ], fig: zweisatzFig },
   { t: 'Zweisatz mit Teilen', vb: [W3, H3], seq: 1, parts: ['kopf', 'z1', 'z2l', 'b2l', 'b2r', 'z2r'], hit: teilenHit, fig: teilenFig, eq: teilenEq },
   { t: 'Ein Schritt reicht nicht immer', vb: [W2, H2], seq: 1, parts: ['eins'], hit: brueckeHit, fig: brueckeFig,
