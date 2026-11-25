@@ -271,9 +271,9 @@ function auftragFig() {
 }
 
 const STEPS = [
+  { t: 'Warum nicht proportional?', vb: [1260, 620], seq: 1, parts: ['a', 'b', 'prop'], hit: diaHit, fig: diaFig, txt: 'Buch S. 36 Nr. 4' },
   { t: 'Dreisatz wiederholen', vb: [900, 446], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z3l', 'z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'], hit: p => tabHit(GA, p, 3), fig: shirtFig,
     txt: () => `${KB('2 T-Shirts')} kosten ${KG('26 €')}. Wie viel kosten ${KB('5 T-Shirts')}?` },
-  { t: 'Warum nicht proportional?', vb: [1260, 620], seq: 1, parts: ['a', 'b', 'prop'], hit: diaHit, fig: diaFig, txt: 'Buch S. 36 Nr. 4' },
   { t: 'Ben fährt Taxi', vb: [1320, 572], seq: 1, parts: ['w0', 'w1', 'w5', 'w10', 'bl', 'br', 'null', 'fazit'], hit: taxiHit, fig: taxiFig,
     txt: () => `Taxi: ${KG('4 €')} Grundgebühr und ${KG('2 €')} pro Kilometer. ${KB('5 km')} kosten ${KG('14 €')}.<br>Ben rechnet mit dem Dreisatz: ${KB('10 km')} kosten ${KG('28 €')}. Stimmt das?` },
   { t: 'Erst prüfen, dann rechnen', noT: 1, vb: [1000, 580], fig: auftragFig }
