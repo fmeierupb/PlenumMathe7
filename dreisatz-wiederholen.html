@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mathe 7">
+<meta name="theme-color" content="#0f766e">
+<title>Dreisatz wiederholen</title>
+<style>
+:root{--bg:#fbfaf6;--fg:#161a22;--mut:#9aa0ad;--line:#d9d7cf;--c1:#2563eb;--c2:#f08a00;--c3:#12a150;--cr:#d81e1e;--btn:#fff;--head:#eef3ee}
+@media (prefers-color-scheme:dark){:root{--bg:#12151b;--fg:#f0f2f6;--mut:#7d8596;--line:#343b48;--c1:#5b9bff;--c2:#ffad33;--c3:#3ddc84;--cr:#ff5c5c;--btn:#1f242d;--head:#1c2a22}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{display:flex;flex-direction:column;height:100dvh;padding:12px 16px calc(12px + env(safe-area-inset-bottom));user-select:none;-webkit-user-select:none}
+h1{margin:0;font-size:clamp(26px,4.2vw,52px);line-height:1.15;min-height:1.2em}
+#fig{flex:1;min-height:0;width:100%;touch-action:none}
+#txt{font-size:clamp(20px,3vw,38px);min-height:1.4em;text-align:center}
+#eq{font-size:clamp(24px,4.1vw,50px);font-weight:700;min-height:1.4em;text-align:center;font-variant-numeric:tabular-nums;line-height:1.35}
+#eq .dim{opacity:.7;font-size:.85em}
+#txt .dim{opacity:.7}
+/* Ohne Text kein leerer Streifen über der Rechnung, damit das Bild den Platz bekommt */
+#txt:empty,#eq:empty{min-height:0}
+#eq .m{font-weight:600;font-size:.72em;text-align:left;max-width:30em;margin:0 auto}
+#eq .m2{font-size:.8em}
+#eq .merk{display:inline-block;text-align:left;font-weight:600;font-size:.62em;line-height:1.45;max-width:40em;border:3px solid var(--c3);border-radius:14px;padding:.7em 1.2em;background:rgba(18,161,80,.08)}
+#eq .merk>div{display:grid;grid-template-columns:1.6em 1fr}
+#eq .merk>div+div{margin-top:.6em}
+/* Drei Merksätze nebeneinander, damit der Kasten flach bleibt und die Tabelle groß */
+#eq .merk.m3{display:grid;grid-template-columns:repeat(3,1fr);column-gap:1.4em;max-width:none;width:100%;box-sizing:border-box;font-size:.5em}
+#eq .merk.m3>div+div{margin-top:0}
+.k.c1{color:var(--c1)}.k.c2{color:var(--c2)}.k.c3{color:var(--c3)}.k.cr{color:var(--cr)}
+footer{display:flex;gap:10px;align-items:center;margin-top:10px}
+#extras{display:flex;gap:10px;margin:0 auto}
+button{font:inherit;font-size:clamp(16px,2vw,24px);color:inherit;background:var(--btn);border:1px solid var(--line);border-radius:12px;padding:12px 18px;cursor:pointer;touch-action:manipulation}
+button:disabled{opacity:.3}
+#menu{font:inherit;font-size:clamp(16px,2vw,24px);color:inherit;background:var(--btn);border:1px solid var(--line);border-radius:12px;padding:12px 18px;text-decoration:none}
+#fs svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
+#fs .fo,html.fs #fs .fi{display:none}
+html.fs #fs .fo{display:inline}
+#cnt{color:var(--mut);font-size:clamp(14px,1.6vw,20px);min-width:3.5em;text-align:center}
+#next{background:var(--c1);border-color:var(--c1);color:#fff;font-weight:700}
+footer{flex-wrap:wrap;row-gap:8px}
+#extras{flex-wrap:wrap;justify-content:center}
+#extras:empty{display:none}
+/* Handy hochkant: Zusatzknöpfe in eine eigene Zeile, Zurück nur als Pfeil. Was trotzdem nicht passt, bricht um, statt aus dem Bild zu rutschen. */
+@media (max-width:700px){#extras{order:9;flex-basis:100%;margin:0}#next{margin-left:auto}footer{gap:8px}button,#menu{padding:10px 12px}#cnt{min-width:0}}
+@media (max-width:420px){#prev .lbl{display:none}}
+svg .ln{stroke:var(--fg);stroke-width:4;fill:none}
+svg .thin{stroke:var(--fg);stroke-width:2.5;fill:none}
+svg .head{fill:var(--head)}
+svg .tx{fill:var(--fg);font:700 30px system-ui,sans-serif}
+svg .ts{fill:var(--mut);font:600 30px system-ui,sans-serif}
+svg .th{fill:var(--fg);font:600 26px system-ui,sans-serif}
+svg .tn{fill:var(--fg);font:600 54px system-ui,sans-serif}
+svg .tnb{fill:var(--cr);font:600 54px system-ui,sans-serif}
+svg .tng{fill:var(--c1);font:600 54px system-ui,sans-serif}
+svg .thb{fill:var(--cr);font:600 26px system-ui,sans-serif}
+svg .thg{fill:var(--c1);font:600 26px system-ui,sans-serif}
+svg .tb{fill:var(--cr);font:700 38px system-ui,sans-serif}
+svg .tg{fill:var(--c1);font:700 38px system-ui,sans-serif}
+svg .tq{fill:var(--mut);font:600 54px system-ui,sans-serif}
+svg .tr{fill:var(--c1);font:700 54px system-ui,sans-serif}
+svg .bo{stroke:var(--c2);stroke-width:5;fill:none;stroke-linecap:round}
+svg .ah{fill:var(--c2)}
+svg .to{fill:var(--c2);font:700 42px system-ui,sans-serif}
+svg .to2{fill:var(--c2);font:700 40px system-ui,sans-serif}
+svg .tq2{fill:var(--mut);font:700 38px system-ui,sans-serif}
+svg .tq3{fill:var(--mut);font:600 34px system-ui,sans-serif}
+svg .tm{fill:var(--fg);font:600 22px system-ui,sans-serif;white-space:pre}
+svg .tmh{fill:var(--fg);font:700 22px system-ui,sans-serif}
+svg .labbg{fill:var(--bg)}
+svg .pf{stroke:var(--fg);stroke-width:3}
+svg .pfh{fill:var(--fg)}
+svg .fr,svg .fb,svg .fq,svg .op{font-family:system-ui,sans-serif;font-weight:600}
+svg .fq{fill:var(--mut)}
+svg .op{fill:var(--c2);font-weight:700}
+svg .ta{fill:var(--fg);font:600 28px system-ui,sans-serif}
+svg .tw{fill:var(--fg);font:600 26px system-ui,sans-serif}
+svg .fo{fill:var(--c2);font-weight:700}
+svg .tbs{fill:var(--cr);font:700 26px system-ui,sans-serif}
+svg .tgs{fill:var(--c1);font:700 26px system-ui,sans-serif}
+svg .tnb2{fill:var(--cr);font:600 44px system-ui,sans-serif}
+svg .tng2{fill:var(--c1);font:600 44px system-ui,sans-serif}
+svg .tr2{fill:var(--c1);font:700 44px system-ui,sans-serif}
+svg .tq4{fill:var(--mut);font:600 44px system-ui,sans-serif}
+svg .thb2{fill:var(--cr);font:600 22px system-ui,sans-serif}
+svg .thg2{fill:var(--c1);font:600 22px system-ui,sans-serif}
+svg .to3{fill:var(--c2);font:700 36px system-ui,sans-serif}
+svg .note{fill:#fff7d6;stroke:var(--fg);stroke-width:3}
+svg .noteLine{stroke:#d7b86b;stroke-width:2}
+svg .ring{fill:var(--c1)}
+svg .tz{fill:var(--fg);font:600 40px system-ui,sans-serif;white-space:pre}
+svg .tzd{opacity:.7}
+svg .zr{fill:var(--cr)}
+svg .zb{fill:var(--c1)}
+svg .zo{fill:var(--c2)}
+svg .merkbox{fill:rgba(18,161,80,.08);stroke:var(--c3);stroke-width:3}
+svg .fr{fill:var(--cr)}
+svg .fb{fill:var(--c1)}
+svg .c1{fill:var(--c1);opacity:.62}
+svg .c2{fill:var(--c2);opacity:.62}
+svg .c3{fill:var(--c3);opacity:.62}
+svg .cr{fill:#d81e1e;opacity:.62}
+svg .gr{stroke:var(--line);stroke-width:1.5}
+svg .ax{stroke:var(--fg);stroke-width:3}
+svg .pt{stroke:var(--c1);stroke-width:6;stroke-linecap:round}
+svg .gl{stroke:var(--c1);stroke-width:6;stroke-linecap:round}
+svg .hl{stroke:var(--c2);stroke-width:4;stroke-dasharray:12 9;fill:none}
+svg .hr{stroke:var(--c2);stroke-width:5;fill:none}
+</style>
+</head>
+<body>
+<h1 id="title"></h1>
+<svg id="fig" viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg"></svg>
+<div id="txt"></div>
+<div id="eq"></div>
+<footer>
+  <a id="menu" href="./">Menü</a><button id="fs" aria-label="Vollbild" title="Vollbild (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="fi" d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/><path class="fo" d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg></button><button id="prev" aria-label="Zurück">‹<span class="lbl"> Zurück</span></button><span id="cnt"></span>
+  <div id="extras"></div>
+  <button id="next">Weiter ›</button>
+</footer>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[rnd(0, a.length - 1)];
+const text = (x, y, s, c = 'tx', a = 'middle') => `<text class="${c}" x="${x}" y="${y}" text-anchor="${a}" dominant-baseline="central">${s}</text>`;
+// Rechenzeichen in der Farbe der Bögen
+const op = k => `<span class="k c2">· ${k}</span>`;
+const lines = (arr, n = arr.length) => arr.slice(0, n).map((l, i) => `<div class="${i < n - 1 ? 'dim' : ''}">${l}</div>`).join('');
+
+// ---------- Gemeinsames ----------
+// Farben wie im Zweisatz: Ausgangsgröße rot, zugeordnete Größe blau, Rechenzeichen orange. Überall gleich, auch in Text und Rechnung.
+const KB = x => `<span class="k cr">${x}</span>`;
+const KG = x => `<span class="k c1">${x}</span>`;
+const opd = k => `<span class="k c2">: ${k}</span>`;
+// Text mit eigener Schriftgröße
+const tt = (x, y, str, cls, fs, anchor = 'middle') => `<text class="${cls}" style="font-size:${fs}px" x="${x}" y="${y}" text-anchor="${anchor}" dominant-baseline="central">${str}</text>`;
+// Bogen als halbe Ellipse von Zeile zu Zeile, Pfeilspitze zur Tabelle hin. Das Rechenzeichen steht außen neben dem Scheitel.
+const ebogen = (x0, a, ya, yb, lab, fs, side) => {
+  // Halbe Ellipse von Zeile zu Zeile. Die Spitze folgt der Bogenlinie: Sie zeigt in Richtung der Sehne über ihre Länge, wie eine gebogene Spitze.
+  const b = (yb - ya) / 2, sw = side < 0 ? 0 : 1, y = (ya + yb) / 2;
+  const P = t => [x0 + side * a * Math.sin(t), y - b * Math.cos(t)], E = P(Math.PI);
+  let t = Math.PI; while (t > 0 && Math.hypot(P(t)[0] - E[0], P(t)[1] - E[1]) < 22) t -= 0.005;
+  const B = P(t), l = Math.hypot(E[0] - B[0], E[1] - B[1]), ux = (E[0] - B[0]) / l, uy = (E[1] - B[1]) / l;
+  const T = [B[0] + ux * 30, B[1] + uy * 30], f = p => p.map(v => v.toFixed(1)).join(',');
+  return `<path class="bo" d="M${x0},${ya} A${a} ${b} 0 0 ${sw} ${f(B)}"/>` +
+    `<polygon class="ah" points="${f(T)} ${f([B[0] - uy * 12, B[1] + ux * 12])} ${f([B[0] + uy * 12, B[1] - ux * 12])}"/>` +
+    tt(x0 + side * (a + 8), y, lab, 'op', fs, side < 0 ? 'end' : 'start');
+};
+const KOPF = [['Anzahl der', 'Schnellhefter'], ['Preis', 'in €']];
+// Tabelle wie im Zweisatz mit beliebig vielen Zeilen. rows: [links, rechts]. Leere Werte bleiben leer, '?' erscheint grau.
+// g: L linker Rand, cw Spaltenbreite, T oben, hh Kopfhöhe, rh Zeilenhöhe, fk/fw/fb Schrift Kopf/Werte/Bögen, a Ausbuchtung der Bögen
+function tab(g, rows, kopf) {
+  const n = rows.length, M = g.L + g.cw, R = g.L + 2 * g.cw, H = g.T + g.hh, B = H + n * g.rh;
+  const ry = i => H + (i + 0.5) * g.rh, cx = [g.L + g.cw / 2, M + g.cw / 2];
+  let s = `<rect class="head" x="${g.L}" y="${g.T}" width="${2 * g.cw}" height="${g.hh}"/>`;
+  s += `<rect class="ln" x="${g.L}" y="${g.T}" width="${2 * g.cw}" height="${B - g.T}"/>`;
+  s += `<line class="ln" x1="${M}" y1="${g.T}" x2="${M}" y2="${B}"/><line class="ln" x1="${g.L}" y1="${H}" x2="${R}" y2="${H}"/>`;
+  for (let i = 1; i < n; i++) s += `<line class="thin" x1="${g.L}" y1="${H + i * g.rh}" x2="${R}" y2="${H + i * g.rh}"/>`;
+  if (kopf) (kopf === true ? KOPF : kopf).forEach((ls, j) => ls.forEach((l, i) => { s += tt(cx[j], g.T + g.hh / 2 + (i - 0.5) * g.fk * 1.2, l, j ? 'fb' : 'fr', g.fk); }));
+  const cell = (x, y, v, k) => v === '?' ? tt(x, y, '?', 'fq', g.fw) : v ? tt(x, y, v, k, g.fw) : '';
+  rows.forEach(([l, r], i) => { s += cell(cx[0], ry(i), l, 'fr') + cell(cx[1], ry(i), r, 'fb'); });
+  return s;
+}
+// Bogen von Zeile i zur nächsten, links (side -1) oder rechts (side 1) der Tabelle
+const tbogen = (g, i, side, lab) => {
+  const H = g.T + g.hh, ry = j => H + (j + 0.5) * g.rh;
+  return ebogen(side < 0 ? g.L - 15 : g.L + 2 * g.cw + 15, g.a, ry(i) + 4, ry(i + 1), lab, g.fb, side);
+};
+
+// Bogen von Zeile i nach Zeile j mit eigener Ausbuchtung a
+const tbogen2 = (g, i, j, side, lab, a) => {
+  const H = g.T + g.hh, ry = k => H + (k + 0.5) * g.rh;
+  return ebogen(side < 0 ? g.L - 15 : g.L + 2 * g.cw + 15, a, ry(i) - 4, ry(j), lab, g.fb, side);
+};
+
+// Trifft p die Tabelle g mit n Zeilen? Liefert kopf, z1l bis znr (Zellen) oder b1l bis b(n-1)r (Bögen neben der Tabelle).
+function tabHit(g, p, n) {
+  const L = g.L, M = L + g.cw, R = M + g.cw, H = g.T + g.hh, row = Math.floor((p.y - H) / g.rh);
+  if (p.y < g.T || p.y > H + n * g.rh) return null;
+  if (p.x >= L && p.x <= R) return p.y < H ? 'kopf' : `z${row + 1}${p.x < M ? 'l' : 'r'}`;
+  if (p.y <= H) return null;
+  const seg = Math.min(n - 1, Math.max(1, Math.round((p.y - H) / g.rh)));
+  if (p.x < L && p.x > L - 150) return `b${seg}l`;
+  if (p.x > R && p.x < R + 150) return `b${seg}r`;
+  return null;
+}
+
+// ---------- Folie 1: Dreisatz wiederholen mit den T-Shirts von S. 36 ----------
+const GA = { L: 240, cw: 210, T: 12, hh: 92, rh: 110, fk: 30, fw: 48, fb: 36, a: 36 };
+function shirtFig() {
+  const q = (l, r, lv, rv) => [vis(l) ? lv : '', vis(r) ? rv : vis(l) ? '?' : ''];
+  const rows = [[vis('z1l') ? '2' : '', vis('z1r') ? '26' : ''], q('z2l', 'z2r', '1', '13'), q('z3l', 'z3r', '5', '65')];
+  let s = tab(GA, rows, vis('kopf') && [['Anzahl der', 'T-Shirts'], ['Preis', 'in €']]);
+  if (vis('b1l')) s += tbogen(GA, 0, -1, ': 2');
+  if (vis('b1r')) s += tbogen(GA, 0, 1, ': 2');
+  if (vis('b2l')) s += tbogen(GA, 1, -1, '· 5');
+  if (vis('b2r')) s += tbogen(GA, 1, 1, '· 5');
+  return s;
+}
+
+// ---------- Folie 2: Buch S. 36 Nr. 4, warum nicht proportional? ----------
+const U = 90, OY = 440, OA = 150, OB = 760;
+function achsen(ox, name) {
+  let s = '';
+  for (let i = 1; i <= 4; i++) s += `<line class="gr" x1="${ox + i * U}" y1="${OY}" x2="${ox + i * U}" y2="${OY - 4.5 * U}"/><line class="gr" x1="${ox}" y1="${OY - i * U}" x2="${ox + 4.5 * U}" y2="${OY - i * U}"/>`;
+  const xe = ox + 4.75 * U, ye = OY - 4.75 * U;
+  s += `<line class="ax" x1="${ox}" y1="${OY}" x2="${xe - 10}" y2="${OY}"/><line class="ax" x1="${ox}" y1="${OY}" x2="${ox}" y2="${ye + 10}"/>`;
+  s += `<polygon class="pfh" points="${xe},${OY} ${xe - 18},${OY - 8} ${xe - 18},${OY + 8}"/><polygon class="pfh" points="${ox},${ye} ${ox - 8},${ye + 18} ${ox + 8},${ye + 18}"/>`;
+  for (let i = 1; i <= 4; i++) s += `<line class="ax" x1="${ox + i * U}" y1="${OY - 7}" x2="${ox + i * U}" y2="${OY + 7}"/><line class="ax" x1="${ox - 7}" y1="${OY - i * U}" x2="${ox + 7}" y2="${OY - i * U}"/>` +
+    tt(ox + i * U, OY + 30, i, 'ta', 26) + tt(ox - 28, OY - i * U, i, 'ta', 26);
+  return s + tt(ox - 26, OY + 30, '0', 'ta', 26) + tt(xe, OY + 30, 'x', 'ta', 26) + tt(ox - 28, ye + 8, 'y', 'ta', 26) + tt(ox - 80, ye + 14, name, 'tx', 34);
+}
+const X = (ox, x) => ox + x * U, Y = y => OY - y * U;
+function diaFig() {
+  let s = achsen(OA, 'a)') + achsen(OB, 'b)');
+  // a) Zum Vergleich die Gerade durch den Nullpunkt: Ein Punkt liegt daneben.
+  if (vis('a')) s += `<line class="hl" x1="${X(OA, 0)}" y1="${Y(0)}" x2="${X(OA, 4.5)}" y2="${Y(4.5)}"/><circle class="hr" cx="${X(OA, 2)}" cy="${Y(2.5)}" r="22"/>` +
+    tt(OA + 2.2 * U, 510, 'Die Punkte liegen nicht auf einer Geraden.', 'tm', 27);
+  [[1, 1], [2, 2.5], [3, 3], [4, 4]].forEach(([x, y]) => { const a = X(OA, x), b = Y(y); s += `<line class="pt" x1="${a - 9}" y1="${b - 9}" x2="${a + 9}" y2="${b + 9}"/><line class="pt" x1="${a - 9}" y1="${b + 9}" x2="${a + 9}" y2="${b - 9}"/>`; });
+  s += `<line class="gl" x1="${X(OB, 0)}" y1="${Y(2)}" x2="${X(OB, 4)}" y2="${Y(4)}"/>`;
+  // b) Die Gerade beginnt bei 2 und nicht im Nullpunkt.
+  if (vis('b')) s += `<circle class="hr" cx="${X(OB, 0)}" cy="${Y(2)}" r="22"/>` + tt(OB + 2.2 * U, 510, 'Die Gerade geht nicht durch den Nullpunkt.', 'tm', 27);
+  if (vis('prop')) s += `<rect class="merkbox" x="100" y="548" width="1060" height="62" rx="14"/>` +
+    tt(630, 579, 'Proportional: Die Punkte liegen auf einer Geraden durch den Nullpunkt.', 'tmh', 29);
+  return s;
+}
+const diaHit = p => p.y > 540 ? 'prop' : p.x < 630 ? 'a' : 'b';
+
+// ---------- Folie 3: das Taxi vom Blatt (Für Schnelle d) ----------
+const KT = [['Strecke', 'in km'], ['Preis', 'in €']];
+const GB = { L: 140, cw: 170, T: 56, hh: 80, rh: 86, fk: 27, fw: 44, fb: 34, a: 34 };
+const GT = { L: 790, cw: 170, T: 56, hh: 80, rh: 86, fk: 27, fw: 44, fb: 34, a: 34 };
+function taxiFig() {
+  // Links steht Bens Dreisatz, wie er in der Aufgabe gegeben ist.
+  let s = tt(GB.L + GB.cw, 26, 'Bens Dreisatz', 'ts', 30) + tab(GB, [['5', '14'], ['1', '2,80'], ['10', '28']], KT) +
+    tbogen(GB, 0, -1, ': 5') + tbogen(GB, 0, 1, ': 5') + tbogen(GB, 1, -1, '· 10') + tbogen(GB, 1, 1, '· 10');
+  // Rechts entsteht die Preisliste: 4 € Grundgebühr und 2 € für jeden Kilometer.
+  const w = (k, v) => vis(k) ? v : '?';
+  s += tt(GT.L + GT.cw, 26, 'Preisliste', 'ts', 30) + tab(GT, [['0', w('w0', '4')], ['1', w('w1', '6')], ['5', w('w5', '14')], ['10', w('w10', '24')]], KT);
+  if (vis('bl')) s += tbogen(GT, 2, -1, '· 2');
+  if (vis('br')) s += tbogen(GT, 2, 1, '+ 10');
+  const H = GT.T + GT.hh;
+  if (vis('null')) s += `<rect class="hr" x="${GT.L + 10}" y="${H + 10}" width="${2 * GT.cw - 20}" height="${GT.rh - 20}" rx="14"/>`;
+  if (vis('fazit')) {
+    const x = GB.L + 1.5 * GB.cw, y = GB.T + GB.hh + 2.5 * GB.rh;
+    s += `<line class="hr" x1="${x - 50}" y1="${y + 22}" x2="${x + 50}" y2="${y - 22}"/>` +
+      tt(660, 542, 'Nicht proportional. Der Dreisatz passt hier nicht.', 'tx', 38);
+  }
+  return s;
+}
+function taxiHit(p) {
+  if (p.y > 500) return 'fazit';
+  const k = tabHit(GT, p, 4);
+  return { z1l: 'null', z1r: 'w0', z2l: 'w1', z2r: 'w1', z3l: 'w5', z3r: 'w5', z4l: 'w10', z4r: 'w10', b3l: 'bl', b3r: 'br' }[k] || null;
+}
+
+// ---------- Folie 4: Merkkasten und Aufgaben für die Übungsphase ----------
+function auftragFig() {
+  let s = `<rect class="merkbox" x="20" y="16" width="960" height="290" rx="16"/>` + tt(60, 76, 'Erst prüfen, dann rechnen', 'tmh', 54, 'start');
+  s += tt(60, 166, '1.', 'tm', 44, 'start') + tt(130, 166, 'Ist die Zuordnung proportional?', 'tm', 44, 'start');
+  s += tt(60, 246, '2.', 'tm', 44, 'start') + tt(130, 246, 'Wenn ja: Rechne mit dem Dreisatz.', 'tm', 44, 'start');
+  s += tt(60, 386, 'Aufgaben im Heft', 'tmh', 48, 'start') + tt(60, 462, 'Buch S. 39 Nr. 5 und 6', 'tm', 44, 'start') + tt(60, 534, 'Buch S. 40 Nr. 5 und 6', 'tm', 44, 'start');
+  return s;
+}
+
+const STEPS = [
+  { t: 'Dreisatz wiederholen', vb: [900, 446], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z3l', 'z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'], hit: p => tabHit(GA, p, 3), fig: shirtFig,
+    txt: () => `${KB('2 T-Shirts')} kosten ${KG('26 €')}. Wie viel kosten ${KB('5 T-Shirts')}?` },
+  { t: 'Warum nicht proportional?', vb: [1260, 620], seq: 1, parts: ['a', 'b', 'prop'], hit: diaHit, fig: diaFig, txt: 'Buch S. 36 Nr. 4' },
+  { t: 'Ben fährt Taxi', vb: [1320, 572], seq: 1, parts: ['w0', 'w1', 'w5', 'w10', 'bl', 'br', 'null', 'fazit'], hit: taxiHit, fig: taxiFig,
+    txt: () => `Taxi: ${KG('4 €')} Grundgebühr und ${KG('2 €')} pro Kilometer. ${KB('5 km')} kosten ${KG('14 €')}.<br>Ben rechnet mit dem Dreisatz: ${KB('10 km')} kosten ${KG('28 €')}. Stimmt das?` },
+  { t: 'Erst prüfen, dann rechnen', noT: 1, vb: [1000, 580], fig: auftragFig }
+];
+
+// ---------- Ablauf ----------
+// sub zählt bei Folien mit rv: n die schon aufgedeckten Schritte (1 bis n).
+let step = 0, shown = false, sub = 0, shownStep = -1;
+// Einzeln antippbare Teile: st.parts nennt die Teile, st.hit(p) liefert den getroffenen Teil. Weiter deckt alles auf.
+let opened = new Set();
+const vis = k => shown || opened.has(k);
+const done = (st = STEPS[step]) => (shown && sub >= (st.rv || 1)) || !!(st.parts && st.parts.every(k => opened.has(k)));
+function flip(k) {
+  const st = STEPS[step];
+  if (shown) { shown = false; opened = new Set(st.parts); }
+  const i = st.parts.indexOf(k);
+  if (opened.has(k)) { opened.delete(k); if (st.chain) st.parts.slice(i + 1).forEach(x => opened.delete(x)); }
+  else { opened.add(k); if (st.chain) st.parts.slice(0, i).forEach(x => opened.add(x)); }
+}
+const txv = x => (typeof x === 'function' ? x() : x) || '';
+function put(st, o = {}) {
+  $('title').textContent = o.t ?? txv(st.t);
+  $('txt').innerHTML = o.txt ?? txv(st.txt);
+  $('eq').innerHTML = o.eq ?? (st.eq ? st.eq() : '');
+}
+// Überschrift, Text und Rechnung bekommen gleich beim Betreten der Folie den Platz ihres vollsten Zustands.
+// So bleibt die Zeichnung gleich groß, wenn unten Schritte dazukommen.
+const BOX = ['title', 'txt', 'eq'];
+function reserve(st) {
+  const keep = [shown, sub], hi = BOX.map(() => 0);
+  BOX.forEach(id => { $(id).style.minHeight = ''; });
+  const m = o => { put(st, o); BOX.forEach((id, i) => { hi[i] = Math.max(hi[i], $(id).offsetHeight); }); };
+  for (let i = 0; i <= (st.rv || 0); i++) { shown = i > 0; sub = i; m(); }
+  [shown, sub] = keep;
+  if (st.seq) { const o = opened; opened = new Set(st.parts); m(); opened = o; }
+  m();
+  BOX.forEach((id, i) => { $(id).style.minHeight = hi[i] + 'px'; });
+}
+// Was trotzdem größer wird, behält seinen Platz bis zur nächsten Folie.
+const grow = () => BOX.forEach(id => { const e = $(id), h = e.offsetHeight; if (h > parseFloat(e.style.minHeight || 0)) e.style.minHeight = h + 'px'; });
+let FX = {};
+function render() {
+  const st = STEPS[step];
+  $('title').style.display = st.noT ? 'none' : '';
+  if (shownStep !== step) reserve(st);
+  // Erst Text und Rechnung setzen, damit die Größe des Bildes feststeht, bevor es gezeichnet wird.
+  put(st); grow();
+  // Das Bild wird jedes Mal als neues Element eingesetzt. So bleiben auf dem iPad keine Reste des alten Stands stehen.
+  // vb: [Breite, Höhe, links, oben]. Links und oben schneiden leeren Rand weg, damit das Bild die Fläche besser nutzt.
+  const [vw, vh, vx = 0, vy = 0] = st.vb || [800, 520], alt = $('fig'), neu = alt.cloneNode(false);
+  neu.setAttribute('viewBox', `${vx} ${vy} ${vw} ${vh}`);
+  neu.innerHTML = st.fig();
+  alt.replaceWith(neu);
+  // Gruppen mit data-cx werden nach ihrer tatsächlichen Breite mittig auf diese Stelle gesetzt.
+  neu.querySelectorAll('[data-cx]').forEach(g => { const b = g.getBBox(); g.setAttribute('transform', `translate(${+g.dataset.cx - (b.x + b.width / 2)},0)`); });
+  // Gruppen mit data-fx: Mitte auf diesen Anteil der tatsächlich sichtbaren Breite (0.25 = Mitte der linken Bildhälfte).
+  // data-m gibt die Mitte fest vor, damit nichts verrutscht, wenn Teile erst später erscheinen.
+  FX = {};
+  const r = neu.getBoundingClientRect(), sc = Math.min(r.width / vw, r.height / vh), sw = r.width / sc;
+  neu.querySelectorAll('[data-fx]').forEach(g => {
+    const m = g.dataset.m ? +g.dataset.m : (b => b.x + b.width / 2)(g.getBBox());
+    const d = vx + (vw - sw) / 2 + +g.dataset.fx * sw - m;
+    FX[g.dataset.k || ''] = d; g.setAttribute('transform', `translate(${d},0)`);
+  });
+  if (shownStep !== step) {
+    shownStep = step;
+    $('extras').innerHTML = (st.btns || []).map((b, i) => `<button data-b="${i}">${b.l}</button>`).join('');
+    $('cnt').textContent = `${step + 1} / ${STEPS.length}`;
+  }
+  $('prev').disabled = step === 0 && !(shown && sub > 0) && !(st.seq && opened.size);
+  $('next').disabled = step === STEPS.length - 1 && !((st.rv || st.seq) && !done(st));
+}
+// end: beim Zurückgehen auf der vorigen Folie mit allen Schritten aufgedeckt landen.
+function go(d, end) {
+  const n = step + d; if (n < 0 || n >= STEPS.length) return;
+  step = n; shown = false; sub = 0; opened = new Set();
+  if (STEPS[step].enter) STEPS[step].enter();
+  if (end && STEPS[step].rv) { shown = true; sub = STEPS[step].rv; }
+  if (end && STEPS[step].seq) opened = new Set(STEPS[step].parts);
+  render();
+}
+// Zurück nimmt immer nur einen Schritt zurück. Erst am Anfang einer Folie geht es zur vorigen.
+const back = () => {
+  const st = STEPS[step];
+  if (st.seq && opened.size) { const k = [...st.parts].reverse().find(x => opened.has(x)); opened.delete(k); render(); }
+  else if (st.rv && shown && sub > 0) { sub--; shown = sub > 0; render(); } else go(-1, true);
+};
+$('prev').addEventListener('click', back);
+// Weiter deckt erst auf, was noch fehlt, bei seq einen Teil nach dem anderen. Danach geht es zur nächsten Folie.
+const fwd = () => {
+  const st = STEPS[step];
+  if (st.seq && !done(st)) { opened.add(st.parts.find(k => !opened.has(k))); render(); }
+  else if (st.rv && !done(st)) { shown = true; sub = Math.min(st.rv, sub + 1); render(); } else go(1);
+};
+addEventListener('resize', () => { shownStep = -1; render(); });
+$('next').addEventListener('click', fwd);
+$('extras').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  STEPS[step].btns[+b.dataset.b].f(); render();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); fwd(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); back(); }
+});
+// Antippen im Bild deckt den Teil an dieser Stelle auf, nochmal Antippen verdeckt ihn wieder.
+function svgPt(e) {
+  const [vw, vh, vx = 0, vy = 0] = STEPS[step].vb || [800, 520];
+  const r = $('fig').getBoundingClientRect(), sc = Math.min(r.width / vw, r.height / vh);
+  return { x: vx + (e.clientX - r.left - (r.width - vw * sc) / 2) / sc, y: vy + (e.clientY - r.top - (r.height - vh * sc) / 2) / sc };
+}
+// Das Bild wird bei jedem Zeichnen ersetzt, deshalb hört die Seite selbst auf Tipps ins Bild.
+document.addEventListener('pointerdown', e => {
+  if (!e.target.closest || !e.target.closest('#fig')) return;
+  const st = STEPS[step], k = st.hit && st.hit(svgPt(e));
+  if (k) { flip(k); render(); }
+});
+// Manche Antworten stehen unten in der Rechnungszeile, dort tippt man direkt auf die Frage.
+$('eq').addEventListener('pointerdown', e => {
+  const st = STEPS[step];
+  if (st.eqHit && e.target.closest('.tap')) { flip(st.eqHit); render(); }
+});
+if (STEPS[0].enter) STEPS[0].enter();
+render();
+// Vollbild: Knopf oder Taste F. Nach einem Seitenwechsel holt der erste Tipp das Vollbild zurück.
+(() => {
+  const d = document, el = d.documentElement, b = d.getElementById('fs');
+  if (!b) return;
+  // Als App vom Home-Bildschirm gibt es keine Browserleisten. Vollbild brächte dort nur das X oben links.
+  const app = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches;
+  if (app || !(d.fullscreenEnabled || d.webkitFullscreenEnabled)) { b.hidden = true; return; }
+  const on = () => !!(d.fullscreenElement || d.webkitFullscreenElement);
+  const want = v => { try { if (v === undefined) return sessionStorage.getItem('fs') === '1'; sessionStorage.setItem('fs', v ? '1' : '0'); } catch (e) { return false; } };
+  const call = (o, f) => { if (!f) return; try { const p = f.call(o); if (p && p.catch) p.catch(() => {}); } catch (e) {} };
+  const enter = () => call(el, el.requestFullscreen || el.webkitRequestFullscreen);
+  const exit = () => call(d, d.exitFullscreen || d.webkitExitFullscreen);
+  const toggle = () => { if (on()) { want(false); exit(); } else { want(true); enter(); } };
+  let leaving = false;
+  const sync = () => {
+    const f = on(); el.classList.toggle('fs', f); if (!f) el.classList.remove('wide');
+    b.setAttribute('aria-pressed', f); b.title = f ? 'Vollbild beenden (F)' : 'Vollbild (F)';
+  };
+  const change = () => { sync(); if (!on() && !leaving) want(false); };   // mit X oder Esc beendet
+  b.addEventListener('click', toggle);
+  d.addEventListener('fullscreenchange', change);
+  d.addEventListener('webkitfullscreenchange', change);
+  d.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (a) { if (!a.hasAttribute('download')) leaving = true; return; }
+    if (!b.contains(e.target) && !on() && want()) enter();
+  }, true);
+  d.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggle(); }
+    else if (e.key !== 'Escape' && !on() && want()) enter();
+  });
+  addEventListener('pagehide', () => { leaving = true; });
+  addEventListener('pageshow', () => { leaving = false; sync(); });
+  sync();
+})();
+// App vom Home-Bildschirm: Sie hat keine Zurück-Taste. Links führen deshalb nur zu eigenen Seiten, und die haben alle einen Weg zum Menü.
+if (navigator.standalone === true || matchMedia('(display-mode: standalone)').matches) document.addEventListener('click', e => {
+  const a = e.target.closest('a[href]'); if (!a) return;
+  const u = new URL(a.href);
+  if (a.hasAttribute('download') || u.origin !== location.origin || !/(\/|\.html)$/.test(u.pathname)) e.preventDefault();
+}, true);
+// Offline: Nach dem ersten Aufruf liegen alle Stunden im Speicher.
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
