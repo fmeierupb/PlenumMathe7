@@ -215,7 +215,7 @@ function achsen(ox, name) {
   s += `<polygon class="pfh" points="${xe},${OY} ${xe - 18},${OY - 8} ${xe - 18},${OY + 8}"/><polygon class="pfh" points="${ox},${ye} ${ox - 8},${ye + 18} ${ox + 8},${ye + 18}"/>`;
   for (let i = 1; i <= 4; i++) s += `<line class="ax" x1="${ox + i * U}" y1="${OY - 7}" x2="${ox + i * U}" y2="${OY + 7}"/><line class="ax" x1="${ox - 7}" y1="${OY - i * U}" x2="${ox + 7}" y2="${OY - i * U}"/>` +
     tt(ox + i * U, OY + 30, i, 'ta', 26) + tt(ox - 28, OY - i * U, i, 'ta', 26);
-  return s + tt(ox - 26, OY + 30, '0', 'ta', 26) + tt(xe, OY + 30, 'x', 'ta', 26) + tt(ox - 28, ye + 8, 'y', 'ta', 26);
+  return s + tt(ox - 26, OY + 30, '0', 'ta', 26) + tt(xe, OY + 32, 'x', 'fr', 32) + tt(ox - 30, ye + 8, 'y', 'fb', 32);
 }
 const X = (ox, x) => ox + x * U, Y = y => OY - y * U;
 // Waagerechte Wertetabelle rechts neben dem Graphen von a): L links, T oben, hw Breite der Kopfspalte, cw Spaltenbreite, rh Zeilenhöhe
