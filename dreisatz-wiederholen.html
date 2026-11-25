@@ -310,9 +310,9 @@ function auftragFig() {
 }
 
 const STEPS = [
-  { t: 'Proportional oder nicht? a)', vb: [1210, 562], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz'], hit: aHit, fig: () => diaFig('a') },
-  { t: 'Proportional oder nicht? b)', vb: [1210, 562], seq: 1, parts: ['grund'], hit: () => 'grund', fig: () => diaFig('b') },
-  { t: 'Proportional oder nicht? c)', vb: [1210, 562], seq: 1, parts: ['grund', 'prop'], hit: p => p.x > 620 && p.y > 270 ? 'prop' : 'grund', fig: () => diaFig('c') },
+  { t: 'Proportional oder nicht?', vb: [1210, 562], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz'], hit: aHit, fig: () => diaFig('a') },
+  { t: 'Proportional oder nicht?', vb: [1210, 562], seq: 1, parts: ['grund'], hit: () => 'grund', fig: () => diaFig('b') },
+  { t: 'Proportional oder nicht?', vb: [1210, 562], seq: 1, parts: ['grund', 'prop'], hit: p => p.x > 620 && p.y > 270 ? 'prop' : 'grund', fig: () => diaFig('c') },
   { t: 'Dreisatz wiederholen', vb: [900, 446], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z3l', 'z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'], hit: p => tabHit(GA, p, 3), fig: shirtFig,
     txt: () => `${KB('2 T-Shirts')} kosten ${KG('26 €')}. Wie viel kosten ${KB('5 T-Shirts')}?` },
   { t: 'Ben fährt Taxi', vb: [1320, 572], seq: 1, parts: ['w0', 'w1', 'w5', 'w10', 'bl', 'br', 'null', 'fazit'], hit: taxiHit, fig: taxiFig,
