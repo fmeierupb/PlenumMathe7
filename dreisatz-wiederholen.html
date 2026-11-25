@@ -206,7 +206,7 @@ function shirtFig() {
 }
 
 // ---------- Folie 2: Buch S. 36 Nr. 4, warum nicht proportional? ----------
-const U = 90, OY = 440, OA = 150, OB = 760;
+const U = 72, OY = 360, OA = 110, OB = 530, OC = 950;
 function achsen(ox, name) {
   let s = '';
   for (let i = 1; i <= 4; i++) s += `<line class="gr" x1="${ox + i * U}" y1="${OY}" x2="${ox + i * U}" y2="${OY - 4.5 * U}"/><line class="gr" x1="${ox}" y1="${OY - i * U}" x2="${ox + 4.5 * U}" y2="${OY - i * U}"/>`;
@@ -215,23 +215,26 @@ function achsen(ox, name) {
   s += `<polygon class="pfh" points="${xe},${OY} ${xe - 18},${OY - 8} ${xe - 18},${OY + 8}"/><polygon class="pfh" points="${ox},${ye} ${ox - 8},${ye + 18} ${ox + 8},${ye + 18}"/>`;
   for (let i = 1; i <= 4; i++) s += `<line class="ax" x1="${ox + i * U}" y1="${OY - 7}" x2="${ox + i * U}" y2="${OY + 7}"/><line class="ax" x1="${ox - 7}" y1="${OY - i * U}" x2="${ox + 7}" y2="${OY - i * U}"/>` +
     tt(ox + i * U, OY + 30, i, 'ta', 26) + tt(ox - 28, OY - i * U, i, 'ta', 26);
-  return s + tt(ox - 26, OY + 30, '0', 'ta', 26) + tt(xe, OY + 30, 'x', 'ta', 26) + tt(ox - 28, ye + 8, 'y', 'ta', 26) + tt(ox - 80, ye + 14, name, 'tx', 34);
+  return s + tt(ox - 26, OY + 30, '0', 'ta', 26) + tt(xe, OY + 30, 'x', 'ta', 26) + tt(ox - 28, ye + 8, 'y', 'ta', 26) + tt(ox - 62, ye + 14, name, 'tx', 32);
 }
 const X = (ox, x) => ox + x * U, Y = y => OY - y * U;
 function diaFig() {
-  let s = achsen(OA, 'a)') + achsen(OB, 'b)');
-  // a) Zum Vergleich die Gerade durch den Nullpunkt: Ein Punkt liegt daneben.
-  if (vis('a')) s += `<line class="hl" x1="${X(OA, 0)}" y1="${Y(0)}" x2="${X(OA, 4.5)}" y2="${Y(4.5)}"/><circle class="hr" cx="${X(OA, 2)}" cy="${Y(2.5)}" r="22"/>` +
-    tt(OA + 2.2 * U, 510, 'Die Punkte liegen nicht auf einer Geraden.', 'tm', 27);
+  const grund = (ox, str) => tt(ox + 2.2 * U, 425, str, 'tm', 30);
+  let s = achsen(OA, 'a)') + achsen(OB, 'b)') + achsen(OC, 'c)');
+  // a) Zum Vergleich die gerade Linie durch 0: Ein Punkt liegt daneben.
+  if (vis('a')) s += `<line class="hl" x1="${X(OA, 0)}" y1="${Y(0)}" x2="${X(OA, 4.25)}" y2="${Y(4.25)}"/><circle class="hr" cx="${X(OA, 2)}" cy="${Y(2.5)}" r="20"/>` + grund(OA, 'Keine gerade Linie.');
   [[1, 1], [2, 2.5], [3, 3], [4, 4]].forEach(([x, y]) => { const a = X(OA, x), b = Y(y); s += `<line class="pt" x1="${a - 9}" y1="${b - 9}" x2="${a + 9}" y2="${b + 9}"/><line class="pt" x1="${a - 9}" y1="${b + 9}" x2="${a + 9}" y2="${b - 9}"/>`; });
+  // b) Die Linie beginnt bei 2 und nicht bei 0.
   s += `<line class="gl" x1="${X(OB, 0)}" y1="${Y(2)}" x2="${X(OB, 4)}" y2="${Y(4)}"/>`;
-  // b) Die Gerade beginnt bei 2 und nicht im Nullpunkt.
-  if (vis('b')) s += `<circle class="hr" cx="${X(OB, 0)}" cy="${Y(2)}" r="22"/>` + tt(OB + 2.2 * U, 510, 'Die Gerade geht nicht durch den Nullpunkt.', 'tm', 27);
-  if (vis('prop')) s += `<rect class="merkbox" x="100" y="548" width="1060" height="62" rx="14"/>` +
-    tt(630, 579, 'Proportional: Die Punkte liegen auf einer Geraden durch den Nullpunkt.', 'tmh', 29);
+  if (vis('b')) s += `<circle class="hr" cx="${X(OB, 0)}" cy="${Y(2)}" r="20"/>` + grund(OB, 'Beginnt nicht bei 0.');
+  // c) Zum Vergleich eine proportionale Zuordnung
+  s += `<line class="gl" x1="${X(OC, 0)}" y1="${Y(0)}" x2="${X(OC, 4)}" y2="${Y(3)}"/>`;
+  if (vis('c')) s += `<circle class="hr" cx="${X(OC, 0)}" cy="${Y(0)}" r="20"/>` + grund(OC, 'Gerade Linie, beginnt bei 0.');
+  if (vis('prop')) s += `<rect class="merkbox" x="240" y="468" width="840" height="68" rx="14"/>` +
+    tt(660, 502, 'Proportional: eine gerade Linie, die bei 0 beginnt.', 'tmh', 34);
   return s;
 }
-const diaHit = p => p.y > 540 ? 'prop' : p.x < 630 ? 'a' : 'b';
+const diaHit = p => p.y > 455 ? 'prop' : p.x < 455 ? 'a' : p.x < 875 ? 'b' : 'c';
 
 // ---------- Folie 3: das Taxi vom Blatt (Für Schnelle d) ----------
 const KT = [['Strecke', 'in km'], ['Preis', 'in €']];
@@ -271,7 +274,7 @@ function auftragFig() {
 }
 
 const STEPS = [
-  { t: 'Warum nicht proportional?', vb: [1260, 620], seq: 1, parts: ['a', 'b', 'prop'], hit: diaHit, fig: diaFig, txt: 'Buch S. 36 Nr. 4' },
+  { t: 'Proportional oder nicht?', vb: [1320, 545], seq: 1, parts: ['a', 'b', 'c', 'prop'], hit: diaHit, fig: diaFig, txt: 'Buch S. 36 Nr. 4' },
   { t: 'Dreisatz wiederholen', vb: [900, 446], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z3l', 'z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'], hit: p => tabHit(GA, p, 3), fig: shirtFig,
     txt: () => `${KB('2 T-Shirts')} kosten ${KG('26 €')}. Wie viel kosten ${KB('5 T-Shirts')}?` },
   { t: 'Ben fährt Taxi', vb: [1320, 572], seq: 1, parts: ['w0', 'w1', 'w5', 'w10', 'bl', 'br', 'null', 'fazit'], hit: taxiHit, fig: taxiFig,
