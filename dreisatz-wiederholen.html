@@ -228,6 +228,8 @@ function hbogen(xa, xb, y0, side, lab) {
     `<polygon class="ah" points="${f(E)} ${f([Bp[0] - uy * 11, Bp[1] + ux * 11])} ${f([Bp[0] + uy * 11, Bp[1] - ux * 11])}"/>` + tt(m, y0 + side * (h + 24), lab, 'op', 30);
 }
 function aHit(p) {
+  // Der Merkkasten unten gibt es nur auf der Folie mit c). Auf den anderen trifft man dort nichts.
+  if (p.y > 578) return STEPS[step].parts.includes('m1') ? (p.y > 640 ? 'm2' : 'm1') : null;
   if (p.x < 630) return 'grund';
   if (p.y > 468) return 'satz';
   if (p.y > WT.T + 2 * WT.rh) return 'bu';
@@ -274,17 +276,13 @@ function diaFig(k) {
     if (vis('grund')) s += `<circle class="hr" cx="${X(ox, 0)}" cy="${Y(0)}" r="24"/>` +
       zl(50, 'Eine Gerade') + zl(98, 'durch den Ursprung (0|0).') + zl(165, 'Proportional', 'tmh');
     s += wtab([['0', '0'], ['1', '0,5'], ['2', '1'], ['4', '2']], 2, 3, '· 2', '· 2', ['Zum Doppelten gehört', 'das Doppelte.']);
+    // Merkkasten unter Graph und Tabelle: die beiden Eigenschaften wie im Buch (Dreifach Mathe S. 34)
+    if (vis('m1') || vis('m2')) s += `<rect class="merkbox" x="20" y="584" width="1170" height="112" rx="14"/>`;
+    if (vis('m1')) s += tt(44, 617, '1.', 'tmh', 34, 'start') + tt(92, 617, 'Zum Doppelten gehört das Doppelte.', 'tmh', 34, 'start');
+    if (vis('m2')) s += tt(44, 663, '2.', 'tmh', 34, 'start') + tt(92, 663, 'Der Graph ist eine Gerade, die durch den Ursprung (0|0) geht.', 'tmh', 34, 'start');
   }
   return s;
 }
-// Merkkasten: die beiden Eigenschaften wie im Buch (Dreifach Mathe S. 34)
-function propFig() {
-  let s = `<rect class="merkbox" x="20" y="16" width="1060" height="390" rx="16"/>` + tt(60, 76, 'Proportionale Zuordnungen', 'tmh', 54, 'start');
-  if (vis('m1')) s += tt(60, 176, '1.', 'tm', 44, 'start') + tt(130, 176, 'Zum Doppelten gehört das Doppelte.', 'tm', 44, 'start');
-  if (vis('m2')) s += tt(60, 286, '2.', 'tm', 44, 'start') + tt(130, 286, 'Der Graph ist eine Gerade,', 'tm', 44, 'start') + tt(130, 342, 'die durch den Ursprung (0|0) geht.', 'tm', 44, 'start');
-  return s;
-}
-
 // ---------- Folie 3: das Taxi vom Blatt (Für Schnelle d) ----------
 const KT = [['Strecke', 'in km'], ['Preis', 'in €']];
 const GB = { L: 140, cw: 170, T: 56, hh: 80, rh: 86, fk: 27, fw: 44, fb: 34, a: 34 };
@@ -323,10 +321,9 @@ function auftragFig() {
 }
 
 const STEPS = [
-  { t: 'Proportional oder nicht?', vb: [1210, 562], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz'], hit: aHit, fig: () => diaFig('a') },
-  { t: 'Proportional oder nicht?', vb: [1210, 562], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz'], hit: aHit, fig: () => diaFig('b') },
-  { t: 'Proportional oder nicht?', vb: [1210, 562], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz'], hit: aHit, fig: () => diaFig('c') },
-  { t: 'Proportionale Zuordnungen', noT: 1, vb: [1100, 422], seq: 1, parts: ['m1', 'm2'], hit: p => p.y < 230 ? 'm1' : 'm2', fig: propFig },
+  { t: 'Proportional oder nicht?', vb: [1210, 700], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz'], hit: aHit, fig: () => diaFig('a') },
+  { t: 'Proportional oder nicht?', vb: [1210, 700], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz'], hit: aHit, fig: () => diaFig('b') },
+  { t: 'Proportional oder nicht?', vb: [1210, 700], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz', 'm1', 'm2'], hit: aHit, fig: () => diaFig('c') },
   { t: 'Dreisatz wiederholen', vb: [900, 446], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z3l', 'z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'], hit: p => tabHit(GA, p, 3), fig: shirtFig,
     txt: () => `${KB('2 T-Shirts')} kosten ${KG('26 €')}. Wie viel kosten ${KB('5 T-Shirts')}?` },
   { t: 'Ben fährt Taxi', vb: [1320, 572], seq: 1, parts: ['w0', 'w1', 'w5', 'w10', 'bl', 'br', 'null', 'fazit'], hit: taxiHit, fig: taxiFig,
