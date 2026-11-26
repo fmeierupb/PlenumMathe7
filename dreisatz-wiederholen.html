@@ -206,7 +206,7 @@ function shirtFig() {
 }
 
 // ---------- Folie 2: Buch S. 36 Nr. 4, warum nicht proportional? ----------
-const U = 100, OY = 490, OX = 110;
+const U = 100, OY = 490;
 function achsen(ox, name) {
   let s = '';
   for (let i = 1; i <= 4; i++) s += `<line class="gr" x1="${ox + i * U}" y1="${OY}" x2="${ox + i * U}" y2="${OY - 4.5 * U}"/><line class="gr" x1="${ox}" y1="${OY - i * U}" x2="${ox + 4.5 * U}" y2="${OY - i * U}"/>`;
@@ -218,71 +218,113 @@ function achsen(ox, name) {
   return s + tt(ox - 26, OY + 30, '0', 'ta', 30) + tt(xe, OY + 34, 'x', 'fr', 36) + tt(ox - 34, ye + 8, 'y', 'fb', 36);
 }
 const X = (ox, x) => ox + x * U, Y = y => OY - y * U;
-// Waagerechte Wertetabelle rechts neben dem Graphen von a): L links, T oben, hw Breite der Kopfspalte, cw Spaltenbreite, rh Zeilenhöhe
-const WT = { L: 660, T: 272, hw: 90, cw: 112, rh: 62 };
-// Waagerechter Bogen von xa nach xb über (side -1) oder unter (side 1) der Tabelle, Spitze bei xb
-function hbogen(xa, xb, y0, side, lab) {
-  const m = (xa + xb) / 2, h = 26, c = [m, y0 + side * 2 * h], l = Math.hypot(xb - c[0], y0 - c[1]), ux = (xb - c[0]) / l, uy = (y0 - c[1]) / l;
+// Sichtbare Breite eines Bildes mit viewBox W x H in Bildeinheiten. Breiter als W, wenn der Bildschirm breiter ist.
+function sichtbar(W, H) {
+  const r = $('fig').getBoundingClientRect(), sc = Math.min(r.width / W, r.height / H);
+  return sc > 0 ? Math.max(W, r.width / sc) : W;
+}
+// Breite eines Textes in der Schrift der Merksätze, gemessen an einem unsichtbaren SVG-Text
+const MW = new Map();
+function mw(str, F) {
+  const k = F + '|' + str;
+  if (!MW.has(k)) {
+    let m = $('mess');
+    if (!m) { m = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); m.id = 'mess'; m.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden'; m.innerHTML = '<text class="tm"></text>'; document.body.appendChild(m); }
+    const t = m.firstChild; t.style.fontSize = F + 'px'; t.textContent = str; MW.set(k, t.getComputedTextLength());
+  }
+  return MW.get(k);
+}
+// Bricht Sätze [Text, sichtbar] auf die Breite b um, wie normaler Fließtext. Jede Zeile ist eine Liste von Wörtern [Wort, sichtbar].
+function umbruch(saetze, F, b) {
+  const w = saetze.flatMap(([t, v]) => t.split(' ').map(x => [x, v])), z = [];
+  let l = [], str = '';
+  w.forEach(([x, v]) => {
+    const neu = str ? str + ' ' + x : x;
+    if (str && mw(neu, F) > b) { z.push(l); l = [[x, v]]; str = x; } else { l.push([x, v]); str = neu; }
+  });
+  if (l.length) z.push(l);
+  return z;
+}
+// Waagerechter Bogen von xa nach xb über (side -1) oder unter (side 1) der Tabelle, Spitze bei xb. h Höhe, fs Schriftgröße
+function hbogen(xa, xb, y0, side, lab, h, fs) {
+  const m = (xa + xb) / 2, c = [m, y0 + side * 2 * h], l = Math.hypot(xb - c[0], y0 - c[1]), ux = (xb - c[0]) / l, uy = (y0 - c[1]) / l;
   const E = [xb, y0], Bp = [xb - ux * 22, y0 - uy * 22], f = q => q.map(v => v.toFixed(1)).join(',');
   return `<path class="bo" d="M${xa},${y0} Q${f(c)} ${f(Bp)}"/>` +
-    `<polygon class="ah" points="${f(E)} ${f([Bp[0] - uy * 11, Bp[1] + ux * 11])} ${f([Bp[0] + uy * 11, Bp[1] - ux * 11])}"/>` + tt(m, y0 + side * (h + 24), lab, 'op', 32);
+    `<polygon class="ah" points="${f(E)} ${f([Bp[0] - uy * 11, Bp[1] + ux * 11])} ${f([Bp[0] + uy * 11, Bp[1] - ux * 11])}"/>` + tt(m, y0 + side * (h + 0.72 * fs), lab, 'op', fs);
 }
-function aHit(p) {
-  // Der Merkkasten unten gibt es nur auf der Folie mit c). Auf den anderen trifft man dort nichts.
-  if (p.y > 578) return STEPS[step].parts.includes('m1') ? (p.y > 640 ? 'm2' : 'm1') : null;
-  if (p.x < 630) return 'grund';
-  if (p.y > 468) return 'satz';
-  if (p.y > WT.T + 2 * WT.rh) return 'bu';
-  if (p.y >= WT.T) return 'tab';
-  return p.y > 196 ? 'bo' : 'grund';
-}
-// Wertetabelle rechts neben dem Graphen. vals: [x, y] je Spalte. Die Bögen gehen von Spalte i nach Spalte j.
-function wtab(vals, i, j, oben, unten, satz) {
-  const T = WT, cx = k => T.L + T.hw + (k + 0.5) * T.cw, B = T.T + 2 * T.rh, R = T.L + T.hw + 4 * T.cw;
-  let s = '';
-  if (vis('tab')) {
-    s += `<rect class="head" x="${T.L}" y="${T.T}" width="${T.hw}" height="${2 * T.rh}"/><rect class="ln" x="${T.L}" y="${T.T}" width="${R - T.L}" height="${2 * T.rh}"/>` +
-      `<line class="ln" x1="${T.L + T.hw}" y1="${T.T}" x2="${T.L + T.hw}" y2="${B}"/><line class="thin" x1="${T.L}" y1="${T.T + T.rh}" x2="${R}" y2="${T.T + T.rh}"/>`;
-    for (let k = 1; k < 4; k++) s += `<line class="thin" x1="${T.L + T.hw + k * T.cw}" y1="${T.T}" x2="${T.L + T.hw + k * T.cw}" y2="${B}"/>`;
-    s += tt(T.L + T.hw / 2, T.T + T.rh / 2, 'x', 'fr', 38) + tt(T.L + T.hw / 2, T.T + 1.5 * T.rh, 'y', 'fb', 38);
-    vals.forEach(([x, y], k) => { s += tt(cx(k), T.T + T.rh / 2, x, 'fr', 38) + tt(cx(k), T.T + 1.5 * T.rh, y, 'fb', 38); });
-  }
-  if (vis('bo')) s += hbogen(cx(i), cx(j), T.T - 8, -1, oben);
-  if (vis('bu')) s += hbogen(cx(i), cx(j), B + 8, 1, unten);
-  if (vis('satz')) s += tt(660, 494, satz[0], 'tmh', 40, 'start') + tt(660, 540, satz[1], 'tmh', 40, 'start');
-  return s;
-}
-// Jeder Graph hat seine eigene Folie: links das Koordinatensystem, rechts Begründung und Wertetabelle.
+// Die drei Graphen mit Begründung, Wertetabelle (vals: [x, y] je Spalte, Bögen von Spalte i nach j) und Satz
+const DIA = {
+  a: { grund: 'Die Punkte liegen nicht auf einer Geraden.', urteil: 'Nicht proportional', vals: [['1', '1'], ['2', '2,5'], ['3', '3'], ['4', '4']], i: 0, j: 1, oben: '· 2', unten: '· 2,5', satz: 'Zum Doppelten gehört nicht das Doppelte.' },
+  b: { grund: 'Die Gerade geht nicht durch den Ursprung (0|0).', urteil: 'Nicht proportional', vals: [['0', '2'], ['1', '2,5'], ['2', '3'], ['4', '4']], i: 2, j: 3, oben: '· 2', unten: '+ 1', satz: 'Zum Doppelten gehört nicht das Doppelte.' },
+  c: { grund: 'Eine Gerade durch den Ursprung (0|0).', urteil: 'Proportional', vals: [['0', '0'], ['1', '0,5'], ['2', '1'], ['4', '2']], i: 2, j: 3, oben: '· 2', unten: '· 2', satz: 'Zum Doppelten gehört das Doppelte.' }
+};
+const DW = 1210, DH = 562, DS = 138;   // Grundbreite, Höhe von Graph und Spalte, Höhe des Merkkastens unter c)
+let LAY = null;                         // Lage der Teile für das Antippen, von diaFig gesetzt
+// Jeder Graph hat seine eigene Folie: links das Koordinatensystem, rechts Begründung, Wertetabelle und Satz.
+// Die rechte Spalte füllt die ganze sichtbare Breite. Die Schrift wird so groß gewählt, dass die Spalte die Höhe ausfüllt.
 function diaFig(k) {
-  const ox = OX, zl = (y, str, cls = 'tm') => tt(660, y, str, cls, 40, 'start');
-  const NEIN = ['Zum Doppelten gehört', 'nicht das Doppelte.'];
-  let s = achsen(ox);
+  const D = DIA[k], M = 20, Hvb = DH + (k === 'c' ? DS : 0), sw = sichtbar(DW, Hvb), x0 = (DW - sw) / 2 + M, x1 = (DW + sw) / 2 - M;
+  const ox = x0 + 66, L = ox + 4.75 * U + 56, rw = x1 - L, zl = l => l.map(w => w[0]).join(' ');
+  let F = 60, Zg, Zs, h;
+  for (; F > 24; F--) {
+    Zg = umbruch([[D.grund, true]], F, rw); Zs = umbruch([[D.satz, true]], F, rw / 1.05);
+    h = (1.2 * (Zg.length + 1 + Zs.length) + 0.45 * 2 + 1.5 * 2 + 3.1 + 0.2 - 0.2) * F;
+    if (h <= DH - 2 * M) break;
+  }
+  // Die Tabelle ist höchstens 15 Schriftgrößen breit. Bleibt rechts Platz, rückt alles in die Mitte.
+  const tw = Math.min(rw, 15 * F), uw = Math.max(tw, ...Zg.map(l => mw(zl(l), F)), ...Zs.map(l => 1.05 * mw(zl(l), F))), dx = (rw - uw) / 2;
+  let y = (DH - h) / 2 + 0.6 * F, r = '', s = achsen(ox);
+  Zg.forEach(l => { if (vis('grund')) r += tt(L, y, zl(l), 'tm', F, 'start'); y += 1.2 * F; });
+  y += 0.45 * F; if (vis('grund')) r += tt(L, y, D.urteil, 'tmh', F, 'start'); y += 0.6 * F + 0.45 * F;
+  const yBo = y, T = y + 1.5 * F, rh = 1.55 * F, B = T + 2 * rh, hw = 0.16 * tw, cw = (tw - hw) / 4, cx = n => L + hw + (n + 0.5) * cw, fz = 0.95 * F;
+  if (vis('tab')) {
+    r += `<rect class="head" x="${L}" y="${T}" width="${hw}" height="${2 * rh}"/><rect class="ln" x="${L}" y="${T}" width="${tw}" height="${2 * rh}"/>` +
+      `<line class="ln" x1="${L + hw}" y1="${T}" x2="${L + hw}" y2="${B}"/><line class="thin" x1="${L}" y1="${T + rh}" x2="${L + tw}" y2="${T + rh}"/>`;
+    for (let n = 1; n < 4; n++) r += `<line class="thin" x1="${L + hw + n * cw}" y1="${T}" x2="${L + hw + n * cw}" y2="${B}"/>`;
+    r += tt(L + hw / 2, T + rh / 2, 'x', 'fr', fz) + tt(L + hw / 2, T + 1.5 * rh, 'y', 'fb', fz);
+    D.vals.forEach(([x, yv], n) => { r += tt(cx(n), T + rh / 2, x, 'fr', fz) + tt(cx(n), T + 1.5 * rh, yv, 'fb', fz); });
+  }
+  if (vis('bo')) r += hbogen(cx(D.i), cx(D.j), T - 8, -1, D.oben, 0.5 * F, 0.8 * F);
+  if (vis('bu')) r += hbogen(cx(D.i), cx(D.j), B + 8, 1, D.unten, 0.5 * F, 0.8 * F);
+  y = B + 1.5 * F + 0.2 * F + 0.5 * F;
+  const ySatz = B + 1.5 * F;
+  Zs.forEach(l => { if (vis('satz')) r += tt(L, y, zl(l), 'tmh', F, 'start'); y += 1.2 * F; });
+  LAY = { L: L + dx - 30, yBo, T, B, ySatz };
+  // Der Graph
   if (k === 'a') {
     // Zum Vergleich die Gerade durch den Ursprung: Ein Punkt liegt daneben.
-    if (vis('grund')) s += `<line class="hl" x1="${X(ox, 0)}" y1="${Y(0)}" x2="${X(ox, 4.4)}" y2="${Y(4.4)}"/><circle class="hr" cx="${X(ox, 2)}" cy="${Y(2.5)}" r="24"/>` +
-      zl(50, 'Die Punkte liegen nicht') + zl(98, 'auf einer Geraden.') + zl(165, 'Nicht proportional', 'tmh');
-    [[1, 1], [2, 2.5], [3, 3], [4, 4]].forEach(([x, y]) => { const a = X(ox, x), b = Y(y); s += `<line class="pt" x1="${a - 11}" y1="${b - 11}" x2="${a + 11}" y2="${b + 11}"/><line class="pt" x1="${a - 11}" y1="${b + 11}" x2="${a + 11}" y2="${b - 11}"/>`; });
-    s += wtab([['1', '1'], ['2', '2,5'], ['3', '3'], ['4', '4']], 0, 1, '· 2', '· 2,5', NEIN);
+    if (vis('grund')) s += `<line class="hl" x1="${X(ox, 0)}" y1="${Y(0)}" x2="${X(ox, 4.4)}" y2="${Y(4.4)}"/><circle class="hr" cx="${X(ox, 2)}" cy="${Y(2.5)}" r="24"/>`;
+    [[1, 1], [2, 2.5], [3, 3], [4, 4]].forEach(([x, yv]) => { const a = X(ox, x), b = Y(yv); s += `<line class="pt" x1="${a - 11}" y1="${b - 11}" x2="${a + 11}" y2="${b + 11}"/><line class="pt" x1="${a - 11}" y1="${b + 11}" x2="${a + 11}" y2="${b - 11}"/>`; });
   }
   if (k === 'b') {
     s += `<line class="gl" x1="${X(ox, 0)}" y1="${Y(2)}" x2="${X(ox, 4)}" y2="${Y(4)}"/>`;
-    if (vis('grund')) s += `<circle class="hr" cx="${X(ox, 0)}" cy="${Y(2)}" r="24"/>` +
-      zl(50, 'Die Gerade geht nicht') + zl(98, 'durch den Ursprung (0|0).') + zl(165, 'Nicht proportional', 'tmh');
-    s += wtab([['0', '2'], ['1', '2,5'], ['2', '3'], ['4', '4']], 2, 3, '· 2', '+ 1', NEIN);
+    if (vis('grund')) s += `<circle class="hr" cx="${X(ox, 0)}" cy="${Y(2)}" r="24"/>`;
   }
   if (k === 'c') {
     // Dieselbe Steigung wie bei b), aber durch den Ursprung
     s += `<line class="gl" x1="${X(ox, 0)}" y1="${Y(0)}" x2="${X(ox, 4.4)}" y2="${Y(2.2)}"/>`;
-    if (vis('grund')) s += `<circle class="hr" cx="${X(ox, 0)}" cy="${Y(0)}" r="24"/>` +
-      zl(50, 'Eine Gerade') + zl(98, 'durch den Ursprung (0|0).') + zl(165, 'Proportional', 'tmh');
-    s += wtab([['0', '0'], ['1', '0,5'], ['2', '1'], ['4', '2']], 2, 3, '· 2', '· 2', ['Zum Doppelten gehört', 'das Doppelte.']);
-    // Merkkasten unter Graph und Tabelle: die beiden Eigenschaften wie im Buch (Dreifach Mathe S. 34)
-    if (vis('m1') || vis('m2')) s += `<rect class="merkbox" x="20" y="584" width="1170" height="112" rx="14"/>`;
-    if (vis('m1')) s += tt(44, 617, '1.', 'tmh', 34, 'start') + tt(92, 617, 'Zum Doppelten gehört das Doppelte.', 'tmh', 34, 'start');
-    if (vis('m2')) s += tt(44, 663, '2.', 'tmh', 34, 'start') + tt(92, 663, 'Der Graph ist eine Gerade, die durch den Ursprung (0|0) geht.', 'tmh', 34, 'start');
+    if (vis('grund')) s += `<circle class="hr" cx="${X(ox, 0)}" cy="${Y(0)}" r="24"/>`;
+    // Merkkasten über die ganze Breite: die beiden Eigenschaften wie im Buch (Dreifach Mathe S. 34)
+    const m1 = 'Zum Doppelten gehört das Doppelte.', m2 = 'Der Graph ist eine Gerade, die durch den Ursprung (0|0) geht.';
+    let Fm = 46; while (Fm > 24 && 1.05 * mw(m2, Fm) + 1.9 * Fm > x1 - x0 - 30) Fm--;
+    const mwid = Math.min(x1 - x0, Math.max(1.05 * mw(m2, Fm) + 1.9 * Fm + 60, 0)), mx = (x0 + x1 - mwid) / 2;
+    if (vis('m1') || vis('m2')) s += `<rect class="merkbox" x="${mx.toFixed(1)}" y="${DH + 14}" width="${mwid.toFixed(1)}" height="${DS - 18}" rx="14"/>`;
+    if (vis('m1')) s += tt(mx + 24, DH + 47, '1.', 'tmh', Fm, 'start') + tt(mx + 24 + 1.5 * Fm, DH + 47, m1, 'tmh', Fm, 'start');
+    if (vis('m2')) s += tt(mx + 24, DH + 99, '2.', 'tmh', Fm, 'start') + tt(mx + 24 + 1.5 * Fm, DH + 99, m2, 'tmh', Fm, 'start');
   }
-  return s;
+  return s + `<g transform="translate(${dx.toFixed(1)},0)">${r}</g>`;
 }
+function aHit(p) {
+  if (!LAY) return 'grund';
+  // Den Merkkasten unten gibt es nur auf der Folie mit c).
+  if (p.y > DH + 8) return STEPS[step].parts.includes('m1') ? (p.y > DH + 73 ? 'm2' : 'm1') : null;
+  if (p.x < LAY.L) return 'grund';
+  if (p.y > LAY.ySatz) return 'satz';
+  if (p.y > LAY.B) return 'bu';
+  if (p.y >= LAY.T) return 'tab';
+  return p.y > LAY.yBo ? 'bo' : 'grund';
+}
+
 // ---------- Folie 3: das Taxi vom Blatt (Für Schnelle d) ----------
 const KT = [['Strecke', 'in km'], ['Preis', 'in €']];
 const GB = { L: 140, cw: 170, T: 56, hh: 88, rh: 84, fk: 32, fw: 44, fb: 34, a: 34 };
@@ -321,9 +363,9 @@ function auftragFig() {
 }
 
 const STEPS = [
-  { t: 'Proportional oder nicht?', vb: [1210, 700], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz'], hit: aHit, fig: () => diaFig('a') },
-  { t: 'Proportional oder nicht?', vb: [1210, 700], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz'], hit: aHit, fig: () => diaFig('b') },
-  { t: 'Proportional oder nicht?', vb: [1210, 700], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz', 'm1', 'm2'], hit: aHit, fig: () => diaFig('c') },
+  { t: 'Proportional oder nicht?', vb: [DW, DH], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz'], hit: aHit, fig: () => diaFig('a') },
+  { t: 'Proportional oder nicht?', vb: [DW, DH], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz'], hit: aHit, fig: () => diaFig('b') },
+  { t: 'Proportional oder nicht?', vb: [DW, DH + DS], seq: 1, parts: ['grund', 'tab', 'bo', 'bu', 'satz', 'm1', 'm2'], hit: aHit, fig: () => diaFig('c') },
   { t: 'Dreisatz wiederholen', vb: [900, 446], seq: 1, parts: ['kopf', 'z1l', 'z1r', 'z3l', 'z2l', 'b1l', 'b1r', 'z2r', 'b2l', 'b2r', 'z3r'], hit: p => tabHit(GA, p, 3), fig: shirtFig,
     txt: () => `${KB('2 T-Shirts')} kosten ${KG('26 €')}. Wie viel kosten ${KB('5 T-Shirts')}?` },
   { t: 'Ben fährt Taxi', vb: [1320, 572], seq: 1, parts: ['w0', 'w1', 'w5', 'w10', 'bl', 'br', 'null', 'fazit'], hit: taxiHit, fig: taxiFig,
