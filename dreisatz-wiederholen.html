@@ -214,8 +214,8 @@ function achsen(ox, name) {
   s += `<line class="ax" x1="${ox}" y1="${OY}" x2="${xe - 10}" y2="${OY}"/><line class="ax" x1="${ox}" y1="${OY}" x2="${ox}" y2="${ye + 10}"/>`;
   s += `<polygon class="pfh" points="${xe},${OY} ${xe - 18},${OY - 8} ${xe - 18},${OY + 8}"/><polygon class="pfh" points="${ox},${ye} ${ox - 8},${ye + 18} ${ox + 8},${ye + 18}"/>`;
   for (let i = 1; i <= 4; i++) s += `<line class="ax" x1="${ox + i * U}" y1="${OY - 7}" x2="${ox + i * U}" y2="${OY + 7}"/><line class="ax" x1="${ox - 7}" y1="${OY - i * U}" x2="${ox + 7}" y2="${OY - i * U}"/>` +
-    tt(ox + i * U, OY + 30, i, 'ta', 26) + tt(ox - 28, OY - i * U, i, 'ta', 26);
-  return s + tt(ox - 26, OY + 30, '0', 'ta', 26) + tt(xe, OY + 32, 'x', 'fr', 32) + tt(ox - 30, ye + 8, 'y', 'fb', 32);
+    tt(ox + i * U, OY + 32, i, 'ta', 30) + tt(ox - 32, OY - i * U, i, 'ta', 30);
+  return s + tt(ox - 26, OY + 30, '0', 'ta', 30) + tt(xe, OY + 34, 'x', 'fr', 36) + tt(ox - 34, ye + 8, 'y', 'fb', 36);
 }
 const X = (ox, x) => ox + x * U, Y = y => OY - y * U;
 // Waagerechte Wertetabelle rechts neben dem Graphen von a): L links, T oben, hw Breite der Kopfspalte, cw Spaltenbreite, rh Zeilenhöhe
@@ -225,7 +225,7 @@ function hbogen(xa, xb, y0, side, lab) {
   const m = (xa + xb) / 2, h = 26, c = [m, y0 + side * 2 * h], l = Math.hypot(xb - c[0], y0 - c[1]), ux = (xb - c[0]) / l, uy = (y0 - c[1]) / l;
   const E = [xb, y0], Bp = [xb - ux * 22, y0 - uy * 22], f = q => q.map(v => v.toFixed(1)).join(',');
   return `<path class="bo" d="M${xa},${y0} Q${f(c)} ${f(Bp)}"/>` +
-    `<polygon class="ah" points="${f(E)} ${f([Bp[0] - uy * 11, Bp[1] + ux * 11])} ${f([Bp[0] + uy * 11, Bp[1] - ux * 11])}"/>` + tt(m, y0 + side * (h + 24), lab, 'op', 30);
+    `<polygon class="ah" points="${f(E)} ${f([Bp[0] - uy * 11, Bp[1] + ux * 11])} ${f([Bp[0] + uy * 11, Bp[1] - ux * 11])}"/>` + tt(m, y0 + side * (h + 24), lab, 'op', 32);
 }
 function aHit(p) {
   // Der Merkkasten unten gibt es nur auf der Folie mit c). Auf den anderen trifft man dort nichts.
@@ -285,15 +285,15 @@ function diaFig(k) {
 }
 // ---------- Folie 3: das Taxi vom Blatt (Für Schnelle d) ----------
 const KT = [['Strecke', 'in km'], ['Preis', 'in €']];
-const GB = { L: 140, cw: 170, T: 56, hh: 80, rh: 86, fk: 27, fw: 44, fb: 34, a: 34 };
-const GT = { L: 790, cw: 170, T: 56, hh: 80, rh: 86, fk: 27, fw: 44, fb: 34, a: 34 };
+const GB = { L: 140, cw: 170, T: 56, hh: 88, rh: 84, fk: 32, fw: 44, fb: 34, a: 34 };
+const GT = { L: 790, cw: 170, T: 56, hh: 88, rh: 84, fk: 32, fw: 44, fb: 34, a: 34 };
 function taxiFig() {
   // Links steht Bens Dreisatz, wie er in der Aufgabe gegeben ist.
-  let s = tt(GB.L + GB.cw, 26, 'Bens Dreisatz', 'ts', 30) + tab(GB, [['5', '14'], ['1', '2,80'], ['10', '28']], KT) +
+  let s = tt(GB.L + GB.cw, 26, 'Bens Dreisatz', 'ts', 32) + tab(GB, [['5', '14'], ['1', '2,80'], ['10', '28']], KT) +
     tbogen(GB, 0, -1, ': 5') + tbogen(GB, 0, 1, ': 5') + tbogen(GB, 1, -1, '· 10') + tbogen(GB, 1, 1, '· 10');
   // Rechts entsteht die Preisliste: 4 € Grundgebühr und 2 € für jeden Kilometer.
   const w = (k, v) => vis(k) ? v : '?';
-  s += tt(GT.L + GT.cw, 26, 'Preisliste', 'ts', 30) + tab(GT, [['0', w('w0', '4')], ['1', w('w1', '6')], ['5', w('w5', '14')], ['10', w('w10', '24')]], KT);
+  s += tt(GT.L + GT.cw, 26, 'Preisliste', 'ts', 32) + tab(GT, [['0', w('w0', '4')], ['1', w('w1', '6')], ['5', w('w5', '14')], ['10', w('w10', '24')]], KT);
   if (vis('bl')) s += tbogen(GT, 2, -1, '· 2');
   if (vis('br')) s += tbogen(GT, 2, 1, '+ 10');
   const H = GT.T + GT.hh;
