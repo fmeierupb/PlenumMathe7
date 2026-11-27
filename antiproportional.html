@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mathe 7">
+<meta name="theme-color" content="#0f766e">
+<title>Antiproportionale Zuordnungen</title>
+<style>
+:root{--bg:#fbfaf6;--fg:#161a22;--mut:#9aa0ad;--line:#d9d7cf;--c1:#2563eb;--c2:#d96a00;--c3:#12a150;--cr:#d81e1e;--btn:#fff;--head:#eef3ee;--cg:#0b7285;--ts:#565d6b}
+@media (prefers-color-scheme:dark){:root{--bg:#12151b;--fg:#f0f2f6;--mut:#7d8596;--line:#343b48;--c1:#5b9bff;--c2:#ffad33;--c3:#3ddc84;--cr:#ff5c5c;--btn:#1f242d;--head:#1c2a22;--cg:#4fc3d9;--ts:#aab1bf}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{display:flex;flex-direction:column;height:100dvh;padding:12px 16px calc(12px + env(safe-area-inset-bottom));user-select:none;-webkit-user-select:none}
+h1{margin:0;font-size:clamp(26px,4.2vw,52px);line-height:1.15;min-height:1.2em}
+#fig{flex:1;min-height:0;width:100%;touch-action:none}
+#txt{font-size:clamp(20px,3vw,38px);min-height:1.4em;text-align:center}
+#eq{font-size:clamp(24px,4.1vw,50px);font-weight:700;min-height:1.4em;text-align:center;font-variant-numeric:tabular-nums;line-height:1.35}
+#eq .dim{opacity:.7;font-size:.85em}
+#txt .dim{opacity:.7}
+/* Ohne Text kein leerer Streifen über der Rechnung, damit das Bild den Platz bekommt */
+#txt:empty,#eq:empty{min-height:0}
+#eq .m{font-weight:600;font-size:.72em;text-align:left;max-width:30em;margin:0 auto}
+#eq .m2{font-size:.8em}
+#eq .merk{display:inline-block;text-align:left;font-weight:600;font-size:.62em;line-height:1.45;max-width:40em;border:3px solid var(--c3);border-radius:14px;padding:.7em 1.2em;background:rgba(18,161,80,.08)}
+#eq .merk>div{display:grid;grid-template-columns:1.6em 1fr}
+#eq .merk>div+div{margin-top:.6em}
+/* Drei Merksätze nebeneinander, damit der Kasten flach bleibt und die Tabelle groß */
+#eq .merk.m3{display:grid;grid-template-columns:repeat(3,1fr);column-gap:1.4em;max-width:none;width:100%;box-sizing:border-box;font-size:.5em}
+#eq .merk.m3>div+div{margin-top:0}
+.k.c1{color:var(--c1)}.k.c2{color:var(--c2)}.k.c3{color:var(--c3)}.k.cr{color:var(--cr)}
+footer{display:flex;gap:10px;align-items:center;margin-top:10px}
+#extras{display:flex;gap:10px;margin:0 auto}
+button{font:inherit;font-size:clamp(16px,2vw,24px);color:inherit;background:var(--btn);border:1px solid var(--line);border-radius:12px;padding:12px 18px;cursor:pointer;touch-action:manipulation}
+button:disabled{opacity:.3}
+#menu{font:inherit;font-size:clamp(16px,2vw,24px);color:inherit;background:var(--btn);border:1px solid var(--line);border-radius:12px;padding:12px 18px;text-decoration:none}
+#fs svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
+#fs .fo,html.fs #fs .fi{display:none}
+html.fs #fs .fo{display:inline}
+#cnt{color:var(--mut);font-size:clamp(14px,1.6vw,20px);min-width:3.5em;text-align:center}
+#next{background:var(--c1);border-color:var(--c1);color:#fff;font-weight:700;margin-left:auto}
+footer{flex-wrap:wrap;row-gap:8px}
+#extras{flex-wrap:wrap;justify-content:center}
+#extras:empty{display:none}
+/* Handy hochkant: Zusatzknöpfe in eine eigene Zeile, Zurück nur als Pfeil. Was trotzdem nicht passt, bricht um, statt aus dem Bild zu rutschen. */
+@media (max-width:700px){#extras{order:9;flex-basis:100%;margin:0}#next{margin-left:auto}footer{gap:8px}button,#menu{padding:10px 12px}#cnt{min-width:0}}
+@media (max-width:420px){#prev .lbl{display:none}}
+svg .ln{stroke:var(--fg);stroke-width:4;fill:none}
+svg .thin{stroke:var(--fg);stroke-width:2.5;fill:none}
+svg .head{fill:var(--head)}
+svg .tx{fill:var(--fg);font:700 30px system-ui,sans-serif}
+svg .ts{fill:var(--ts);font:600 30px system-ui,sans-serif}
+svg .th{fill:var(--fg);font:600 26px system-ui,sans-serif}
+svg .tn{fill:var(--fg);font:600 54px system-ui,sans-serif}
+svg .tnb{fill:var(--cr);font:600 54px system-ui,sans-serif}
+svg .tng{fill:var(--c1);font:600 54px system-ui,sans-serif}
+svg .thb{fill:var(--cr);font:600 26px system-ui,sans-serif}
+svg .thg{fill:var(--c1);font:600 26px system-ui,sans-serif}
+svg .tb{fill:var(--cr);font:700 38px system-ui,sans-serif}
+svg .tg{fill:var(--c1);font:700 38px system-ui,sans-serif}
+svg .tq{fill:var(--mut);font:600 54px system-ui,sans-serif}
+svg .tr{fill:var(--c1);font:700 54px system-ui,sans-serif}
+svg .bo{stroke:var(--c2);stroke-width:5;fill:none;stroke-linecap:round}
+svg .ah{fill:var(--c2)}
+svg .to{fill:var(--c2);font:700 42px system-ui,sans-serif}
+svg .to2{fill:var(--c2);font:700 40px system-ui,sans-serif}
+svg .tq2{fill:var(--mut);font:700 38px system-ui,sans-serif}
+svg .tq3{fill:var(--mut);font:600 34px system-ui,sans-serif}
+svg .tm{fill:var(--fg);font:600 22px system-ui,sans-serif;white-space:pre}
+svg .tmh{fill:var(--fg);font:700 22px system-ui,sans-serif}
+svg .labbg{fill:var(--bg)}
+svg .pf{stroke:var(--fg);stroke-width:3}
+svg .pfh{fill:var(--fg)}
+svg .fr,svg .fb,svg .fq,svg .op{font-family:system-ui,sans-serif;font-weight:600}
+svg .fq{fill:var(--mut)}
+svg .op{fill:var(--c2);font-weight:700}
+svg .ta{fill:var(--fg);font:600 28px system-ui,sans-serif}
+svg .tw{fill:var(--fg);font:600 26px system-ui,sans-serif}
+svg .fo{fill:var(--c2);font-weight:700}
+svg .tbs{fill:var(--cr);font:700 26px system-ui,sans-serif}
+svg .tgs{fill:var(--c1);font:700 26px system-ui,sans-serif}
+svg .tnb2{fill:var(--cr);font:600 44px system-ui,sans-serif}
+svg .tng2{fill:var(--c1);font:600 44px system-ui,sans-serif}
+svg .tr2{fill:var(--c1);font:700 44px system-ui,sans-serif}
+svg .tq4{fill:var(--mut);font:600 44px system-ui,sans-serif}
+svg .thb2{fill:var(--cr);font:600 22px system-ui,sans-serif}
+svg .thg2{fill:var(--c1);font:600 22px system-ui,sans-serif}
+svg .to3{fill:var(--c2);font:700 36px system-ui,sans-serif}
+svg .note{fill:#fff7d6;stroke:var(--fg);stroke-width:3}
+svg .noteLine{stroke:#d7b86b;stroke-width:2}
+svg .ring{fill:var(--c1)}
+svg .tz{fill:var(--fg);font:600 40px system-ui,sans-serif;white-space:pre}
+svg .tzd{opacity:.7}
+svg .zr{fill:var(--cr)}
+svg .zb{fill:var(--c1)}
+svg .zo{fill:var(--c2)}
+svg .merkbox{fill:rgba(18,161,80,.08);stroke:var(--c3);stroke-width:3}
+svg .fr{fill:var(--cr)}
+svg .fb{fill:var(--c1)}
+svg .c1{fill:var(--c1);opacity:.62}
+svg .c2{fill:var(--c2);opacity:.62}
+svg .c3{fill:var(--c3);opacity:.62}
+svg .cr{fill:#d81e1e;opacity:.62}
+svg .gr{stroke:var(--line);stroke-width:1.5}
+svg .ax{stroke:var(--fg);stroke-width:3}
+/* Kreuze schwarz oder weiß mit hellem Saum, Gerade petrol: Rot und Blau gehören x und y, Orange den Hinweisen, Grün dem Merkkasten */
+svg .pt{stroke:var(--fg);stroke-width:6;stroke-linecap:round}
+svg .ph{stroke:var(--bg);stroke-width:13;stroke-linecap:round}
+svg .gl{stroke:var(--cg);stroke-width:6;stroke-linecap:round}
+svg .hl{stroke:var(--cg);stroke-width:5;stroke-dasharray:12 9;fill:none}
+svg .hr{stroke:var(--c2);stroke-width:5;fill:none}
+svg .fig{fill:var(--ts)}
+svg .rol{stroke:var(--cg);stroke-width:7;stroke-linecap:round}
+svg .stl{stroke:var(--ts);stroke-width:5;stroke-linecap:round}
+</style>
+</head>
+<body>
+<h1 id="title"></h1>
+<svg id="fig" viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg"></svg>
+<div id="txt"></div>
+<div id="eq"></div>
+<footer>
+  <a id="menu" href="./">Menü</a><button id="fs" aria-label="Vollbild" title="Vollbild (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="fi" d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/><path class="fo" d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg></button><button id="prev" aria-label="Zurück">‹<span class="lbl"> Zurück</span></button><span id="cnt"></span>
+  <div id="extras"></div>
+  <button id="next">Weiter ›</button>
+</footer>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[rnd(0, a.length - 1)];
+const text = (x, y, s, c = 'tx', a = 'middle') => `<text class="${c}" x="${x}" y="${y}" text-anchor="${a}" dominant-baseline="central">${s}</text>`;
+// Rechenzeichen in der Farbe der Bögen
+const op = k => `<span class="k c2">· ${k}</span>`;
+const lines = (arr, n = arr.length) => arr.slice(0, n).map((l, i) => `<div class="${i < n - 1 ? 'dim' : ''}">${l}</div>`).join('');
+
+// ---------- Gemeinsames ----------
+// Farben wie im Zweisatz: Ausgangsgröße rot, zugeordnete Größe blau, Rechenzeichen orange. Überall gleich, auch in Text und Rechnung.
+const KB = x => `<span class="k cr">${x}</span>`;
+const KG = x => `<span class="k c1">${x}</span>`;
+const opd = k => `<span class="k c2">: ${k}</span>`;
+// Text mit eigener Schriftgröße
+const tt = (x, y, str, cls, fs, anchor = 'middle') => `<text class="${cls}" style="font-size:${fs}px" x="${x}" y="${y}" text-anchor="${anchor}" dominant-baseline="central">${str}</text>`;
+// Bogen als halbe Ellipse von Zeile zu Zeile, Pfeilspitze zur Tabelle hin. Das Rechenzeichen steht außen neben dem Scheitel.
+const ebogen = (x0, a, ya, yb, lab, fs, side) => {
+  // Halbe Ellipse von Zeile zu Zeile. Die Spitze folgt der Bogenlinie: Sie zeigt in Richtung der Sehne über ihre Länge, wie eine gebogene Spitze.
+  const b = (yb - ya) / 2, sw = side < 0 ? 0 : 1, y = (ya + yb) / 2;
+  const P = t => [x0 + side * a * Math.sin(t), y - b * Math.cos(t)], E = P(Math.PI);
+  let t = Math.PI; while (t > 0 && Math.hypot(P(t)[0] - E[0], P(t)[1] - E[1]) < 22) t -= 0.005;
+  const B = P(t), l = Math.hypot(E[0] - B[0], E[1] - B[1]), ux = (E[0] - B[0]) / l, uy = (E[1] - B[1]) / l;
+  const T = [B[0] + ux * 30, B[1] + uy * 30], f = p => p.map(v => v.toFixed(1)).join(',');
+  return `<path class="bo" d="M${x0},${ya} A${a} ${b} 0 0 ${sw} ${f(B)}"/>` +
+    `<polygon class="ah" points="${f(T)} ${f([B[0] - uy * 12, B[1] + ux * 12])} ${f([B[0] + uy * 12, B[1] - ux * 12])}"/>` +
+    tt(x0 + side * (a + 8), y, lab, 'op', fs, side < 0 ? 'end' : 'start');
+};
+const KOPF = [['Anzahl der', 'Schnellhefter'], ['Preis', 'in €']];
+// Tabelle wie im Zweisatz mit beliebig vielen Zeilen. rows: [links, rechts]. Leere Werte bleiben leer, '?' erscheint grau.
+// g: L linker Rand, cw Spaltenbreite, T oben, hh Kopfhöhe, rh Zeilenhöhe, fk/fw/fb Schrift Kopf/Werte/Bögen, a Ausbuchtung der Bögen
+function tab(g, rows, kopf) {
+  const n = rows.length, M = g.L + g.cw, R = g.L + 2 * g.cw, H = g.T + g.hh, B = H + n * g.rh;
+  const ry = i => H + (i + 0.5) * g.rh, cx = [g.L + g.cw / 2, M + g.cw / 2];
+  let s = `<rect class="head" x="${g.L}" y="${g.T}" width="${2 * g.cw}" height="${g.hh}"/>`;
+  s += `<rect class="ln" x="${g.L}" y="${g.T}" width="${2 * g.cw}" height="${B - g.T}"/>`;
+  s += `<line class="ln" x1="${M}" y1="${g.T}" x2="${M}" y2="${B}"/><line class="ln" x1="${g.L}" y1="${H}" x2="${R}" y2="${H}"/>`;
+  for (let i = 1; i < n; i++) s += `<line class="thin" x1="${g.L}" y1="${H + i * g.rh}" x2="${R}" y2="${H + i * g.rh}"/>`;
+  if (kopf) (kopf === true ? KOPF : kopf).forEach((ls, j) => ls.forEach((l, i) => { s += tt(cx[j], g.T + g.hh / 2 + (i - 0.5) * g.fk * 1.2, l, j ? 'fb' : 'fr', g.fk); }));
+  const cell = (x, y, v, k) => v === '?' ? tt(x, y, '?', 'fq', g.fw) : v ? tt(x, y, v, k, g.fw) : '';
+  rows.forEach(([l, r], i) => { s += cell(cx[0], ry(i), l, 'fr') + cell(cx[1], ry(i), r, 'fb'); });
+  return s;
+}
+// Bogen von Zeile i zur nächsten, links (side -1) oder rechts (side 1) der Tabelle
+const tbogen = (g, i, side, lab) => {
+  const H = g.T + g.hh, ry = j => H + (j + 0.5) * g.rh;
+  return ebogen(side < 0 ? g.L - 15 : g.L + 2 * g.cw + 15, g.a, ry(i) + 4, ry(i + 1), lab, g.fb, side);
+};
+
+// Bogen von Zeile i nach Zeile j mit eigener Ausbuchtung a
+const tbogen2 = (g, i, j, side, lab, a) => {
+  const H = g.T + g.hh, ry = k => H + (k + 0.5) * g.rh;
+  return ebogen(side < 0 ? g.L - 15 : g.L + 2 * g.cw + 15, a, ry(i) - 4, ry(j), lab, g.fb, side);
+};
+
+// Sichtbare Breite eines Bildes mit viewBox W x H in Bildeinheiten. Breiter als W, wenn der Bildschirm breiter ist.
+function sichtbar(W, H) {
+  const r = $('fig').getBoundingClientRect(), sc = Math.min(r.width / W, r.height / H);
+  return sc > 0 ? Math.max(W, r.width / sc) : W;
+}
+// Breite eines Textes in der Schrift der Merksätze, gemessen an einem unsichtbaren SVG-Text
+const MW = new Map();
+function mw(str, F) {
+  const k = F + '|' + str;
+  if (!MW.has(k)) {
+    let m = $('mess');
+    if (!m) { m = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); m.id = 'mess'; m.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden'; m.innerHTML = '<text class="tm"></text>'; document.body.appendChild(m); }
+    const t = m.firstChild; t.style.fontSize = F + 'px'; t.textContent = str; MW.set(k, t.getComputedTextLength());
+  }
+  return MW.get(k);
+}
+// Bricht Sätze [Text, sichtbar] auf die Breite b um, wie normaler Fließtext. Jede Zeile ist eine Liste von Wörtern [Wort, sichtbar].
+function umbruch(saetze, F, b) {
+  const w = saetze.flatMap(([t, v]) => t.split(' ').map(x => [x, v])), z = [];
+  let l = [], str = '';
+  w.forEach(([x, v]) => {
+    const neu = str ? str + ' ' + x : x;
+    if (str && mw(neu, F) > b) { z.push(l); l = [[x, v]]; str = x; } else { l.push([x, v]); str = neu; }
+  });
+  if (l.length) z.push(l);
+  return z;
+}
+// Waagerechter Bogen von xa nach xb über (side -1) oder unter (side 1) der Tabelle, Spitze bei xb. h Höhe, fs Schriftgröße
+function hbogen(xa, xb, y0, side, lab, h, fs) {
+  const m = (xa + xb) / 2, c = [m, y0 + side * 2 * h], l = Math.hypot(xb - c[0], y0 - c[1]), ux = (xb - c[0]) / l, uy = (y0 - c[1]) / l;
+  const E = [xb, y0], Bp = [xb - ux * 22, y0 - uy * 22], f = q => q.map(v => v.toFixed(1)).join(',');
+  return `<path class="bo" d="M${xa},${y0} Q${f(c)} ${f(Bp)}"/>` +
+    `<polygon class="ah" points="${f(E)} ${f([Bp[0] - uy * 11, Bp[1] + ux * 11])} ${f([Bp[0] + uy * 11, Bp[1] - ux * 11])}"/>` + tt(m, y0 + side * (h + 0.72 * fs), lab, 'op', fs);
+}
+// ---------- Waagerechte Wertetabelle für alle Folien dieser Stunde ----------
+// Grundmaß 1200 x 560. Das passt auf dem iPad in der Breite und auf breiten Bildschirmen in der Höhe.
+const W = 1200, TL = 40, HW = 400, CW = 180, RH = 100, FK = 34, FZ = 56;
+const cx = i => TL + HW + (i + 0.5) * CW, TR = TL + HW + 4 * CW;
+// T obere Kante, kopf [oben, unten], vals je Spalte [x, y]. Ein leerer Wert bleibt frei.
+function htab(T, kopf, vals) {
+  const B = T + 2 * RH;
+  let s = `<rect class="head" x="${TL}" y="${T}" width="${HW}" height="${2 * RH}"/><rect class="ln" x="${TL}" y="${T}" width="${TR - TL}" height="${2 * RH}"/>` +
+    `<line class="ln" x1="${TL + HW}" y1="${T}" x2="${TL + HW}" y2="${B}"/><line class="thin" x1="${TL}" y1="${T + RH}" x2="${TR}" y2="${T + RH}"/>`;
+  for (let n = 1; n < 4; n++) s += `<line class="thin" x1="${TL + HW + n * CW}" y1="${T}" x2="${TL + HW + n * CW}" y2="${B}"/>`;
+  s += tt(TL + 22, T + RH / 2, kopf[0], 'fr', FK, 'start') + tt(TL + 22, T + 1.5 * RH, kopf[1], 'fb', FK, 'start');
+  vals.forEach(([x, y], n) => { s += tt(cx(n), T + RH / 2, x, 'fr', FZ) + tt(cx(n), T + 1.5 * RH, y, y === '?' ? 'fq' : 'fb', FZ); });
+  return s;
+}
+const bog = (i, j, y, side, lab) => hbogen(cx(i), cx(j), y, side, lab, 30, 36);
+const satz = (y, str, cls = 'tmh', F = 38) => tt(W / 2, y, str, cls, F);
+// Trifft p eine Spalte der Tabelle mit oberer Kante T? Liefert die Spaltennummer oder -1.
+const spalte = p => p.x > TL + HW && p.x < TR ? Math.floor((p.x - TL - HW) / CW) : -1;
+
+// ---------- Folie 1: Rückblick proportional mit den T-Shirts aus der letzten Stunde ----------
+const KS = ['Anzahl der T-Shirts', 'Preis (in €)'], KP = ['Anzahl der Personen', 'benötigte Zeit (in h)'];
+const T1 = 118;
+function rueckFig() {
+  let s = htab(T1, KS, [['1', '13'], ['2', '26'], ['4', '52'], ['6', '78']]);
+  if (vis('bo1')) s += bog(0, 1, T1 - 8, -1, '· 2');
+  if (vis('bu1')) s += bog(0, 1, T1 + 2 * RH + 8, 1, '· 2');
+  if (vis('bo2')) s += bog(1, 3, T1 - 8, -1, '· 3');
+  if (vis('bu2')) s += bog(1, 3, T1 + 2 * RH + 8, 1, '· 3');
+  if (vis('s1')) s += satz(450, 'Zum Doppelten gehört das Doppelte.');
+  if (vis('s2')) s += satz(502, 'Zum Dreifachen gehört das Dreifache.');
+  if (vis('s3')) s += satz(564, 'Die Zuordnung ist proportional.', 'tx', 40);
+  return s;
+}
+// Bögen über und unter der Tabelle, darunter die drei Sätze
+function musterHit(p) {
+  if (p.y > 532) return 's3';
+  if (p.y > 476) return 's2';
+  if (p.y > 424) return 's1';
+  const links = p.x < cx(1);
+  if (p.y < T1) return links ? 'bo1' : 'bo2';
+  if (p.y > T1 + 2 * RH) return links ? 'bu1' : 'bu2';
+  return null;
+}
+
+// ---------- Folie 2: Klassenraum streichen (Buch S. 42) ----------
+// Eine Person mit Farbrolle, Fußpunkt (x, y), Höhe 118
+function person(x, y) {
+  return `<circle class="fig" cx="${x}" cy="${y - 102}" r="15"/><path class="fig" d="M${x - 17},${y} L${x - 13},${y - 70} Q${x},${y - 88} ${x + 13},${y - 70} L${x + 17},${y} Z"/>` +
+    `<line class="stl" x1="${x + 10}" y1="${y - 62}" x2="${x + 26}" y2="${y - 104}"/><line class="rol" x1="${x + 17}" y1="${y - 110}" x2="${x + 35}" y2="${y - 103}"/>`;
+}
+function gruppe(mx, n, zeit) {
+  let s = '';
+  for (let i = 0; i < n; i++) s += person(mx + (i - (n - 1) / 2) * 50 - 8, 140);
+  return s + tt(mx, 176, zeit, zeit[0] === '?' ? 'fq' : 'fb', 36);
+}
+const T2 = 232;
+function streichFig() {
+  const z = (k, v) => vis(k) ? v : '?';
+  let s = gruppe(210, 2, '6 Stunden') + gruppe(585, 4, z('v4', '3') + ' Stunden') + gruppe(1010, 6, z('v6', '2') + ' Stunden');
+  s += htab(T2, KP, [['1', z('v1', '12')], ['2', '6'], ['4', z('v4', '3')], ['6', z('v6', '2')]]);
+  if (vis('je')) s += satz(492, 'Je mehr Personen helfen,') + satz(544, 'desto weniger Zeit brauchen sie.');
+  return s;
+}
+function streichHit(p) {
+  if (p.y > 456) return 'je';
+  if (p.y < 200) return p.x < 400 ? null : p.x < 800 ? 'v4' : 'v6';
+  return { 0: 'v1', 2: 'v4', 3: 'v6' }[spalte(p)] || null;
+}
+
+// ---------- Folie 3: das Muster ----------
+const VP = [['1', '12'], ['2', '6'], ['4', '3'], ['6', '2']];
+function musterFig() {
+  let s = htab(T1, KP, VP);
+  if (vis('bo1')) s += bog(0, 1, T1 - 8, -1, '· 2');
+  if (vis('bu1')) s += bog(0, 1, T1 + 2 * RH + 8, 1, ': 2');
+  if (vis('bo2')) s += bog(1, 3, T1 - 8, -1, '· 3');
+  if (vis('bu2')) s += bog(1, 3, T1 + 2 * RH + 8, 1, ': 3');
+  if (vis('s1')) s += satz(450, 'Zum Doppelten gehört die Hälfte.');
+  if (vis('s2')) s += satz(502, 'Zum Dreifachen gehört ein Drittel.');
+  if (vis('s3')) s += satz(564, 'Die Zuordnung ist antiproportional.', 'tx', 40);
+  return s;
+}
+
+// ---------- Folie 4: produktgleich ----------
+const T4 = 40;
+function prodFig() {
+  let s = htab(T4, KP, VP);
+  const y = T4 + 2 * RH + 56;
+  VP.forEach(([a, b], i) => {
+    if (vis('p' + i)) s += `<text style="font:600 38px system-ui,sans-serif" x="${cx(i)}" y="${y}" text-anchor="middle" dominant-baseline="central"><tspan style="fill:var(--cr)">${a}</tspan><tspan style="fill:var(--fg)"> · </tspan><tspan style="fill:var(--c1)">${b}</tspan></text>` + tt(cx(i), y + 52, '= 12', 'tx', 38);
+  });
+  if (vis('s1')) s += satz(446, 'Das Ergebnis ist immer gleich.');
+  if (vis('s2')) s += satz(508, 'Die Wertepaare sind produktgleich.', 'tx', 40);
+  return s;
+}
+function prodHit(p) {
+  if (p.y > 476) return 's2';
+  if (p.y > 412) return 's1';
+  const i = spalte(p);
+  return i >= 0 ? 'p' + i : null;
+}
+
+// ---------- Folie 5: beide Fälle nebeneinander, darunter die Aufgaben ----------
+function merkFig() {
+  const box = (x, titel, z) => `<rect class="merkbox" x="${x}" y="16" width="560" height="356" rx="16"/>` + tt(x + 30, 72, titel, 'tmh', 48, 'start') +
+    z.map((l, i) => tt(x + 30, 156 + i * 56, l, 'tm', 38, 'start')).join('');
+  let s = box(20, 'proportional', ['Je mehr, desto mehr.', '', 'Zum Doppelten gehört', 'das Doppelte.']) +
+    box(620, 'antiproportional', ['Je mehr, desto weniger.', '', 'Zum Doppelten gehört', 'die Hälfte.']);
+  s += tt(50, 448, 'Aufgaben im Heft', 'tmh', 48, 'start') + tt(50, 516, 'Buch S. 42, beide Aufgaben', 'tm', 42, 'start');
+  return s;
+}
+
+const STEPS = [
+  { t: 'Letzte Stunde: proportional', vb: [W, 598], seq: 1, parts: ['bo1', 'bu1', 's1', 'bo2', 'bu2', 's2', 's3'], hit: musterHit, fig: rueckFig },
+  { t: 'Klassenraum streichen', vb: [W, 580], seq: 1, parts: ['v4', 'v6', 'v1', 'je'], hit: streichHit, fig: streichFig,
+    txt: () => `${KB('2 Personen')} brauchen ${KG('6 Stunden')}. Wie lange brauchen ${KB('4 Personen')}? Wie lange brauchen ${KB('6 Personen')}?` },
+  { t: 'Was passiert beim Verdoppeln?', vb: [W, 598], seq: 1, parts: ['bo1', 'bu1', 's1', 'bo2', 'bu2', 's2', 's3'], hit: musterHit, fig: musterFig },
+  { t: 'Malnehmen', vb: [W, 545], seq: 1, parts: ['p0', 'p1', 'p2', 'p3', 's1', 's2'], hit: prodHit, fig: prodFig },
+  { t: 'Proportional und antiproportional', noT: 1, vb: [W, 556], fig: merkFig }
+];
+
+// ---------- Ablauf ----------
+// sub zählt bei Folien mit rv: n die schon aufgedeckten Schritte (1 bis n).
+let step = 0, shown = false, sub = 0, shownStep = -1;
+// Einzeln antippbare Teile: st.parts nennt die Teile, st.hit(p) liefert den getroffenen Teil. Weiter deckt alles auf.
+let opened = new Set();
+const vis = k => shown || opened.has(k);
+const done = (st = STEPS[step]) => (shown && sub >= (st.rv || 1)) || !!(st.parts && st.parts.every(k => opened.has(k)));
+function flip(k) {
+  const st = STEPS[step];
+  if (shown) { shown = false; opened = new Set(st.parts); }
+  const i = st.parts.indexOf(k);
+  if (opened.has(k)) { opened.delete(k); if (st.chain) st.parts.slice(i + 1).forEach(x => opened.delete(x)); }
+  else { opened.add(k); if (st.chain) st.parts.slice(0, i).forEach(x => opened.add(x)); }
+}
+const txv = x => (typeof x === 'function' ? x() : x) || '';
+function put(st, o = {}) {
+  $('title').textContent = o.t ?? txv(st.t);
+  $('txt').innerHTML = o.txt ?? txv(st.txt);
+  $('eq').innerHTML = o.eq ?? (st.eq ? st.eq() : '');
+}
+// Überschrift, Text und Rechnung bekommen gleich beim Betreten der Folie den Platz ihres vollsten Zustands.
+// So bleibt die Zeichnung gleich groß, wenn unten Schritte dazukommen.
+const BOX = ['title', 'txt', 'eq'];
+function reserve(st) {
+  const keep = [shown, sub], hi = BOX.map(() => 0);
+  BOX.forEach(id => { $(id).style.minHeight = ''; });
+  const m = o => { put(st, o); BOX.forEach((id, i) => { hi[i] = Math.max(hi[i], $(id).offsetHeight); }); };
+  for (let i = 0; i <= (st.rv || 0); i++) { shown = i > 0; sub = i; m(); }
+  [shown, sub] = keep;
+  if (st.seq) { const o = opened; opened = new Set(st.parts); m(); opened = o; }
+  m();
+  BOX.forEach((id, i) => { $(id).style.minHeight = hi[i] + 'px'; });
+}
+// Was trotzdem größer wird, behält seinen Platz bis zur nächsten Folie.
+const grow = () => BOX.forEach(id => { const e = $(id), h = e.offsetHeight; if (h > parseFloat(e.style.minHeight || 0)) e.style.minHeight = h + 'px'; });
+let FX = {};
+function render() {
+  const st = STEPS[step];
+  $('title').style.display = st.noT ? 'none' : '';
+  if (shownStep !== step) reserve(st);
+  // Erst Text und Rechnung setzen, damit die Größe des Bildes feststeht, bevor es gezeichnet wird.
+  put(st); grow();
+  // Das Bild wird jedes Mal als neues Element eingesetzt. So bleiben auf dem iPad keine Reste des alten Stands stehen.
+  // vb: [Breite, Höhe, links, oben]. Links und oben schneiden leeren Rand weg, damit das Bild die Fläche besser nutzt.
+  const [vw, vh, vx = 0, vy = 0] = st.vb || [800, 520], alt = $('fig'), neu = alt.cloneNode(false);
+  neu.setAttribute('viewBox', `${vx} ${vy} ${vw} ${vh}`);
+  neu.innerHTML = st.fig();
+  alt.replaceWith(neu);
+  // Gruppen mit data-cx werden nach ihrer tatsächlichen Breite mittig auf diese Stelle gesetzt.
+  neu.querySelectorAll('[data-cx]').forEach(g => { const b = g.getBBox(); g.setAttribute('transform', `translate(${+g.dataset.cx - (b.x + b.width / 2)},0)`); });
+  // Gruppen mit data-fx: Mitte auf diesen Anteil der tatsächlich sichtbaren Breite (0.25 = Mitte der linken Bildhälfte).
+  // data-m gibt die Mitte fest vor, damit nichts verrutscht, wenn Teile erst später erscheinen.
+  FX = {};
+  const r = neu.getBoundingClientRect(), sc = Math.min(r.width / vw, r.height / vh), sw = r.width / sc;
+  neu.querySelectorAll('[data-fx]').forEach(g => {
+    const m = g.dataset.m ? +g.dataset.m : (b => b.x + b.width / 2)(g.getBBox());
+    const d = vx + (vw - sw) / 2 + +g.dataset.fx * sw - m;
+    FX[g.dataset.k || ''] = d; g.setAttribute('transform', `translate(${d},0)`);
+  });
+  if (shownStep !== step) {
+    shownStep = step;
+    $('extras').innerHTML = (st.btns || []).map((b, i) => `<button data-b="${i}">${b.l}</button>`).join('');
+    $('cnt').textContent = `${step + 1} / ${STEPS.length}`;
+  }
+  $('prev').disabled = step === 0 && !(shown && sub > 0) && !(st.seq && opened.size);
+  $('next').disabled = step === STEPS.length - 1 && !((st.rv || st.seq) && !done(st));
+}
+// end: beim Zurückgehen auf der vorigen Folie mit allen Schritten aufgedeckt landen.
+function go(d, end) {
+  const n = step + d; if (n < 0 || n >= STEPS.length) return;
+  step = n; shown = false; sub = 0; opened = new Set();
+  if (STEPS[step].enter) STEPS[step].enter();
+  if (end && STEPS[step].rv) { shown = true; sub = STEPS[step].rv; }
+  if (end && STEPS[step].seq) opened = new Set(STEPS[step].parts);
+  render();
+}
+// Zurück nimmt immer nur einen Schritt zurück. Erst am Anfang einer Folie geht es zur vorigen.
+const back = () => {
+  const st = STEPS[step];
+  if (st.seq && opened.size) { const k = [...st.parts].reverse().find(x => opened.has(x)); opened.delete(k); render(); }
+  else if (st.rv && shown && sub > 0) { sub--; shown = sub > 0; render(); } else go(-1, true);
+};
+$('prev').addEventListener('click', back);
+// Weiter deckt erst auf, was noch fehlt, bei seq einen Teil nach dem anderen. Danach geht es zur nächsten Folie.
+const fwd = () => {
+  const st = STEPS[step];
+  if (st.seq && !done(st)) { opened.add(st.parts.find(k => !opened.has(k))); render(); }
+  else if (st.rv && !done(st)) { shown = true; sub = Math.min(st.rv, sub + 1); render(); } else go(1);
+};
+addEventListener('resize', () => { shownStep = -1; render(); });
+$('next').addEventListener('click', fwd);
+$('extras').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  STEPS[step].btns[+b.dataset.b].f(); render();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); fwd(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); back(); }
+});
+// Antippen im Bild deckt den Teil an dieser Stelle auf, nochmal Antippen verdeckt ihn wieder.
+function svgPt(e) {
+  const [vw, vh, vx = 0, vy = 0] = STEPS[step].vb || [800, 520];
+  const r = $('fig').getBoundingClientRect(), sc = Math.min(r.width / vw, r.height / vh);
+  return { x: vx + (e.clientX - r.left - (r.width - vw * sc) / 2) / sc, y: vy + (e.clientY - r.top - (r.height - vh * sc) / 2) / sc };
+}
+// Das Bild wird bei jedem Zeichnen ersetzt, deshalb hört die Seite selbst auf Tipps ins Bild.
+document.addEventListener('pointerdown', e => {
+  if (!e.target.closest || !e.target.closest('#fig')) return;
+  const st = STEPS[step], k = st.hit && st.hit(svgPt(e));
+  if (k) { flip(k); render(); }
+});
+// Manche Antworten stehen unten in der Rechnungszeile, dort tippt man direkt auf die Frage.
+$('eq').addEventListener('pointerdown', e => {
+  const st = STEPS[step];
+  if (st.eqHit && e.target.closest('.tap')) { flip(st.eqHit); render(); }
+});
+if (STEPS[0].enter) STEPS[0].enter();
+render();
+// Vollbild: Knopf oder Taste F. Nach einem Seitenwechsel holt der erste Tipp das Vollbild zurück.
+(() => {
+  const d = document, el = d.documentElement, b = d.getElementById('fs');
+  if (!b) return;
+  // Als App vom Home-Bildschirm gibt es keine Browserleisten. Vollbild brächte dort nur das X oben links.
+  const app = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches;
+  if (app || !(d.fullscreenEnabled || d.webkitFullscreenEnabled)) { b.hidden = true; return; }
+  const on = () => !!(d.fullscreenElement || d.webkitFullscreenElement);
+  const want = v => { try { if (v === undefined) return sessionStorage.getItem('fs') === '1'; sessionStorage.setItem('fs', v ? '1' : '0'); } catch (e) { return false; } };
+  const call = (o, f) => { if (!f) return; try { const p = f.call(o); if (p && p.catch) p.catch(() => {}); } catch (e) {} };
+  const enter = () => call(el, el.requestFullscreen || el.webkitRequestFullscreen);
+  const exit = () => call(d, d.exitFullscreen || d.webkitExitFullscreen);
+  const toggle = () => { if (on()) { want(false); exit(); } else { want(true); enter(); } };
+  let leaving = false;
+  const sync = () => {
+    const f = on(); el.classList.toggle('fs', f); if (!f) el.classList.remove('wide');
+    b.setAttribute('aria-pressed', f); b.title = f ? 'Vollbild beenden (F)' : 'Vollbild (F)';
+  };
+  const change = () => { sync(); if (!on() && !leaving) want(false); };   // mit X oder Esc beendet
+  b.addEventListener('click', toggle);
+  d.addEventListener('fullscreenchange', change);
+  d.addEventListener('webkitfullscreenchange', change);
+  d.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (a) { if (!a.hasAttribute('download')) leaving = true; return; }
+    if (!b.contains(e.target) && !on() && want()) enter();
+  }, true);
+  d.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggle(); }
+    else if (e.key !== 'Escape' && !on() && want()) enter();
+  });
+  addEventListener('pagehide', () => { leaving = true; });
+  addEventListener('pageshow', () => { leaving = false; sync(); });
+  sync();
+})();
+// App vom Home-Bildschirm: Sie hat keine Zurück-Taste. Links führen deshalb nur zu eigenen Seiten, und die haben alle einen Weg zum Menü.
+if (navigator.standalone === true || matchMedia('(display-mode: standalone)').matches) document.addEventListener('click', e => {
+  const a = e.target.closest('a[href]'); if (!a) return;
+  const u = new URL(a.href);
+  if (a.hasAttribute('download') || u.origin !== location.origin || !/(\/|\.html)$/.test(u.pathname)) e.preventDefault();
+}, true);
+// Offline: Nach dem ersten Aufruf liegen alle Stunden im Speicher.
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>

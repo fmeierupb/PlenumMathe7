@@ -1,5 +1,5 @@
 // Eigener Cache-Präfix, damit andere Werkzeuge unter derselben Adresse unberührt bleiben.
-const CACHE = 'plenum7-645ea3df';
+const CACHE = 'plenum7-d42b848b';
 // Alles, was beim ersten Aufruf in den Speicher kommt.
 const FILES = [
   './',
@@ -10,6 +10,7 @@ const FILES = [
   './ab/ab-zweisatz-2.svg',
   './ab/ab-zweisatz.pdf',
   './ab/ab-zweisatz.svg',
+  './antiproportional.html',
   './dreisatz-wiederholen.html',
   './dreisatz.html',
   './icon-180.png',
