@@ -321,13 +321,27 @@ function prodHit(p) {
   return i >= 0 ? 'p' + i : null;
 }
 
-// ---------- Folie 5: beide Fälle nebeneinander, darunter die Aufgaben ----------
+// ---------- Folie 5: Gegenüberstellung ----------
+// Links der Merkkasten zu proportional, wie er am Ende der letzten Stunde stand. Rechts derselbe Aufbau für antiproportional im Wortlaut des Buchs (S. 42).
+function vglFig() {
+  const kasten = (x, titel) => `<rect class="merkbox" x="${x}" y="16" width="570" height="464" rx="16"/>` + tt(x + 30, 74, titel, 'tmh', 50, 'start');
+  const punkt = (x, y, z) => tt(x + 30, y, '•', 'tm', 34, 'start') + z.map((l, i) => tt(x + 62, y + i * 50, l, 'tm', 34, 'start')).join('');
+  let s = kasten(20, 'proportional') + punkt(20, 160, ['Zum Doppelten gehört', 'das Doppelte.']) + punkt(20, 290, ['Der Graph ist eine Gerade,', 'die durch den Ursprung', '(0|0) geht.']);
+  s += kasten(610, 'antiproportional');
+  if (vis('a1')) s += punkt(610, 160, ['Zum Doppelten gehört', 'die Hälfte.']);
+  if (vis('a2')) s += punkt(610, 290, ['Die Wertepaare sind', 'produktgleich.']);
+  return s;
+}
+
+// ---------- Folie 6: Merkkasten zu antiproportional und Aufgaben ----------
 function merkFig() {
-  const box = (x, titel, z) => `<rect class="merkbox" x="${x}" y="16" width="560" height="356" rx="16"/>` + tt(x + 30, 72, titel, 'tmh', 48, 'start') +
-    z.map((l, i) => tt(x + 30, 156 + i * 56, l, 'tm', 38, 'start')).join('');
-  let s = box(20, 'proportional', ['Je mehr, desto mehr.', '', 'Zum Doppelten gehört', 'das Doppelte.']) +
-    box(620, 'antiproportional', ['Je mehr, desto weniger.', '', 'Zum Doppelten gehört', 'die Hälfte.']);
-  s += tt(50, 448, 'Aufgaben im Heft', 'tmh', 48, 'start') + tt(50, 516, 'Buch S. 42, beide Aufgaben', 'tm', 42, 'start');
+  const z = (y, str, x = 96) => tt(x, y, str, 'tm', 40, 'start');
+  let s = `<rect class="merkbox" x="20" y="16" width="1160" height="372" rx="16"/>` + tt(52, 76, 'Antiproportionale Zuordnungen', 'tmh', 52, 'start');
+  s += z(156, 'Je mehr, desto weniger.', 52);
+  s += z(222, '•', 60) + z(222, 'Zum Doppelten gehört die Hälfte.');
+  s += z(278, '•', 60) + z(278, 'Zum Dreifachen gehört ein Drittel.');
+  s += z(334, '•', 60) + z(334, 'Die Wertepaare sind produktgleich.');
+  s += tt(52, 456, 'Aufgaben im Heft', 'tmh', 48, 'start') + tt(52, 524, 'Buch S. 42, beide Aufgaben', 'tm', 42, 'start');
   return s;
 }
 
@@ -337,7 +351,8 @@ const STEPS = [
     txt: () => `${KB('2 Personen')} brauchen ${KG('6 Stunden')}. Wie lange brauchen ${KB('4 Personen')}? Wie lange brauchen ${KB('6 Personen')}?` },
   { t: 'Was passiert beim Verdoppeln?', vb: [W, 598], seq: 1, parts: ['bo1', 'bu1', 's1', 'bo2', 'bu2', 's2', 's3'], hit: musterHit, fig: musterFig },
   { t: 'Malnehmen', vb: [W, 545], seq: 1, parts: ['p0', 'p1', 'p2', 'p3', 's1', 's2'], hit: prodHit, fig: prodFig },
-  { t: 'Proportional und antiproportional', noT: 1, vb: [W, 556], fig: merkFig }
+  { t: 'Proportional und antiproportional', vb: [W, 496], seq: 1, parts: ['a1', 'a2'], hit: p => p.x < 600 ? null : p.y < 250 ? 'a1' : 'a2', fig: vglFig },
+  { t: 'Antiproportionale Zuordnungen', noT: 1, vb: [W, 566], fig: merkFig }
 ];
 
 // ---------- Ablauf ----------
