@@ -225,12 +225,12 @@ const W = 1200, TL = 40, HW = 400, CW = 180, RH = 100, FK = 34, FZ = 56;
 const cx = i => TL + HW + (i + 0.5) * CW, TR = TL + HW + 4 * CW;
 // T obere Kante, kopf [oben, unten], vals je Spalte [x, y]. Ein leerer Wert bleibt frei.
 function htab(T, kopf, vals) {
-  const B = T + 2 * RH;
+  const B = T + 2 * RH, n = vals.length, cw = 4 * CW / n;
   let s = `<rect class="head" x="${TL}" y="${T}" width="${HW}" height="${2 * RH}"/><rect class="ln" x="${TL}" y="${T}" width="${TR - TL}" height="${2 * RH}"/>` +
     `<line class="ln" x1="${TL + HW}" y1="${T}" x2="${TL + HW}" y2="${B}"/><line class="thin" x1="${TL}" y1="${T + RH}" x2="${TR}" y2="${T + RH}"/>`;
-  for (let n = 1; n < 4; n++) s += `<line class="thin" x1="${TL + HW + n * CW}" y1="${T}" x2="${TL + HW + n * CW}" y2="${B}"/>`;
+  for (let k = 1; k < n; k++) s += `<line class="thin" x1="${TL + HW + k * cw}" y1="${T}" x2="${TL + HW + k * cw}" y2="${B}"/>`;
   s += tt(TL + 22, T + RH / 2, kopf[0], 'fr', FK, 'start') + tt(TL + 22, T + 1.5 * RH, kopf[1], 'fb', FK, 'start');
-  vals.forEach(([x, y], n) => { s += tt(cx(n), T + RH / 2, x, 'fr', FZ) + tt(cx(n), T + 1.5 * RH, y, y === '?' ? 'fq' : 'fb', FZ); });
+  vals.forEach(([x, y], k) => { const m = TL + HW + (k + 0.5) * cw; s += tt(m, T + RH / 2, x, 'fr', FZ) + tt(m, T + 1.5 * RH, y, y === '?' ? 'fq' : 'fb', FZ); });
   return s;
 }
 const bog = (i, j, y, side, lab) => hbogen(cx(i), cx(j), y, side, lab, 30, 36);
@@ -242,32 +242,32 @@ const spalte = p => p.x > TL + HW && p.x < TR ? Math.floor((p.x - TL - HW) / CW)
 const KS = ['Anzahl der T-Shirts', 'Preis (in €)'], KP = ['Anzahl der Personen', 'benötigte Zeit (in h)'];
 const T1 = 118;
 // Die drei Eigenschaften aus dem Merkkasten: Doppeltes, quotientengleich und (0|0)
-const TR1 = 104, VR = [['0', '0'], ['1', '13'], ['2', '26'], ['6', '78']];
+const TR1 = 104, VR = [['0', '0'], ['1', '13'], ['2', '26'], ['5', '65'], ['6', '78']], C5 = 4 * CW / 5, c5 = i => TL + HW + (i + 0.5) * C5;
 function rueckFig() {
-  const B = TR1 + 2 * RH;
+  const B = TR1 + 2 * RH, bg = (i, j, y, side, lab) => hbogen(c5(i), c5(j), y, side, lab, 30, 36);
   let s = htab(TR1, KS, VR);
-  if (vis('bo1')) s += bog(1, 2, TR1 - 8, -1, '· 2');
-  if (vis('bu1')) s += bog(1, 2, B + 8, 1, '· 2');
-  if (vis('bo2')) s += bog(2, 3, TR1 - 8, -1, '· 3');
-  if (vis('bu2')) s += bog(2, 3, B + 8, 1, '· 3');
+  if (vis('bo1')) s += bg(1, 2, TR1 - 8, -1, '· 2');
+  if (vis('bu1')) s += bg(1, 2, B + 8, 1, '· 2');
+  if (vis('bo2')) s += bg(2, 4, TR1 - 8, -1, '· 3');
+  if (vis('bu2')) s += bg(2, 4, B + 8, 1, '· 3');
   if (vis('s1')) s += satz(520, 'Zum Doppelten gehört das Doppelte.', 'tmh', 36);
   // Preis geteilt durch Anzahl, unter jeder Spalte außer der mit 0
   VR.forEach(([a, b], i) => {
-    if (i && vis('q' + i)) s += `<text style="font:600 36px system-ui,sans-serif" x="${cx(i)}" y="${B + 116}" text-anchor="middle" dominant-baseline="central"><tspan style="fill:var(--c1)">${b}</tspan><tspan style="fill:var(--fg)"> : </tspan><tspan style="fill:var(--cr)">${a}</tspan></text>` + tt(cx(i), B + 162, '= 13', 'tx', 36);
+    if (i && vis('q' + i)) s += `<text style="font:600 36px system-ui,sans-serif" x="${c5(i)}" y="${B + 116}" text-anchor="middle" dominant-baseline="central"><tspan style="fill:var(--c1)">${b}</tspan><tspan style="fill:var(--fg)"> : </tspan><tspan style="fill:var(--cr)">${a}</tspan></text>` + tt(c5(i), B + 162, '= 13', 'tx', 36);
   });
   if (vis('s2')) s += satz(568, 'Die Wertepaare sind quotientengleich.', 'tmh', 36);
-  if (vis('null')) s += `<rect class="hr" x="${TL + HW + 10}" y="${TR1 + 10}" width="${CW - 20}" height="${2 * RH - 20}" rx="14"/>`;
+  if (vis('null')) s += `<rect class="hr" x="${TL + HW + 10}" y="${TR1 + 10}" width="${C5 - 20}" height="${2 * RH - 20}" rx="14"/>`;
   if (vis('s3')) s += satz(616, 'Zu 0 gehört 0. Der Graph geht durch den Ursprung (0|0).', 'tmh', 36);
   return s;
 }
 function rueckHit(p) {
-  const B = TR1 + 2 * RH, i = spalte(p);
+  const B = TR1 + 2 * RH, i = p.x > TL + HW && p.x < TR ? Math.floor((p.x - TL - HW) / C5) : -1;
   if (p.y > 592) return 's3';
   if (p.y > 544) return 's2';
   if (p.y > 496) return 's1';
   if (p.y > B + 90) return i > 0 ? 'q' + i : null;
-  if (p.y > B) return p.x < cx(2) ? 'bu1' : 'bu2';
-  if (p.y < TR1) return p.x < cx(2) ? 'bo1' : 'bo2';
+  if (p.y > B) return p.x < c5(2) ? 'bu1' : 'bu2';
+  if (p.y < TR1) return p.x < c5(2) ? 'bo1' : 'bo2';
   return i === 0 ? 'null' : null;
 }
 // Bögen über und unter der Tabelle, darunter die drei Sätze
@@ -366,7 +366,7 @@ function merkFig() {
 }
 
 const STEPS = [
-  { t: 'Letzte Stunde: proportional', vb: [W, 644], seq: 1, parts: ['bo1', 'bu1', 'bo2', 'bu2', 's1', 'q1', 'q2', 'q3', 's2', 'null', 's3'], hit: rueckHit, fig: rueckFig },
+  { t: 'Letzte Stunde: proportional', vb: [W, 644], seq: 1, parts: ['bo1', 'bu1', 'bo2', 'bu2', 's1', 'q1', 'q2', 'q3', 'q4', 's2', 'null', 's3'], hit: rueckHit, fig: rueckFig },
   { t: 'Klassenraum streichen', vb: [W, 580], seq: 1, parts: ['v4', 'v6', 'v1', 'je'], hit: streichHit, fig: streichFig,
     txt: () => `${KB('2 Personen')} brauchen ${KG('6 Stunden')}. Wie lange brauchen ${KB('4 Personen')}? Wie lange brauchen ${KB('6 Personen')}?` },
   { t: 'Was passiert beim Verdoppeln?', vb: [W, 598], seq: 1, parts: ['bo1', 'bu1', 's1', 'bo2', 'bu2', 's2', 's3'], hit: musterHit, fig: musterFig },
