@@ -238,37 +238,6 @@ const satz = (y, str, cls = 'tmh', F = 38) => tt(W / 2, y, str, cls, F);
 // Trifft p eine Spalte der Tabelle mit oberer Kante T? Liefert die Spaltennummer oder -1.
 const spalte = p => p.x > TL + HW && p.x < TR ? Math.floor((p.x - TL - HW) / CW) : -1;
 
-// ---------- Folie 1: die liegende Tabelle ist die stehende, nur sortiert ----------
-const GV = { L: 112, cw: 172, T: 70, hh: 88, rh: 92, fk: 28, fw: 46, fb: 32, a: 32 };
-const SL = 596, SH = 180, SC = 132, ST = 170, SR = 100;   // liegende Tabelle: links, Kopfbreite, Spaltenbreite, oben, Zeilenhöhe
-function sortFig() {
-  // Links die Dreisatz-Tabelle der T-Shirts, wie sie aus der letzten Stunde bekannt ist
-  let s = tab(GV, [['2', '26'], ['1', '13'], ['5', '65']], [['Anzahl der', 'T-Shirts'], ['Preis', 'in €']]) +
-    tbogen(GV, 0, -1, ': 2') + tbogen(GV, 0, 1, ': 2') + tbogen(GV, 1, -1, '· 5') + tbogen(GV, 1, 1, '· 5');
-  // Rechts dieselben Wertepaare liegend, der Größe nach sortiert. zeile: in welcher Zeile links das Paar steht
-  const P = [['w1', '1', '13', 1], ['w2', '2', '26', 0], ['w5', '5', '65', 2]], B = ST + 2 * SR, R = SL + SH + 3 * SC, mx = i => SL + SH + (i + 0.5) * SC;
-  s += `<rect class="head" x="${SL}" y="${ST}" width="${SH}" height="${2 * SR}"/><rect class="ln" x="${SL}" y="${ST}" width="${R - SL}" height="${2 * SR}"/>` +
-    `<line class="ln" x1="${SL + SH}" y1="${ST}" x2="${SL + SH}" y2="${B}"/><line class="thin" x1="${SL}" y1="${ST + SR}" x2="${R}" y2="${ST + SR}"/>`;
-  for (let n = 1; n < 3; n++) s += `<line class="thin" x1="${SL + SH + n * SC}" y1="${ST}" x2="${SL + SH + n * SC}" y2="${B}"/>`;
-  s += tt(SL + SH / 2, ST + SR / 2 - 17, 'Anzahl der', 'fr', 28) + tt(SL + SH / 2, ST + SR / 2 + 17, 'T-Shirts', 'fr', 28) +
-    tt(SL + SH / 2, ST + 1.5 * SR - 17, 'Preis', 'fb', 28) + tt(SL + SH / 2, ST + 1.5 * SR + 17, 'in €', 'fb', 28);
-  let neu = -1;
-  P.forEach(([k, x, y], i) => { if (vis(k)) { s += tt(mx(i), ST + SR / 2, x, 'fr', 50) + tt(mx(i), ST + 1.5 * SR, y, 'fb', 50); neu = i; } });
-  // Das zuletzt übertragene Paar ist in beiden Tabellen markiert
-  if (neu >= 0 && !vis('satz')) {
-    const zy = GV.T + GV.hh + P[neu][3] * GV.rh;
-    s += `<rect class="hr" x="${GV.L + 9}" y="${zy + 9}" width="${2 * GV.cw - 18}" height="${GV.rh - 18}" rx="14"/>` +
-      `<rect class="hr" x="${SL + SH + neu * SC + 9}" y="${ST + 9}" width="${SC - 18}" height="${2 * SR - 18}" rx="14"/>`;
-  }
-  if (vis('satz')) s += satz(512, 'Dieselbe Tabelle, nur liegend und sortiert.', 'tx', 40);
-  return s;
-}
-function sortHit(p) {
-  if (p.y > 470) return 'satz';
-  if (p.x < SL + SH) return null;
-  return ['w1', 'w2', 'w5'][Math.floor((p.x - SL - SH) / SC)] || null;
-}
-
 // ---------- Folie 1: Rückblick proportional mit den T-Shirts aus der letzten Stunde ----------
 const KS = ['Anzahl der T-Shirts', 'Preis (in €)'], KP = ['Anzahl der Personen', 'benötigte Zeit (in h)'];
 const T1 = 118;
@@ -355,12 +324,14 @@ function prodHit(p) {
 // ---------- Folie 5: Gegenüberstellung ----------
 // Links der Merkkasten zu proportional, wie er am Ende der letzten Stunde stand. Rechts derselbe Aufbau für antiproportional im Wortlaut des Buchs (S. 42).
 function vglFig() {
-  const kasten = (x, titel) => `<rect class="merkbox" x="${x}" y="16" width="570" height="464" rx="16"/>` + tt(x + 30, 74, titel, 'tmh', 50, 'start');
+  const kasten = (x, titel) => `<rect class="merkbox" x="${x}" y="16" width="570" height="552" rx="16"/>` + tt(x + 30, 74, titel, 'tmh', 50, 'start');
   const punkt = (x, y, z) => tt(x + 30, y, '•', 'tm', 34, 'start') + z.map((l, i) => tt(x + 62, y + i * 50, l, 'tm', 34, 'start')).join('');
-  let s = kasten(20, 'proportional') + punkt(20, 160, ['Zum Doppelten gehört', 'das Doppelte.']) + punkt(20, 290, ['Der Graph ist eine Gerade,', 'die durch den Ursprung', '(0|0) geht.']);
+  let s = kasten(20, 'proportional') + punkt(20, 160, ['Zum Doppelten gehört', 'das Doppelte.']) + punkt(20, 286, ['Die Wertepaare sind', 'quotientengleich.']) +
+    punkt(20, 412, ['Der Graph ist eine Gerade,', 'die durch den Ursprung', '(0|0) geht.']);
   s += kasten(610, 'antiproportional');
   if (vis('a1')) s += punkt(610, 160, ['Zum Doppelten gehört', 'die Hälfte.']);
-  if (vis('a2')) s += punkt(610, 290, ['Die Wertepaare sind', 'produktgleich.']);
+  if (vis('a2')) s += punkt(610, 286, ['Die Wertepaare sind', 'produktgleich.']);
+  if (vis('a3')) s += punkt(610, 412, ['Der Graph ist eine fallende', 'Kurve. Sie heißt Hyperbel.']);
   return s;
 }
 
@@ -377,13 +348,12 @@ function merkFig() {
 }
 
 const STEPS = [
-  { t: 'Stehend oder liegend', vb: [W, 556], seq: 1, parts: ['w1', 'w2', 'w5', 'satz'], hit: sortHit, fig: sortFig },
   { t: 'Letzte Stunde: proportional', vb: [W, 598], seq: 1, parts: ['bo1', 'bu1', 's1', 'bo2', 'bu2', 's2', 's3'], hit: musterHit, fig: rueckFig },
   { t: 'Klassenraum streichen', vb: [W, 580], seq: 1, parts: ['v4', 'v6', 'v1', 'je'], hit: streichHit, fig: streichFig,
     txt: () => `${KB('2 Personen')} brauchen ${KG('6 Stunden')}. Wie lange brauchen ${KB('4 Personen')}? Wie lange brauchen ${KB('6 Personen')}?` },
   { t: 'Was passiert beim Verdoppeln?', vb: [W, 598], seq: 1, parts: ['bo1', 'bu1', 's1', 'bo2', 'bu2', 's2', 's3'], hit: musterHit, fig: musterFig },
   { t: 'Malnehmen', vb: [W, 545], seq: 1, parts: ['p0', 'p1', 'p2', 'p3', 's1', 's2'], hit: prodHit, fig: prodFig },
-  { t: 'Proportional und antiproportional', vb: [W, 496], seq: 1, parts: ['a1', 'a2'], hit: p => p.x < 600 ? null : p.y < 250 ? 'a1' : 'a2', fig: vglFig },
+  { t: 'Proportional und antiproportional', vb: [W, 584], seq: 1, parts: ['a1', 'a2', 'a3'], hit: p => p.x < 600 ? null : p.y < 250 ? 'a1' : p.y < 376 ? 'a2' : 'a3', fig: vglFig },
   { t: 'Antiproportionale Zuordnungen', noT: 1, vb: [W, 566], fig: merkFig }
 ];
 
