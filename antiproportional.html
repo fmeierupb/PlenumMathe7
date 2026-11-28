@@ -339,7 +339,7 @@ function prodHit(p) {
 }
 
 // ---------- Folie 5: beide Zuordnungen als Graph ----------
-const GO = 440, GH = 380, GW = 450;   // Fußlinie, Höhe und Breite der beiden Koordinatensysteme
+const GO = 490, GH = 380, GW = 450;   // Fußlinie, Höhe und Breite der beiden Koordinatensysteme
 // o: ox linker Rand, xm und ym größte Werte, yt Schritt der y-Achse, xl und yl Beschriftungen, pts Punkte
 function graph(o, zeigP, zeigG) {
   const X = x => o.ox + x / o.xm * GW, Y = y => GO - y / o.ym * GH, f = v => v.toFixed(1);
@@ -352,13 +352,14 @@ function graph(o, zeigP, zeigG) {
   for (let x = 1; x <= 6; x++) s += `<line class="ax" x1="${f(X(x))}" y1="${GO - 7}" x2="${f(X(x))}" y2="${GO + 7}"/>` + tt(f(X(x)), GO + 30, x, 'ta', 28);
   for (let y = o.yt; y <= o.ym; y += o.yt) s += `<line class="ax" x1="${o.ox - 7}" y1="${f(Y(y))}" x2="${o.ox + 7}" y2="${f(Y(y))}"/>` + tt(o.ox - 16, f(Y(y)), y, 'ta', 28, 'end');
   s += tt(o.ox - 22, GO + 30, '0', 'ta', 28) + tt(o.ox + GW / 2, GO + 74, o.xl, 'fr', 30) + tt(o.ox + 20, ye + 6, o.yl, 'fb', 30, 'start');
+  s += tt(o.ox + GW / 2, 26, o.titel, 'tx', 36);
   if (zeigG) s += o.linie(X, Y) + tt(o.ox + GW / 2, GO + 126, o.satz, 'tmh', 32);
   if (zeigP) o.pts.forEach(([x, y]) => { const a = X(x), b = Y(y), kz = c => `<line class="${c}" x1="${f(a - 10)}" y1="${f(b - 10)}" x2="${f(a + 10)}" y2="${f(b + 10)}"/><line class="${c}" x1="${f(a - 10)}" y1="${f(b + 10)}" x2="${f(a + 10)}" y2="${f(b - 10)}"/>`; s += kz('ph') + kz('pt'); });
   return s;
 }
-const GA = { ox: 90, xm: 6.6, ym: 86, yt: 20, xl: 'Anzahl der T-Shirts', yl: 'Preis (in €)', pts: [[0, 0], [1, 13], [2, 26], [5, 65], [6, 78]], satz: 'Gerade durch den Ursprung (0|0)',
+const GA = { titel: 'T-Shirt-Preise', ox: 90, xm: 6.6, ym: 86, yt: 20, xl: 'Anzahl der T-Shirts', yl: 'Preis (in €)', pts: [[0, 0], [1, 13], [2, 26], [5, 65], [6, 78]], satz: 'Gerade durch den Ursprung (0|0)',
   linie: (X, Y) => `<line class="gl" x1="${X(0)}" y1="${Y(0)}" x2="${X(6.5).toFixed(1)}" y2="${Y(84.5).toFixed(1)}"/>` };
-const GBB = { ox: 700, xm: 6.6, ym: 13.2, yt: 2, xl: 'Anzahl der Personen', yl: 'benötigte Zeit (in h)', pts: [[1, 12], [2, 6], [4, 3], [6, 2]], satz: 'fallende Kurve: Hyperbel',
+const GBB = { titel: 'Klassenraum streichen', ox: 700, xm: 6.6, ym: 13.2, yt: 2, xl: 'Anzahl der Personen', yl: 'benötigte Zeit (in h)', pts: [[1, 12], [2, 6], [4, 3], [6, 2]], satz: 'fallende Kurve: Hyperbel',
   linie: (X, Y) => { let d = ''; for (let x = 0.92; x <= 6.5; x += 0.04) d += (d ? ' L' : 'M') + X(x).toFixed(1) + ',' + Y(12 / x).toFixed(1); return `<path class="gl" fill="none" d="${d}"/>`; } };
 const graphFig = () => graph(GA, vis('pa'), vis('ga')) + graph(GBB, vis('pb'), vis('gb'));
 const graphHit = p => p.x < 610 ? (vis('pa') ? 'ga' : 'pa') : (vis('pb') ? 'gb' : 'pb');
@@ -395,7 +396,7 @@ const STEPS = [
     txt: () => `${KB('2 Personen')} brauchen ${KG('6 Stunden')}. Wie lange brauchen ${KB('4 Personen')}? Wie lange brauchen ${KB('6 Personen')}?` },
   { t: 'Was passiert beim Verdoppeln?', vb: [W, 598], seq: 1, parts: ['bo1', 'bu1', 's1', 'bo2', 'bu2', 's2', 's3'], hit: musterHit, fig: musterFig },
   { t: 'Malnehmen', vb: [W, 545], seq: 1, parts: ['p0', 'p1', 'p2', 'p3', 's1', 's2'], hit: prodHit, fig: prodFig },
-  { t: 'Die Graphen', vb: [W, 590], seq: 1, parts: ['pa', 'ga', 'pb', 'gb'], hit: graphHit, fig: graphFig },
+  { t: 'Die Graphen', vb: [W, 640], seq: 1, parts: ['pa', 'ga', 'pb', 'gb'], hit: graphHit, fig: graphFig },
   { t: 'Proportional und antiproportional', vb: [W, 584], seq: 1, parts: ['a1', 'a2', 'a3'], hit: p => p.x < 600 ? null : p.y < 250 ? 'a1' : p.y < 376 ? 'a2' : 'a3', fig: vglFig },
   { t: 'Antiproportionale Zuordnungen', noT: 1, vb: [W, 566], fig: merkFig }
 ];
